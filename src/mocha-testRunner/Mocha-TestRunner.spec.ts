@@ -7,7 +7,7 @@ import { TestFileHandler } from "../testFileHandler/TestFileHandler";
 describe("Mocha-TestRunner", () => {
     let testRunner: MochaTestRunner;
     beforeEach(() => {
-        testRunner = new MochaTestRunner([""], new Mocha());
+        testRunner = new MochaTestRunner([""], {});
     });
 
     it("returns false when no test files are added", () => {

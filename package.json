@@ -1,6 +1,6 @@
 {
   "name": "ProfessorX",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Typescript mutation testing service",
   "author": "James Read, Michael Michaelides",
   "license": "MIT",

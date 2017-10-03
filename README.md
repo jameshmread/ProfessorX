@@ -1,5 +1,13 @@
-# ProfessorX [![Build Status](https://travis-ci.org/adamdallis/ProfessorX.svg?branch=master)](https://travis-ci.org/adamdallis/ProfessorX)
+<h1 align="center"> ProfessorX </h1>
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/902321cbbbe0493e86e83c9319ab103f)](https://www.codacy.com/app/d_dallis_gr/ProfessorX?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=adamdallis/ProfessorX&amp;utm_campaign=Badge_Grade)
+<p align="center">
+<img src="https://travis-ci.org/jameshmread/ProfessorX.svg?branch=master">
 
-[![BCH compliance](https://bettercodehub.com/edge/badge/adamdallis/ProfessorX?branch=master)](https://bettercodehub.com/)
+<img src="https://api.codacy.com/project/badge/Grade/befa3c5cfe664470b38d161d29990b4b"/>
+
+<img src='https://bettercodehub.com/edge/badge/jameshmread/ProfessorX?branch=master'>
+</p>
+
+<h4>
+A Typescript Mutation Testing program designed to give an indication to the quality of the tests in a project.
+</h4>

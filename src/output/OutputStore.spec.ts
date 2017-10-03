@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import * as Mocha from "mocha";
 
+import { ITestResult } from "../../interfaces/ITestResult";
 import { OutputStore } from "./OutputStore";
 
 describe("Output Store", () => {
@@ -11,6 +11,13 @@ describe("Output Store", () => {
         }
     }`;
     const firstLine = "export class HelloWorld {";
+    const testResult: ITestResult = {
+        passed : "1",
+        failed : "2",
+        totalRan : "3",
+        duration : "20"
+    };
+
     beforeEach(() => {
         outputStore = new OutputStore();
     });

@@ -8,8 +8,8 @@ export class MochaTestRunner {
     public testFiles: Array<string> = [];
     public mocha: Mocha;
 
-    constructor (testFiles : Array<string>, mocha: Mocha) {
-        this.mocha = mocha;
+    constructor (testFiles : Array<string>, config: Object) {
+        this.mocha = new Mocha(config);
         this.testFiles = testFiles;
     }
 
