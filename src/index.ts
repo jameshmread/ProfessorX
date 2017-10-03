@@ -24,9 +24,13 @@ const cleaner = new Cleaner(config.filePath);
 
 for (const sampleNode of nodes) {
     outputStore = new OutputStore();
+    //resets modified code after a mutation
     sourceObj.resetModified();
+    //performs the modification at a specific position
     sourceObj.modifyCode(sampleNode.pos, sampleNode.end, MutationFactory.getSingleMutation(ts.SyntaxKind.PlusToken));
+    //writes this change to a NEW src file
     fileHandler.writeTempSourceModifiedFile(sourceObj.getModifiedSourceCode());
+    //creates a new test file with a reference to the NEW source file
     const testFile = fileHandler.createTempTestModifiedFile();
 
     outputStore.setTestFile(testFile);
@@ -46,7 +50,6 @@ for (const sampleNode of nodes) {
 function finishRun (testResult: ITestResult, testFileNames: Array<string>) {
     outputStore.setScores(testResult);
     const printer = new Printer(outputStore);
-    printer.printSourceChanges();
     console.log("-----------------------------------------");
-    cleaner.deleteTestFile(outputStore.testFilePath);
+    // cleaner.deleteTestFile(outputStore.testFilePath);
 }

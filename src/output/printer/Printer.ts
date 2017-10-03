@@ -21,6 +21,7 @@ export class Printer {
     private readonly LEADING_EDGE = "~~~~~~~~~~ Professor X ~~~~~~~~~~";
 
     constructor (private outputStore: OutputStore) {
+        this.printSourceChanges();
     }
 
     public printSourceChanges () {
