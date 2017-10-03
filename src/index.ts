@@ -29,9 +29,11 @@ for (const sampleNode of nodes) {
     fileHandler.writeTempSourceModifiedFile(sourceObj.getModifiedSourceCode());
     const testFile = fileHandler.createTempTestModifiedFile();
 
-    outputStore.setTestFile(testFile); //if there is an error, look here
-    outputStore.setLineNumber
-    (ts.getLineAndCharacterOfPosition(sourceObj.getOriginalSourceObject(), sampleNode.pos).line);
+    outputStore.setTestFile(testFile);
+    outputStore.setLineNumber(
+        ts.getLineAndCharacterOfPosition(
+            sourceObj.getOriginalSourceObject(), sampleNode.pos).line);
+
     outputStore.setOrigionalSourceCode(sourceObj.getOriginalSourceCode());
     outputStore.setModifiedSourceCode(sourceObj.getModifiedSourceCode());
 
