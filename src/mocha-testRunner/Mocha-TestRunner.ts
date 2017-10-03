@@ -1,6 +1,7 @@
 import * as Mocha from "mocha";
 
 import { ITestResult } from "../../interfaces/ITestResult";
+import { Printer } from "../output/printer/Printer";
 
 export class MochaTestRunner {
 
@@ -24,13 +25,14 @@ export class MochaTestRunner {
         return true;
     }
 
-    public run (callback: Function) {
+    public run (callback: Function, outputStore) {
         if (this.testFiles.length === 0 || this.testFiles === void 0) {
             return;
         }
         let runner;
         runner = this.mocha.run(() => {
             const testResult: ITestResult = this.createTestResult(runner.stats);
+            const printer = new Printer(outputStore);
             callback(testResult, this.testFiles);
         });
     }

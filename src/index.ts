@@ -22,6 +22,7 @@ const codeInspector = new CodeInspector(fileHandler.getSourceObject());
 const nodes = codeInspector.findObjectsOfSyntaxKind(ts.SyntaxKind.PlusToken);
 const cleaner = new Cleaner(config.filePath);
 
+
 for (const sampleNode of nodes) {
     outputStore = new OutputStore();
     //resets modified code after a mutation
@@ -43,13 +44,14 @@ for (const sampleNode of nodes) {
 
     const mochaRunner = new MochaTestRunner([testFile], config.runnerConfig);
     mochaRunner.addFiles();
-    mochaRunner.run(finishRun);
+    mochaRunner.run(finishRun, outputStore);
 }
 
 
 function finishRun (testResult: ITestResult, testFileNames: Array<string>) {
     outputStore.setScores(testResult);
-    const printer = new Printer(outputStore);
+    
     console.log("-----------------------------------------");
-    // cleaner.deleteTestFile(outputStore.testFilePath);
+    console.log("File being deleted", outputStore.testFilePath);
+    cleaner.deleteTestFile(outputStore.testFilePath);
 }
