@@ -11,17 +11,26 @@ describe("Output Store", () => {
         }
     }`;
     const firstLine = "export class HelloWorld {";
-    const testResult: ITestResult = {
-        passed : "1",
-        failed : "2",
-        totalRan : "3",
-        duration : "20"
-    };
-
+    let testResult: ITestResult;
     beforeEach(() => {
         outputStore = new OutputStore();
+        testResult = {passed: "0", failed: "2", totalRan: "0", duration: "20"};
     });
 
+    it("ITestResult.passed of 0 should set passed tests to 0", () => {
+        outputStore.setNumberOfTests(testResult);
+        expect(outputStore.numberOfPassedTests).to.equal(0);
+    });
+
+    it("ITestResult.failed of 2 should set passed tests to 2", () => {
+        outputStore.setNumberOfTests(testResult);
+        expect(outputStore.numberOfFailedTests).to.equal(2);
+    });
+
+    xit("should set line number to 0 for a character number of 20", () => {
+        // outputStore.setLineNumber(origionalCode, 20);
+        expect(outputStore.lineNumber).to.equal(0);
+    });
 
     it("should set origional code to the 0th line when given line 0", () => {
         outputStore.setLineNumber(0);
@@ -47,5 +56,20 @@ describe("Output Store", () => {
         outputStore.setLineNumber(4);
         outputStore.setModifiedSourceCode(origionalCode);
         expect(outputStore.mutatedCode).to.equal("}");
+    });
+
+    it("should set mutation score to 100 when given 0, 1", () => {
+        outputStore.setMutationScore(0, 1);
+        expect(outputStore.mutationScore).to.equal(100);
+    });
+
+    it("should set mutation score to 0 when given 1, 0", () => {
+        outputStore.setMutationScore(1, 0);
+        expect(outputStore.mutationScore).to.equal(0);
+    });
+
+    it("should set mutation score to 67 when given 1, 2", () => {
+        outputStore.setMutationScore(1, 2);
+        expect(outputStore.mutationScore).to.equal(67);
     });
 });

@@ -13,7 +13,10 @@ export class Printer {
         addToken: " ++ ",
         testResults: "~~~~~~ Test Results ~~~~~~",
         passedTests: "Tests Passed (Survived Mutants)",
-        failedTests: "Tests Failed (Killed Mutants)"
+        failedTests: "Tests Failed (Killed Mutants)",
+        mutationScore: "Mutation Score: ",
+        endSourceChanges: "~~~ End of Source Code Changes ~~~",
+        percentage: " %"
     };
     private readonly LEADING_EDGE = "~~~~~~~~~~ Professor X ~~~~~~~~~~";
 
@@ -30,13 +33,21 @@ export class Printer {
         + this.LABELS.returnToken
         + this.buildSourceFilePath()
         + this.LABELS.returnToken
+        + this.LABELS.originalSource
+        + this.LABELS.returnToken
         + this.buildOrigionalCode()
         + this.LABELS.returnToken
         + this.buildMutatedCode()
         + this.LABELS.returnToken
+        + this.LABELS.returnToken
+        + this.LABELS.endSourceChanges
+        + this.LABELS.returnToken
+        + this.LABELS.returnToken
         + this.buildPassedTests()
         + this.LABELS.returnToken
         + this.buildFailedTests()
+        + this.LABELS.returnToken
+        + this.buildMutationScore()
         ;
     }
 
@@ -49,8 +60,7 @@ export class Printer {
     }
 
     private buildOrigionalCode (): string {
-        return this.LABELS.originalSource
-        + this.LABELS.returnToken
+        return this.LABELS.returnToken
         + this.LABELS.lineNumber
         + this.outputStore.lineNumber
         + this.LABELS.doubleSpaceToken
@@ -84,6 +94,15 @@ export class Printer {
         + ": "
         + this.outputStore.numberOfFailedTests
         + this.LABELS.returnToken;
+    }
+
+    private buildMutationScore (): string {
+        return this.LABELS.mutationScore
+        + this.LABELS.doubleSpaceToken
+        + this.outputStore.mutationScore
+        + this.LABELS.percentage
+        + this.LABELS.returnToken
+        ;
     }
 
     private createLeadingPrintEdge () {
