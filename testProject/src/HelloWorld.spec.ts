@@ -14,5 +14,10 @@ describe("Test Project addition function", () => {
         const actual = hello.addNumbers(1, 1);
         expect(actual).to.equal(expected);
     });
+    it("inputting 1 and 1 should return 4", () => {
+        const expected = 4;
+        const actual = hello.add3Numbers(1, 1);
+        expect(actual).to.equal(expected);
+    });
 
 });

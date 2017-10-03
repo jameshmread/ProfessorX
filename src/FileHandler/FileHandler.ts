@@ -4,12 +4,12 @@ import * as fs from "fs";
 export class FileHandler {
     public static readonly M_SOURCE_FILE_SUFFIX = ".m.ts";
     public static readonly M_TEST_FILE_SUFFIX = ".spec" + FileHandler.M_SOURCE_FILE_SUFFIX;
+    private static counter = 0;
     private readonly FULL_PATH: string;
     private sourceCode: string;
     private sourceObject: ts.SourceFile;
     private testFileContents: string;
     private testFileName: string;
-    private counter = 0;
 
     constructor (private path: string, private filename: string) {
         if (!(filename.substring(filename.length - 3) === ".ts")) {
@@ -39,20 +39,22 @@ export class FileHandler {
 
     public createTempTestModifiedFile (): string {
         const updatedContents = this.mutateTestFileReference(this.getTestFileContents());
-        const tempFilename = this.FULL_PATH + this.counter++ + FileHandler.M_TEST_FILE_SUFFIX;
+        const tempFilename = this.FULL_PATH + FileHandler.counter++ + FileHandler.M_TEST_FILE_SUFFIX;
         fs.writeFileSync(tempFilename, updatedContents);
         return tempFilename;
     }
 
     public writeTempSourceModifiedFile (modifiedCode: string): string {
-        const tempFilename = this.FULL_PATH + this.counter + FileHandler.M_SOURCE_FILE_SUFFIX;
+        const tempFilename = this.FULL_PATH + FileHandler.counter + FileHandler.M_SOURCE_FILE_SUFFIX;
         fs.writeFileSync(tempFilename, modifiedCode);
         return tempFilename;
     }
 
     public mutateTestFileReference (contents: string): string {
         const filenameNoExtension = this.filename.substring(0, this.filename.length - 3);
-        contents = contents.replace("/" + filenameNoExtension, "/" + filenameNoExtension + ".ts" + this.counter + ".m");
+        contents = contents.replace(
+            "/" + filenameNoExtension,
+            "/" + filenameNoExtension + ".ts" + FileHandler.counter + ".m");
         return contents;
     }
 
