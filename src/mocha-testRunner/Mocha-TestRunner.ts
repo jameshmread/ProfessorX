@@ -2,11 +2,13 @@ import * as Mocha from "mocha";
 
 import { ITestResult } from "../../interfaces/ITestResult";
 import { Printer } from "../output/printer/Printer";
+import { OutputStore } from "../output/OutputStore";
 
 export class MochaTestRunner {
 
     public testResult: ITestResult;
     public testFiles: Array<string> = [];
+    //should this be changed to a single string?
     public mocha: Mocha;
 
     constructor (testFiles : Array<string>, config: Object) {
@@ -25,15 +27,16 @@ export class MochaTestRunner {
         return true;
     }
 
-    public run (callback: Function, outputStore) {
+    public run (callback: Function, outputStore: OutputStore) {
         if (this.testFiles.length === 0 || this.testFiles === void 0) {
             return;
         }
         let runner;
         runner = this.mocha.run(() => {
             const testResult: ITestResult = this.createTestResult(runner.stats);
+            outputStore.setNumberOfTests(testResult);
             const printer = new Printer(outputStore);
-            callback(testResult, this.testFiles);
+            callback(this.testFiles);
         });
     }
 

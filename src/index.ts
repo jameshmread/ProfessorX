@@ -48,10 +48,12 @@ for (const sampleNode of nodes) {
 }
 
 
-function finishRun (testResult: ITestResult, testFileNames: Array<string>) {
-    outputStore.setScores(testResult);
-    
+function finishRun (testFileNames: Array<string>) {
+
     console.log("-----------------------------------------");
-    console.log("File being deleted", outputStore.testFilePath);
-    cleaner.deleteTestFile(outputStore.testFilePath);
+    cleaner.deleteTestFile(testFileNames[0]);
+    console.log("File being deleted", testFileNames[0]);
+    // cleaner.deleteMutatedFiles(cleaner.findMutatedFiles());
+    //^^ this tries to delete EVERY file after each test, obviously bad
 }
+
