@@ -27,11 +27,6 @@ describe("Output Store", () => {
         expect(outputStore.numberOfFailedTests).to.equal(2);
     });
 
-    xit("should set line number to 0 for a character number of 20", () => {
-        // outputStore.setLineNumber(origionalCode, 20);
-        expect(outputStore.lineNumber).to.equal(0);
-    });
-
     it("should set origional code to the 0th line when given line 0", () => {
         outputStore.setLineNumber(0);
         outputStore.setOrigionalSourceCode(origionalCode);

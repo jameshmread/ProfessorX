@@ -17,10 +17,6 @@ export class OutputStore {
     public setTestFile (filename: string) {
         this.testFilePath = filename;
     }
-    public setScores (testResult: ITestResult){
-        this.numberOfPassedTests = testResult.passed;
-        this.numberOfFailedTests = testResult.failed;
-    }
 
     public setLineNumber (lineNumber: number): void {
         this.lineNumber = lineNumber;
