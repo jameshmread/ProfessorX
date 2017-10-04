@@ -14,22 +14,17 @@ export class ConfigManager {
         this.fileToMutate = this.config["fileToMutate"];
         this.testRunner = this.config["testRunner"];
         this.runnerConfig = this.config["runnerConfig"];
-        this.configValid();
+        // this.configValid();
     }
 
-    public configValid () : boolean {
-    let isValid = false;
-    Object.keys(this).forEach((key) => {
-        if (this[key] === void 0) {
-            isValid = false;
-            throw new Error(
-                `Professor X config not valid
-                key: ` + key + "is not defined");
+    public configValid () {
+        Object.keys(this.config).forEach((el) => {
+            console.log(this.config[el]);
+            if (this.config[el] === void 0) {
+                throw new Error(
+                    "Professor X config not valid. Not all keys are defined");
             }
-        else {
-            isValid = true;
-        }
-    });
-    return isValid;
+            });
+
     }
 }

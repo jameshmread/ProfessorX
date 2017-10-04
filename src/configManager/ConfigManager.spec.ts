@@ -6,19 +6,22 @@ import { ConfigManager } from "./ConfigManager";
 describe("Config manager", () => {
     let config: ConfigManager;
     beforeEach(() => {
-         config = new ConfigManager();
+        config = new ConfigManager();
     });
 
     it("config should not be null", () => {
         expect(config.config).to.not.equal(void 0);
     });
 
-    it("should be true for a standard config", () => {
-        expect(config.configValid()).to.equal(true);
+    it("should not throw error for a standard config", () => {
+        expect(() => {
+            config.configValid();
+        }).not.to.throw(Error);
     });
 
-    xit("should throw error with one null field", () => {
-        config.fileToMutate = null;
+    it("should throw error if no configuration is given", () => {
+        config.config = null;
+        console.log(config);
         expect(() => {
             config.configValid();
         }).to.throw(Error);
