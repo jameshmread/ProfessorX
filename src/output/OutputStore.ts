@@ -2,55 +2,48 @@ import { ITestResult } from "../../interfaces/ITestResult";
 
 export class OutputStore {
 
-    public static sourceFile: string;
-    public static lineNumber: number;
-    public static origionalCode: string;
-    public static mutatedCode: string;
+    public testFilePath: string;
+    public lineNumber: number;
+    public origionalCode: string;
+    public mutatedCode: string;
 
-    public static numberOfFailedTests;
-    public static numberOfPassedTests;
+    public numberOfFailedTests;
+    public numberOfPassedTests;
 
-    public static passedTestsDescription: Array<String>;
-    public static failedTestsDescription: Array<String>;
+    public passedTestsDescription: Array<String>;
+    public failedTestsDescription: Array<String>;
+    public mutationScore;
 
-    public static setTests (testResult: ITestResult){
-        OutputStore.numberOfPassedTests = testResult.passed;
-        OutputStore.numberOfFailedTests = testResult.failed;
+    public setTestFile (filename: string) {
+        this.testFilePath = filename;
     }
 
-    public static setSourceFile (file: string){
-        OutputStore.sourceFile = file;
+    public setLineNumber (lineNumber: number): void {
+        this.lineNumber = lineNumber;
     }
 
-    public static setLineNumber (sourceCode: string, startOfMutation: number): void {
-        let lineNumber = 1;
-        for (let i = 0; i < startOfMutation; i++) {
-            if (sourceCode.charAt(i) === "\n"){
-                lineNumber ++;
-            }
-        }
-        OutputStore.lineNumber = lineNumber;
+    public setNumberOfTests (testResult: ITestResult){
+        this.numberOfPassedTests = parseInt(testResult.passed, 0);
+        this.numberOfFailedTests = parseInt(testResult.failed, 0);
+        this.setMutationScore(this.numberOfPassedTests, this.numberOfFailedTests);
     }
 
-    public static setOrigionalSourceCode (inputCode: string, startOfMutation: number, isOrigionalCode: boolean): void {
-        OutputStore.setLineNumber(inputCode, startOfMutation);
+    // public setMutatedSourceFile (sourceFile: string) {
+    //     this.sourceFiles.push(sourceFile);
+    // }
 
-        const code = [];
-        let lineNumber = 1;
-        for (let i = 0; i < inputCode.length; i++) {
-            if (code[lineNumber] === void 0){
-                code[lineNumber] = inputCode.charAt(i);
-            }else{
-                code[lineNumber] += inputCode.charAt(i);
-            }
-            if (inputCode.charAt(i) === "\n"){
-                lineNumber ++;
-            }
-        }
-        if (isOrigionalCode){
-            OutputStore.origionalCode = code[OutputStore.lineNumber].trim();
-        } else {
-            OutputStore.mutatedCode = code[OutputStore.lineNumber].trim();
-        }
+    public setOrigionalSourceCode (code: string): void {
+        const codeLines = code.split("\n");
+        this.origionalCode = codeLines[this.lineNumber].trim();
+    }
+
+    public setModifiedSourceCode (code: string): void {
+        const codeLines = code.split("\n");
+        this.mutatedCode = codeLines[this.lineNumber].trim();
+    }
+
+    public setMutationScore (passedTests: number, failedTests: number) {
+        const totalTestsRan = passedTests + failedTests;
+        this.mutationScore = Math.round((failedTests / totalTestsRan) * 100);
     }
 }

@@ -7,15 +7,22 @@ export class Printer {
         doubleSpaceToken: "  ",
         filePath: "File Path: ",
         lineNumber: "On Line #: ",
-        originalSource: "~~~ Source Code Changes ~~~",
+        originalSource: "~~~~~~ Source Code Changes ~~~~~~",
         removeToken: " -- ",
-        mutatedSource: "--- Mutated Source Code ---",
+        mutatedSource: "~~~~~~ Mutated Source Code ~~~~~~",
         addToken: " ++ ",
-        passedTests: "Tests Passed (Mutants)",
-        failedTests: "Tests Failed (Killed Mutants)"
+        testResults: "~~~~~~ Test Results ~~~~~~",
+        passedTests: "Tests Passed (Survived Mutants)",
+        failedTests: "Tests Failed (Killed Mutants)",
+        mutationScore: "Mutation Score: ",
+        endSourceChanges: "~~~ End of Source Code Changes ~~~",
+        percentage: " %"
     };
-
     private readonly LEADING_EDGE = "~~~~~~~~~~ Professor X ~~~~~~~~~~";
+
+    constructor (private outputStore: OutputStore) {
+        this.printSourceChanges();
+    }
 
     public printSourceChanges () {
         console.log(this.combineSourceChanges());
@@ -27,54 +34,76 @@ export class Printer {
         + this.LABELS.returnToken
         + this.buildSourceFilePath()
         + this.LABELS.returnToken
+        + this.LABELS.originalSource
+        + this.LABELS.returnToken
         + this.buildOrigionalCode()
         + this.LABELS.returnToken
         + this.buildMutatedCode()
         + this.LABELS.returnToken
+        + this.LABELS.returnToken
+        + this.LABELS.endSourceChanges
+        + this.LABELS.returnToken
+        + this.LABELS.returnToken
         + this.buildPassedTests()
         + this.LABELS.returnToken
         + this.buildFailedTests()
+        + this.LABELS.returnToken
+        + this.buildMutationScore()
         ;
     }
 
     private buildSourceFilePath (): string {
         let sourceFilePath = "";
         sourceFilePath =  this.LABELS.returnToken + this.LABELS.filePath;
-        sourceFilePath += OutputStore.sourceFile;
+        sourceFilePath += this.LABELS.returnToken;
+        sourceFilePath += this.outputStore.testFilePath;
         return sourceFilePath;
     }
 
     private buildOrigionalCode (): string {
-        return this.LABELS.originalSource
-        + this.LABELS.returnToken
+        return this.LABELS.returnToken
         + this.LABELS.lineNumber
-        + OutputStore.lineNumber
+        + this.outputStore.lineNumber
         + this.LABELS.doubleSpaceToken
-        + OutputStore.origionalCode
-        + this.LABELS.removeToken;
+        + this.outputStore.origionalCode
+        + this.LABELS.removeToken
+        + this.LABELS.returnToken;
     }
 
     private buildMutatedCode (): string {
-        return this.LABELS.returnToken
+        return this.LABELS.mutatedSource
+        + this.LABELS.returnToken
         + this.LABELS.lineNumber
-        + OutputStore.lineNumber
+        + this.outputStore.lineNumber
         + this.LABELS.doubleSpaceToken
-        + OutputStore.mutatedCode
-        + this.LABELS.addToken;
+        + this.outputStore.mutatedCode
+        + this.LABELS.addToken
+        + this.LABELS.returnToken;
     }
 
     private buildPassedTests (): string {
-        return this.LABELS.passedTests
+        return this.LABELS.testResults
         + this.LABELS.returnToken
-        + OutputStore.numberOfPassedTests
+        + this.LABELS.passedTests
+        + ": "
+        + this.outputStore.numberOfPassedTests
         + this.LABELS.returnToken;
     }
 
     private buildFailedTests (): string {
         return this.LABELS.failedTests
-        + this.LABELS.returnToken
-        + OutputStore.numberOfFailedTests
+        + ": "
+        + this.outputStore.numberOfFailedTests
         + this.LABELS.returnToken;
+    }
+
+    private buildMutationScore (): string {
+        return this.LABELS.mutationScore
+        + this.LABELS.doubleSpaceToken
+        + this.outputStore.mutationScore
+        + this.LABELS.percentage
+        + this.LABELS.returnToken
+        ;
     }
 
     private createLeadingPrintEdge () {

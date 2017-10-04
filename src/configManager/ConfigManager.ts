@@ -14,13 +14,17 @@ export class ConfigManager {
         this.fileToMutate = this.config["fileToMutate"];
         this.testRunner = this.config["testRunner"];
         this.runnerConfig = this.config["runnerConfig"];
-        /*tslint:disable:cyclomatic-complexity*/
-        if (!(this.config &&
-            this.filePath &&
-            this.fileToMutate &&
-            this.testRunner &&
-            this.runnerConfig)){
-                throw new Error("Professor X config");
-        }
+        // this.configValid();
+    }
+
+    public configValid () {
+        Object.keys(this.config).forEach((el) => {
+            console.log(this.config[el]);
+            if (this.config[el] === void 0) {
+                throw new Error(
+                    "Professor X config not valid. Not all keys are defined");
+            }
+            });
+
     }
 }

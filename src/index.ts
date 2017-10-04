@@ -5,36 +5,55 @@ import { FileHandler } from "./FileHandler/FileHandler";
 import { CodeInspector } from "./CodeInspector/CodeInspector";
 import { SourceCodeHandler } from "./SourceCodeHandler/SourceCodeHandler";
 import { MutationFactory } from "./mutationFactory/MutationFactory";
-import { MochaTestRunner } from "./mocha-TestRunner/Mocha-TestRunner";
+import { MochaTestRunner } from "./mocha-testRunner/Mocha-TestRunner";
 import { ConfigManager } from "./configManager/ConfigManager";
 import { TestFileHandler } from "./testFileHandler/TestFileHandler";
 import { OutputStore } from "./output/OutputStore";
 import { Cleaner } from "./cleanup/Cleaner";
+import { ITestResult } from "../interfaces/ITestResult";
+import { Printer } from "./output/printer/Printer";
 
 const config = new ConfigManager();
-OutputStore.setSourceFile(config.filePath + config.fileToMutate);
-const obj = new FileHandler(config.filePath, config.fileToMutate);
-const sourceObj = new SourceCodeHandler(obj.getSourceObject());
-const codeInspector = new CodeInspector(obj.getSourceObject());
-const minusNodes = codeInspector.findObjectsOfSyntaxKind(ts.SyntaxKind.PlusToken);
-const sampleNode = minusNodes[0];
-sourceObj.modifyCode(sampleNode.pos, sampleNode.end, MutationFactory.getSingleMutation(ts.SyntaxKind.PlusToken));
-
-
-obj.writeTempSourceModifiedFile(sourceObj.getModifiedSourceCode());
-obj.createTempTestModifiedFile();
-
-OutputStore.setOrigionalSourceCode(sourceObj.getOriginalSourceCode(), sampleNode.pos, true);
-OutputStore.setOrigionalSourceCode(sourceObj.getModifiedSourceCode(), sampleNode.pos, false);
-
-const fileHandler = new TestFileHandler(config.filePath);
-fileHandler.readTestFileDirectory();
-const testFiles = fileHandler.testFiles;
-
-const mochaRunner = new MochaTestRunner(testFiles, config.runnerConfig);
-mochaRunner.addFiles();
-mochaRunner.run(); //ASYNC MAY CAUSE UNEXPECTED BEHAVIOUR
-
+let  outputStore: OutputStore;
+const testFileHandler = new TestFileHandler(config.filePath);
+const fileHandler = new FileHandler(config.filePath, config.fileToMutate);
+const sourceObj = new SourceCodeHandler(fileHandler.getSourceObject());
+const codeInspector = new CodeInspector(fileHandler.getSourceObject());
+const nodes = codeInspector.findObjectsOfSyntaxKind(ts.SyntaxKind.PlusToken);
 const cleaner = new Cleaner(config.filePath);
-cleaner.deleteMutatedFiles(cleaner.findMutatedFiles());
+
+
+for (const sampleNode of nodes) {
+    outputStore = new OutputStore();
+    //resets modified code after a mutation
+    sourceObj.resetModified();
+    //performs the modification at a specific position
+    sourceObj.modifyCode(sampleNode.pos, sampleNode.end, MutationFactory.getSingleMutation(ts.SyntaxKind.PlusToken));
+    //writes this change to a NEW src file
+    fileHandler.writeTempSourceModifiedFile(sourceObj.getModifiedSourceCode());
+    //creates a new test file with a reference to the NEW source file
+    const testFile = fileHandler.createTempTestModifiedFile();
+
+    outputStore.setTestFile(testFile);
+    outputStore.setLineNumber(
+        ts.getLineAndCharacterOfPosition(
+            sourceObj.getOriginalSourceObject(), sampleNode.pos).line);
+
+    outputStore.setOrigionalSourceCode(sourceObj.getOriginalSourceCode());
+    outputStore.setModifiedSourceCode(sourceObj.getModifiedSourceCode());
+
+    const mochaRunner = new MochaTestRunner([testFile], config.runnerConfig);
+    mochaRunner.addFiles();
+    mochaRunner.run(finishRun, outputStore);
+}
+
+
+function finishRun (testFileNames: Array<string>) {
+
+    console.log("-----------------------------------------");
+    cleaner.deleteTestFile(testFileNames[0]);
+    console.log("File being deleted", testFileNames[0]);
+    // cleaner.deleteMutatedFiles(cleaner.findMutatedFiles());
+    //^^ this tries to delete EVERY file after each test, obviously bad
+}
 

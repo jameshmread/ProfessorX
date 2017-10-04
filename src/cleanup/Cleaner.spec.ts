@@ -17,19 +17,16 @@ describe("Cleaner", () => {
         expect(cleaner.filesToDelete.length).to.equal(0);
     });
 
-    //TEST SKIPPED AS IT BREAKS THE RUNNING OF PROFESSOR X
-    //DUE TO BUG OF RUNNING TEST PROJECT TEST, IT RUNS SOURCE TESTS TOO
-    xit("after method completes, there should be no M files left in the specified dir", () => {
-        cleaner = new Cleaner(testFileDir);
-        cleaner.deleteMutatedFiles(cleaner.findMutatedFiles());
-        const fileList = fs.readdirSync(testFileDir);
-        const mutatedFiles = [];
-        for (let i = 0; i < fileList.length; i++) {
-            if (fileList[i].indexOf(cleaner.fileExtensionToRemove) >= 0){
-                mutatedFiles.push(fileList[i]);
-            }
-        }
-        console.log(mutatedFiles);
-        expect(mutatedFiles.length).to.equal(0);
+    it("a filename that ends with the target extension is flagged as file to delete", () => {
+        cleaner = new Cleaner("./testProject/");
+        expect(cleaner.isTestFile("itis.m.ts")).to.equal(true);
+        expect(cleaner.isTestFile("itis.spec.m.ts")).to.equal(true);
     });
+
+    it("a filename that doesn't end with the target extension is not flagged as file to delete", () => {
+        cleaner = new Cleaner("./testProject/");
+        expect(cleaner.isTestFile("itis.mx.ts")).to.equal(false);
+        expect(cleaner.isTestFile("itis.spec.mx.ts")).to.equal(false);
+    });
+
 });

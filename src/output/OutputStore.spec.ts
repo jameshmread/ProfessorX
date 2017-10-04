@@ -4,79 +4,67 @@ import { ITestResult } from "../../interfaces/ITestResult";
 import { OutputStore } from "./OutputStore";
 
 describe("Output Store", () => {
+    let outputStore: OutputStore;
     const origionalCode = `export class HelloWorld {
-    public addNumbers (a: number, b: number) {
-        return a + b;
-    }
-}`;
+        public addNumbers (a: number, b: number) {
+            return a + b;
+        }
+    }`;
     const firstLine = "export class HelloWorld {";
-    const testResult: ITestResult = {
-        passed : "1",
-        failed : "2",
-        totalRan : "3",
-        duration : "20"
-    };
-
+    let testResult: ITestResult;
     beforeEach(() => {
+        outputStore = new OutputStore();
+        testResult = {passed: "0", failed: "2", totalRan: "0", duration: "20"};
     });
 
-    it("should set the number of passed tests to 1", () => {
-        OutputStore.setTests(testResult);
-        expect(OutputStore.numberOfPassedTests).to.equal("1");
+    it("ITestResult.passed of 0 should set passed tests to 0", () => {
+        outputStore.setNumberOfTests(testResult);
+        expect(outputStore.numberOfPassedTests).to.equal(0);
     });
 
-    it("should set the source file to ./sourceFile.ts", () => {
-        OutputStore.setSourceFile("./sourceFile.ts");
-        expect(OutputStore.sourceFile).to.equal("./sourceFile.ts");
+    it("ITestResult.failed of 2 should set passed tests to 2", () => {
+        outputStore.setNumberOfTests(testResult);
+        expect(outputStore.numberOfFailedTests).to.equal(2);
     });
 
-    it("should set the number of failed tests to 2", () => {
-        OutputStore.setTests(testResult);
-        expect(OutputStore.numberOfFailedTests).to.equal("2");
+    it("should set origional code to the 0th line when given line 0", () => {
+        outputStore.setLineNumber(0);
+        outputStore.setOrigionalSourceCode(origionalCode);
+        expect(outputStore.origionalCode).to.equal(firstLine);
     });
 
-    it("should set line number to 1 for a character number of 20", () => {
-        OutputStore.setLineNumber(origionalCode, 20);
-        expect(OutputStore.lineNumber).to.equal(1);
+
+    it("should set origional code to the last line when line 4", () => {
+        outputStore.setLineNumber(4);
+        outputStore.setOrigionalSourceCode(origionalCode);
+        expect(outputStore.origionalCode.toString()).to.equal("}");
     });
 
-    it("should set line number to 2 for a character number of 36", () => {
-        OutputStore.setLineNumber(origionalCode, 36);
-        expect(OutputStore.lineNumber).to.equal(2);
+    it("should set modified code to the 0th line when given line 0", () => {
+        outputStore.setLineNumber(0);
+        outputStore.setModifiedSourceCode(origionalCode);
+        expect(outputStore.mutatedCode).to.equal(firstLine);
     });
 
-    it("should set line number to 2 for a character number of 50", () => {
-        OutputStore.setLineNumber(origionalCode, 50);
-        expect(OutputStore.lineNumber).to.equal(2);
+
+    it("should set modified code to the last line when line 4", () => {
+        outputStore.setLineNumber(4);
+        outputStore.setModifiedSourceCode(origionalCode);
+        expect(outputStore.mutatedCode).to.equal("}");
     });
 
-    it("should set line number to 5 for a character number of string length-1", () => {
-        OutputStore.setLineNumber(origionalCode, origionalCode.length - 1);
-        expect(OutputStore.lineNumber).to.equal(5);
+    it("should set mutation score to 100 when given 0, 1", () => {
+        outputStore.setMutationScore(0, 1);
+        expect(outputStore.mutationScore).to.equal(100);
     });
 
-    it("should set line number to 1 for a character number of 0", () => {
-        OutputStore.setLineNumber(origionalCode, 0);
-        expect(OutputStore.lineNumber).to.equal(1);
+    it("should set mutation score to 0 when given 1, 0", () => {
+        outputStore.setMutationScore(1, 0);
+        expect(outputStore.mutationScore).to.equal(0);
     });
 
-    it("should set line number to last line (5) for a character number of code length", () => {
-        OutputStore.setLineNumber(origionalCode, origionalCode.length);
-        expect(OutputStore.lineNumber).to.equal(5);
-    });
-
-    it("should set origional code to the 1st line when given char number of 20", () => {
-        OutputStore.setOrigionalSourceCode(origionalCode, 20, true);
-        expect(OutputStore.origionalCode.toString()).to.equal(firstLine);
-    });
-
-    it("should set origional code to the 1st line when given char number of 0", () => {
-        OutputStore.setOrigionalSourceCode(origionalCode, 0, true);
-        expect(OutputStore.origionalCode.toString()).to.equal(firstLine);
-    });
-
-    it("should set origional code to the last line when given char number of stringlength", () => {
-        OutputStore.setOrigionalSourceCode(origionalCode, origionalCode.length, true);
-        expect(OutputStore.origionalCode.toString()).to.equal("}");
+    it("should set mutation score to 67 when given 1, 2", () => {
+        outputStore.setMutationScore(1, 2);
+        expect(outputStore.mutationScore).to.equal(67);
     });
 });

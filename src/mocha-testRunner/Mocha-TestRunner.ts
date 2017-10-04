@@ -3,14 +3,13 @@ import * as Mocha from "mocha";
 import { ITestResult } from "../../interfaces/ITestResult";
 import { Printer } from "../output/printer/Printer";
 import { OutputStore } from "../output/OutputStore";
-import { TestFileHandler } from "../testFileHandler/TestFileHandler";
 
 export class MochaTestRunner {
 
     public testResult: ITestResult;
     public testFiles: Array<string> = [];
+    //should this be changed to a single string?
     public mocha: Mocha;
-    private readonly printer = new Printer();
 
     constructor (testFiles : Array<string>, config: Object) {
         this.mocha = new Mocha(config);
@@ -18,24 +17,26 @@ export class MochaTestRunner {
     }
 
     public addFiles (): boolean {
-        if (this.testFiles.length === 0){
+        if (this.testFiles.length === 0) {
             return false;
         }
         for (let i = 0; i < this.testFiles.length; i++){
             this.mocha.addFile(this.testFiles[i]);
         }
+        console.log(this.testFiles);
         return true;
     }
 
-    public run () {
-        if (this.testFiles.length === 0) {
+    public run (callback: Function, outputStore: OutputStore) {
+        if (this.testFiles.length === 0 || this.testFiles === void 0) {
             return;
         }
         let runner;
         runner = this.mocha.run(() => {
             const testResult: ITestResult = this.createTestResult(runner.stats);
-            OutputStore.setTests(testResult);
-            this.printer.printSourceChanges();
+            outputStore.setNumberOfTests(testResult);
+            const printer = new Printer(outputStore);
+            callback(this.testFiles);
         });
     }
 
