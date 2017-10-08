@@ -1,0 +1,13 @@
+{
+    "filePath" : "./testProject/src/",
+    "fileToMutate" : "HelloWorld.ts",
+    "testRunner" : "mocha",
+    "runnerConfig" : {
+        "reporter" : "mochawesome",
+        "reporterOptions" : {
+            "autoOpen" : false,
+            "quiet" : true,
+            "reportTitle" : "Title"
+        }
+    }
+}

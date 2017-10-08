@@ -1,17 +1,13 @@
 {
-  "name": "angular",
-  "version": "0.0.0",
+  "name": "ProfessorX",
+  "version": "0.1.0",
+  "description": "Typescript mutation testing service",
+  "author": "James Read, Michael Michaelides",
   "license": "MIT",
-  "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e"
-  },
-  "private": true,
   "dependencies": {
+    "@types/node": "^8.0.17",
+    "mochawesome": "^2.3.0",
+    "typescript": "^2.4.2",
     "@angular/animations": "^4.2.4",
     "@angular/common": "^4.2.4",
     "@angular/compiler": "^4.2.4",
@@ -26,6 +22,13 @@
     "zone.js": "^0.8.14"
   },
   "devDependencies": {
+    "@types/chai": "^4.0.2",
+    "@types/mocha": "^2.2.41",
+    "chai": "^4.1.0",
+    "mocha": "^3.4.2",
+    "ts-node": "^3.3.0",
+    "tslint": "^5.5.0",
+    "typings": "^2.1.1",
     "@angular/cli": "1.4.5",
     "@angular/compiler-cli": "^4.2.4",
     "@angular/language-service": "^4.2.4",
@@ -42,8 +45,18 @@
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
     "protractor": "~5.1.2",
-    "ts-node": "~3.2.0",
-    "tslint": "~5.7.0",
     "typescript": "~2.3.3"
+  },
+  "scripts": {
+    "test": "mocha --opts ./mocha.opts",
+    "build": "npm run test && npm run lint",
+    "test:watch": "mocha --opts ./mocha.opts --watch",
+    "lint": "tslint ./src/**/*.ts",
+    "start": "ts-node ./src/index.ts && ng serve",
+    "ts-node": "ts-node"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adamdallis/ProfessorX"
   }
 }
