@@ -14,52 +14,81 @@ import { Cleaner } from "./cleanup/Cleaner";
 import { ITestResult } from "../interfaces/ITestResult";
 import { Printer } from "./output/printer/Printer";
 
-var startTimestamp = new Date().getTime();
+export class ProfessorX {
 
-console.log(startTimestamp);
-const config = new ConfigManager();
-let  outputStore: OutputStore;
-const testFileHandler = new TestFileHandler(config.filePath);
-const fileHandler = new FileHandler(config.filePath, config.fileToMutate);
-const sourceObj = new SourceCodeHandler(fileHandler.getSourceObject());
-const codeInspector = new CodeInspector(fileHandler.getSourceObject());
-const nodes = codeInspector.findObjectsOfSyntaxKind(ts.SyntaxKind.PlusToken);
-const cleaner = new Cleaner(config.filePath);
+    public startTimestamp = new Date().getTime();
+    public config;
+    public outputStore: OutputStore;
+    public testFileHandler;
+    public fileHandler;
+    public sourceObj;
+    public codeInspector;
+    public nodes;
+    public cleaner;
+    public mochaRunner;
 
-for (const sampleNode of nodes) {
-    outputStore = new OutputStore();
-    //resets modified code after a mutation
-    sourceObj.resetModified();
-    //performs the modification at a specific position
-    sourceObj.modifyCode(sampleNode.pos, sampleNode.end, MutationFactory.getSingleMutation(ts.SyntaxKind.PlusToken));
-    //writes this change to a NEW src file
-    fileHandler.writeTempSourceModifiedFile(sourceObj.getModifiedSourceCode());
-    //creates a new test file with a reference to the NEW source file
-    const testFile = fileHandler.createTempTestModifiedFile();
+    public constructor () {
+        this.startTimestamp = new Date().getTime();
+        this.config = new ConfigManager();
+        this.testFileHandler = new TestFileHandler(this.config.filePath);
+        this.fileHandler = new FileHandler(this.config.filePath, this.config.fileToMutate);
+        this.sourceObj = new SourceCodeHandler(this.fileHandler.getSourceObject());
+        this.codeInspector = new CodeInspector(this.fileHandler.getSourceObject());
+        this.nodes = this.codeInspector.findObjectsOfSyntaxKind(ts.SyntaxKind.PlusToken);
+        this.cleaner = new Cleaner(this.config.filePath);
+    }
 
-    outputStore.setTestFile(testFile);
-    outputStore.setLineNumber(
-        ts.getLineAndCharacterOfPosition(
-            sourceObj.getOriginalSourceObject(), sampleNode.pos).line);
+    public async main () {
+        this.mutateNodes();
+    }
+    
+    /* I do want to separate this function up even more
+        but for now it would reduce debugging time to leave it as one
+    */
+    public mutateNodes () {
+        for (const sampleNode of this.nodes) {
+            this.outputStore = new OutputStore();
+            //resets modified code after a mutation
+            this.sourceObj.resetModified();
+            //performs the modification at a specific position
+            this.sourceObj.modifyCode(sampleNode.pos, sampleNode.end, MutationFactory.getSingleMutation(ts.SyntaxKind.PlusToken));
+            //writes this change to a NEW src file
+            this.fileHandler.writeTempSourceModifiedFile(this.sourceObj.getModifiedSourceCode());
+            //creates a new test file with a reference to the NEW source file
+            const testFile = this.fileHandler.createTempTestModifiedFile();
 
-    outputStore.setOrigionalSourceCode(sourceObj.getOriginalSourceCode());
-    outputStore.setModifiedSourceCode(sourceObj.getModifiedSourceCode());
+            this.outputStore.setTestFile(testFile);
+            this.outputStore.setLineNumber(
+                ts.getLineAndCharacterOfPosition(
+                    this.sourceObj.getOriginalSourceObject(), sampleNode.pos).line);
 
-    const mochaRunner = new MochaTestRunner([testFile], config.runnerConfig);
-    mochaRunner.addFiles();
-    mochaRunner.run(finishRun, outputStore);
+            this.outputStore.setOrigionalSourceCode(this.sourceObj.getOriginalSourceCode());
+            this.outputStore.setModifiedSourceCode(this.sourceObj.getModifiedSourceCode());
+
+            this.mochaRunner = new MochaTestRunner([testFile], this.config.runnerConfig);
+            this.run();
+        }
+    }
+
+    public async run() {
+        this.mochaRunner.addFiles();
+        console.log("before run", this.outputStore);
+        this.outputStore = await this.mochaRunner.run(this.outputStore);
+        console.log("after run", this.outputStore);
+    }
+
+    public finishRun(testFileNames: Array<string>) {
+
+        console.log("-----------------------------------------");
+        this.cleaner.deleteTestFile(testFileNames[0]);
+        console.log("File being deleted", testFileNames[0]);
+
+        const printer = new Printer(this.outputStore);
+        let endTimestamp = new Date().getTime();
+        let difference = new Date(endTimestamp - this.startTimestamp).getTime();
+        console.log("difference", difference);
+    }
+
 }
-
-
-function finishRun (testFileNames: Array<string>) {
-
-    console.log("-----------------------------------------");
-    cleaner.deleteTestFile(testFileNames[0]);
-    console.log("File being deleted", testFileNames[0]);
-    // cleaner.deleteMutatedFiles(cleaner.findMutatedFiles());
-    //^^ this tries to delete EVERY file after each test, obviously bad
-}
-
-let endTimestamp = new Date().getTime();
-let difference = new Date(endTimestamp - startTimestamp).getTime();
-console.log("difference", difference);
+let x = new ProfessorX();
+x.main();
