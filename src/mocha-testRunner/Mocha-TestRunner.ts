@@ -27,16 +27,18 @@ export class MochaTestRunner {
         return true;
     }
 
-    public run (callback: Function, outputStore: OutputStore) {
+    public runTests (outputStore: OutputStore) {
         if (this.testFiles.length === 0 || this.testFiles === void 0) {
             return;
         }
-        let runner;
-        runner = this.mocha.run(() => {
-            const testResult: ITestResult = this.createTestResult(runner.stats);
-            outputStore.setNumberOfTests(testResult);
-            const printer = new Printer(outputStore);
-            callback(this.testFiles);
+        let runner = null;
+        return new Promise((resolve, reject) => {
+            runner = this.mocha.run(() => {
+                const testResult: ITestResult = this.createTestResult(runner.stats);
+                //not 100% happy with this but it works, so for now it can stay
+                outputStore.setNumberOfTests(testResult);
+                resolve(outputStore);
+            });
         });
     }
 
