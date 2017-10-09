@@ -19,6 +19,7 @@ export class ProfessorX {
     public startTimestamp = new Date().getTime();
     public config;
     public outputStore: OutputStore;
+    //possibly use array of output stores?
     public testFileHandler;
     public fileHandler;
     public sourceObj;
@@ -66,14 +67,13 @@ export class ProfessorX {
             this.outputStore.setModifiedSourceCode(this.sourceObj.getModifiedSourceCode());
 
             this.mochaRunner = new MochaTestRunner([testFile], this.config.runnerConfig);
-            this.run();
+            this.testRunner();
         }
     }
 
-    public async run() {
+    public async testRunner() {
         this.mochaRunner.addFiles();
-        console.log("before run", this.outputStore);
-        this.outputStore = await this.mochaRunner.run(this.outputStore);
+        this.outputStore = await this.mochaRunner.runTests(this.outputStore);
         console.log("after run", this.outputStore);
     }
 
