@@ -19,7 +19,7 @@ export class ProfessorX {
     public startTimestamp = new Date().getTime();
     public config;
     public outputStore: OutputStore;
-    //possibly use array of output stores?
+    // possibly use array of output stores?
     public testFileHandler;
     public fileHandler;
     public sourceObj;
@@ -42,20 +42,24 @@ export class ProfessorX {
     public async main () {
         this.mutateNodes();
     }
-    
+
     /* I do want to separate this function up even more
         but for now it would reduce debugging time to leave it as one
     */
     public mutateNodes () {
         for (const sampleNode of this.nodes) {
             this.outputStore = new OutputStore();
-            //resets modified code after a mutation
+            // resets modified code after a mutation
             this.sourceObj.resetModified();
-            //performs the modification at a specific position
-            this.sourceObj.modifyCode(sampleNode.pos, sampleNode.end, MutationFactory.getSingleMutation(ts.SyntaxKind.PlusToken));
-            //writes this change to a NEW src file
+            // performs the modification at a specific position
+            this.sourceObj.modifyCode(
+                                    sampleNode.pos,
+                                    sampleNode.end,
+                                    MutationFactory.getSingleMutation(ts.SyntaxKind.PlusToken)
+                                );
+            // writes this change to a NEW src file
             this.fileHandler.writeTempSourceModifiedFile(this.sourceObj.getModifiedSourceCode());
-            //creates a new test file with a reference to the NEW source file
+            // creates a new test file with a reference to the NEW source file
             const testFile = this.fileHandler.createTempTestModifiedFile();
 
             this.outputStore.setTestFile(testFile);
@@ -68,27 +72,23 @@ export class ProfessorX {
 
             this.mochaRunner = new MochaTestRunner([testFile], this.config.runnerConfig);
             this.testRunner();
+            this.cleaner.deleteTestFile(testFile);
         }
+        this.finishRun();
     }
 
-    public async testRunner() {
+    public async testRunner () {
         this.mochaRunner.addFiles();
         this.outputStore = await this.mochaRunner.runTests(this.outputStore);
         console.log("after run", this.outputStore);
     }
 
-    public finishRun(testFileNames: Array<string>) {
-
-        console.log("-----------------------------------------");
-        this.cleaner.deleteTestFile(testFileNames[0]);
-        console.log("File being deleted", testFileNames[0]);
-
-        const printer = new Printer(this.outputStore);
-        let endTimestamp = new Date().getTime();
-        let difference = new Date(endTimestamp - this.startTimestamp).getTime();
-        console.log("difference", difference);
+    public finishRun () {
+        const endTimestamp = new Date().getTime();
+        const difference = new Date(endTimestamp - this.startTimestamp).getTime();
+        console.log("Time Taken to Mutate:", difference);
     }
 
 }
-let x = new ProfessorX();
+const x = new ProfessorX();
 x.main();
