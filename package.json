@@ -5,9 +5,6 @@
   "author": "James Read, Michael Michaelides",
   "license": "MIT",
   "dependencies": {
-    "@types/node": "^8.0.17",
-    "mochawesome": "^2.3.0",
-    "typescript": "^2.4.2",
     "@angular/animations": "^4.2.4",
     "@angular/common": "^4.2.4",
     "@angular/compiler": "^4.2.4",
@@ -17,8 +14,11 @@
     "@angular/platform-browser": "^4.2.4",
     "@angular/platform-browser-dynamic": "^4.2.4",
     "@angular/router": "^4.2.4",
+    "@types/node": "^8.0.17",
     "core-js": "^2.4.1",
+    "mochawesome": "^2.3.0",
     "rxjs": "^5.4.2",
+    "typescript": "^2.4.2",
     "zone.js": "^0.8.14"
   },
   "devDependencies": {
@@ -52,11 +52,11 @@
     "build": "npm run test && npm run lint",
     "test:watch": "mocha --opts ./mocha.opts --watch",
     "lint": "tslint ./src/**/*.ts",
-    "start": "ts-node ./src/index.ts && ng serve",
+    "start": "ts-node ./src/index.ts",
     "ts-node": "ts-node"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/adamdallis/ProfessorX"
+    "url": "https://github.com/jameshmread/ProfessorX"
   }
 }
