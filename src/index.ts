@@ -1,5 +1,6 @@
 import * as ts from "typescript";
 import * as Mocha from "mocha";
+import * as moment from "moment";
 
 import { FileHandler } from "./FileHandler/FileHandler";
 import { CodeInspector } from "./CodeInspector/CodeInspector";
@@ -13,6 +14,9 @@ import { Cleaner } from "./cleanup/Cleaner";
 import { ITestResult } from "../interfaces/ITestResult";
 import { Printer } from "./output/printer/Printer";
 
+var startTimestamp = new Date().getTime();
+
+console.log(startTimestamp);
 const config = new ConfigManager();
 let  outputStore: OutputStore;
 const testFileHandler = new TestFileHandler(config.filePath);
@@ -21,7 +25,6 @@ const sourceObj = new SourceCodeHandler(fileHandler.getSourceObject());
 const codeInspector = new CodeInspector(fileHandler.getSourceObject());
 const nodes = codeInspector.findObjectsOfSyntaxKind(ts.SyntaxKind.PlusToken);
 const cleaner = new Cleaner(config.filePath);
-
 
 for (const sampleNode of nodes) {
     outputStore = new OutputStore();
@@ -56,3 +59,7 @@ function finishRun (testFileNames: Array<string>) {
     // cleaner.deleteMutatedFiles(cleaner.findMutatedFiles());
     //^^ this tries to delete EVERY file after each test, obviously bad
 }
+
+let endTimestamp = new Date().getTime();
+let difference = new Date(endTimestamp - startTimestamp).getTime();
+console.log("difference", difference);
