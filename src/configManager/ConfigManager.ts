@@ -8,13 +8,14 @@ export class ConfigManager {
     public fileToMutate: string;
     public testRunner: string;
     public runnerConfig: Object;
+    public displayPort: string;
 
     constructor (){
         this.filePath = this.config["filePath"];
         this.fileToMutate = this.config["fileToMutate"];
         this.testRunner = this.config["testRunner"];
         this.runnerConfig = this.config["runnerConfig"];
-        // this.configValid();
+        this.configValid();
     }
 
     public configValid () {
