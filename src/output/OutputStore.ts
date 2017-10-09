@@ -14,6 +14,7 @@ export class OutputStore {
     public passedTestsDescription: Array<String>;
     public failedTestsDescription: Array<String>;
     public mutationScore;
+    public runTime: Object;
 
     public setTestFile (filename: string) {
         this.testFilePath = filename;
@@ -44,7 +45,24 @@ export class OutputStore {
         this.mutationScore = Math.round((failedTests / totalTestsRan) * 100);
     }
 
-    public writeOutputToJson(outputStore: Object) { 
+    public setRunTime (runTime: number) {
+        /*
+            convert millis to date time adapted from
+            https://gist.github.com/remino/1563878
+        */
+        let ms = runTime;
+        ms = ms % 1000;
+        let s = Math.floor(runTime / 1000);
+        let m = Math.floor(s / 60);
+        s = s % 60;
+        let h = Math.floor(m / 60);
+        m = m % 60;
+        const d = Math.floor(h / 24);
+        h = h % 24;
+        this.runTime = { d, h, m, s, ms };
+    }
+
+    public writeOutputToJson (outputStore: Object) {
        fs.appendFileSync("./srcApp/app/inputData.json", JSON.stringify(outputStore));
     }
 }
