@@ -86,6 +86,7 @@ export class ProfessorX {
     public finishRun () {
         const endTimestamp = new Date().getTime();
         const difference = new Date(endTimestamp - this.startTimestamp).getTime();
+        this.outputStore.setRunTime(difference);
         console.log("Time Taken to Mutate:", difference);
     }
 
