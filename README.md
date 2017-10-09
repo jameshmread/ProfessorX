@@ -7,6 +7,9 @@
 
 <img src='https://bettercodehub.com/edge/badge/jameshmread/ProfessorX?branch=master'>
 </p>
+<p align="center">
+<img src="https://snyk.io/test/github/jameshmread/professorx/badge.svg" alt="Known Vulnerabilities" data-canonical-src="https://snyk.io/test/github/jameshmread/professorx" style="max-width:100%;">
+</p>
 
 <h4>
 A Typescript Mutation Testing program designed to give an indication to the quality of the tests in a project.
