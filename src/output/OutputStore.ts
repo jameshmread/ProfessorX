@@ -6,9 +6,8 @@ export class OutputStore {
     public lineNumber: number;
     public origionalCode: string;
     public mutatedCode: string;
-
-    public numberOfFailedTests;
-    public numberOfPassedTests;
+    public numberOfFailedTests: number;
+    public numberOfPassedTests: number;
 
     public passedTestsDescription: Array<String>;
     public failedTestsDescription: Array<String>;
