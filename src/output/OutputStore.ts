@@ -1,3 +1,5 @@
+import * as fs from "fs";
+
 import { ITestResult } from "../../interfaces/ITestResult";
 
 export class OutputStore {
@@ -27,10 +29,6 @@ export class OutputStore {
         this.setMutationScore(this.numberOfPassedTests, this.numberOfFailedTests);
     }
 
-    // public setMutatedSourceFile (sourceFile: string) {
-    //     this.sourceFiles.push(sourceFile);
-    // }
-
     public setOrigionalSourceCode (code: string): void {
         const codeLines = code.split("\n");
         this.origionalCode = codeLines[this.lineNumber].trim();
@@ -44,5 +42,9 @@ export class OutputStore {
     public setMutationScore (passedTests: number, failedTests: number) {
         const totalTestsRan = passedTests + failedTests;
         this.mutationScore = Math.round((failedTests / totalTestsRan) * 100);
+    }
+
+    public writeOutputToJson(outputStore: Object) { 
+       fs.appendFileSync("./srcApp/app/inputData.json", JSON.stringify(outputStore));
     }
 }
