@@ -50,47 +50,46 @@ export class ProfessorX {
         but for now it would reduce debugging time to leave it as one
     */
     public async mutateNodes () {
-            for (const sampleNode of this.nodes) {
-                this.outputStore = new OutputStore(
-                    this.config.filePath,
-                    this.config.fileToMutate,
-                    this.config.testRunner,
-                    this.config.runnerConfig
-                );
-                // resets modified code after a mutation
-                this.sourceObj.resetModified();
-                // performs the modification at a specific position
-                this.sourceObj.modifyCode(
-                                        sampleNode.pos,
-                                        sampleNode.end,
-                                        MutationFactory.getSingleMutation(ts.SyntaxKind.PlusToken)
-                                    );
-                // writes this change to a NEW src file
-                this.fileHandler.writeTempSourceModifiedFile(this.sourceObj.getModifiedSourceCode());
-                // creates a new test file with a reference to the NEW source file
-                const testFile = this.fileHandler.createTempTestModifiedFile();
+        for (const sampleNode of this.nodes) {
+            this.outputStore = new OutputStore(
+                this.config.filePath,
+                this.config.fileToMutate,
+                this.config.testRunner,
+                this.config.runnerConfig
+            );
+            // resets modified code after a mutation
+            this.sourceObj.resetModified();
+            // performs the modification at a specific position
+            this.sourceObj.modifyCode(
+                sampleNode.pos,
+                sampleNode.end,
+                MutationFactory.getSingleMutation(ts.SyntaxKind.PlusToken)
+            );
+            // writes this change to a NEW src file
+            this.fileHandler.writeTempSourceModifiedFile(this.sourceObj.getModifiedSourceCode());
+            // creates a new test file with a reference to the NEW source file
+            const testFile = this.fileHandler.createTempTestModifiedFile();
 
-                this.outputStore.setTestFile(testFile);
-                this.outputStore.setLineNumber(
-                    ts.getLineAndCharacterOfPosition(
-                        this.sourceObj.getOriginalSourceObject(), sampleNode.pos).line);
+            this.outputStore.setTestFile(testFile);
+            this.outputStore.setLineNumber(
+                ts.getLineAndCharacterOfPosition(
+                    this.sourceObj.getOriginalSourceObject(), sampleNode.pos).line);
 
-                this.outputStore.setOrigionalSourceCode(this.sourceObj.getOriginalSourceCode());
-                this.outputStore.setModifiedSourceCode(this.sourceObj.getModifiedSourceCode());
+            this.outputStore.setOrigionalSourceCode(this.sourceObj.getOriginalSourceCode());
+            this.outputStore.setModifiedSourceCode(this.sourceObj.getModifiedSourceCode());
 
-                this.mochaRunner = new MochaTestRunner([testFile], this.config.runnerConfig);
-                await this.testRunner();
-                this.cleaner.deleteTestFile(testFile);
-            }
+            this.mochaRunner = new MochaTestRunner([testFile], this.config.runnerConfig);
+            await this.testRunner();
+            this.cleaner.deleteTestFile(testFile);
+        }
     }
 
 
     public finishRun (outputStores) {
         const endTimestamp = new Date().getTime();
         const difference = new Date(endTimestamp - this.startTimestamp).getTime();
-        // outputStore.setRunTime(difference);
-        // time should be an arbitrary value sent along with the other data
-        console.log("Time Taken to Mutate:", difference);
+        OutputStore.setRunTime(difference);
+        OutputStore.writeOutputToJson(outputStores);
     }
 
     private async testRunner () {

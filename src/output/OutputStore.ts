@@ -15,11 +15,10 @@ export class OutputStore {
     public mutatedCode: string;
     public numberOfFailedTests: number;
     public numberOfPassedTests: number;
+    public mutationScore;
 
     // public passedTestsDescription: Array<String>;
     // public failedTestsDescription: Array<String>;
-    public mutationScore;
-    public runTime: Object;
 
     public constructor (
         srcPath: string,
@@ -31,6 +30,27 @@ export class OutputStore {
         this.SRC_FILE = srcFile;
         this.RUNNER = testRunner;
         this.RUNNER_CONFIG = runnerConfig;
+    }
+
+    public static writeOutputToJson (outputStores: Array<OutputStore>) {
+       fs.writeFileSync("./srcApp/app/inputData.json", JSON.stringify(outputStores, null, 2));
+    }
+
+    public static setRunTime (runTime: number) {
+        /*
+            convert millis to date time adapted from
+            https://gist.github.com/remino/1563878
+        */
+        let ms = runTime;
+        ms = ms % 1000;
+        let s = Math.floor(runTime / 1000);
+        let m = Math.floor(s / 60);
+        s = s % 60;
+        let h = Math.floor(m / 60);
+        m = m % 60;
+        const d = Math.floor(h / 24);
+        h = h % 24;
+        return { d, h, m, s, ms };
     }
 
     public setTestFile (filename: string) {
@@ -60,26 +80,5 @@ export class OutputStore {
     public setMutationScore (passedTests: number, failedTests: number) {
         const totalTestsRan = passedTests + failedTests;
         this.mutationScore = Math.round((failedTests / totalTestsRan) * 100);
-    }
-
-    public setRunTime (runTime: number) {
-        /*
-            convert millis to date time adapted from
-            https://gist.github.com/remino/1563878
-        */
-        let ms = runTime;
-        ms = ms % 1000;
-        let s = Math.floor(runTime / 1000);
-        let m = Math.floor(s / 60);
-        s = s % 60;
-        let h = Math.floor(m / 60);
-        m = m % 60;
-        const d = Math.floor(h / 24);
-        h = h % 24;
-        this.runTime = { d, h, m, s, ms };
-    }
-
-    public writeOutputToJson (outputStore: Object) {
-       fs.appendFileSync("./srcApp/app/inputData.json", JSON.stringify(outputStore));
     }
 }
