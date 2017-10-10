@@ -4,6 +4,7 @@ testProject/node_modules
 mochawesome-report/
 npm-debug.log
 srcApp/app/inputData.json
+testProject/**/*.m.ts
 
 # compiled output
 /dist
