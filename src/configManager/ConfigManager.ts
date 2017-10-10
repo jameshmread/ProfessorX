@@ -20,7 +20,6 @@ export class ConfigManager {
 
     public configValid () {
         Object.keys(this.config).forEach((el) => {
-            console.log(this.config[el]);
             if (this.config[el] === void 0) {
                 throw new Error(
                     "Professor X config not valid. Not all keys are defined");
