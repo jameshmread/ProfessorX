@@ -32,8 +32,12 @@ export class OutputStore {
         this.RUNNER_CONFIG = runnerConfig;
     }
 
-    public static writeOutputToJson (outputStores: Array<OutputStore>) {
-       fs.writeFileSync("./srcApp/app/inputData.json", JSON.stringify(outputStores, null, 2));
+    public static writeOutputStoreToJson (outputStores: Array<OutputStore>) {
+       fs.writeFileSync("./srcApp/app/outputStoreData.json", JSON.stringify(outputStores, null, 2));
+    }
+
+    public static appendDataToJson (data: Object) {
+        fs.writeFileSync("./srcApp/app/data.json", JSON.stringify(data, null, 2));
     }
 
     public static setRunTime (runTime: number) {

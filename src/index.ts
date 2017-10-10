@@ -1,6 +1,5 @@
 import * as ts from "typescript";
 import * as Mocha from "mocha";
-import * as moment from "moment";
 
 import { FileHandler } from "./FileHandler/FileHandler";
 import { CodeInspector } from "./CodeInspector/CodeInspector";
@@ -88,8 +87,8 @@ export class ProfessorX {
     public finishRun (outputStores) {
         const endTimestamp = new Date().getTime();
         const difference = new Date(endTimestamp - this.startTimestamp).getTime();
-        OutputStore.setRunTime(difference);
-        OutputStore.writeOutputToJson(outputStores);
+        OutputStore.writeOutputStoreToJson(outputStores);
+        OutputStore.appendDataToJson(OutputStore.setRunTime(difference));
     }
 
     private async testRunner () {

@@ -3,7 +3,8 @@
 testProject/node_modules
 mochawesome-report/
 npm-debug.log
-srcApp/app/inputData.json
+srcApp/app/outputStoreData.json
+srcApp/app/data.json
 testProject/**/*.m.ts
 
 # compiled output
