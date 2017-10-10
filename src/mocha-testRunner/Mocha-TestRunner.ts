@@ -8,7 +8,7 @@ export class MochaTestRunner {
 
     public testResult: ITestResult;
     public testFiles: Array<string> = [];
-    //should this be changed to a single string?
+    // should this be changed to a single string?
     public mocha: Mocha;
 
     constructor (testFiles : Array<string>, config: Object) {
@@ -23,7 +23,6 @@ export class MochaTestRunner {
         for (let i = 0; i < this.testFiles.length; i++){
             this.mocha.addFile(this.testFiles[i]);
         }
-        console.log(this.testFiles);
         return true;
     }
 
@@ -35,7 +34,7 @@ export class MochaTestRunner {
         return new Promise((resolve, reject) => {
             runner = this.mocha.run(() => {
                 const testResult: ITestResult = this.createTestResult(runner.stats);
-                //not 100% happy with this but it works, so for now it can stay
+                // not 100% happy with this but it works, so for now it can stay
                 outputStore.setNumberOfTests(testResult);
                 resolve(outputStore);
             });
