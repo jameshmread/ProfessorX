@@ -15,7 +15,9 @@
     "@angular/platform-browser-dynamic": "^4.2.4",
     "@angular/router": "^4.2.4",
     "@types/node": "^8.0.17",
+    "bootstrap": "^4.0.0-alpha.6",
     "core-js": "^2.4.1",
+    "font-awesome": "^4.7.0",
     "mochawesome": "^2.3.0",
     "rxjs": "^5.4.2",
     "typescript": "^2.4.2",
@@ -58,7 +60,7 @@
     "test-app": "ng test",
     "build-app": "ng build && npm run test-app && npm run lint-app",
     "serve-app": "ng serve",
-    "build-all" : "npm run build && npm run build-app"
+    "build-all": "npm run build && npm run build-app"
   },
   "repository": {
     "type": "git",
