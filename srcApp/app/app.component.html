@@ -25,10 +25,14 @@
   <div class="panel panel-default">
     <div class="col-md-4">  
         <div class="panel-heading">Mutation Score</div>
-        <div class="progress-circle {{totalMutationScore}}">
+        <div class="c100 p{{totalMutationScore}} big green">
           <span>{{totalMutationScore}}%</span>
-          <div class="value-bar"></div>
-        </div>
+          <div class="slice">
+            <div class="bar"></div>
+            <div class="fill"></div>
+    </div>
+</div>
+
     </div>
     <div class="col-md-4">
         <div class="panel-heading">Killed Mutants</div>
