@@ -36,7 +36,7 @@ export class OutputStore {
        fs.writeFileSync("./srcApp/app/outputStoreData.json", JSON.stringify(outputStores, null, 2));
     }
 
-    public static appendDataToJson (data: Object) {
+    public static writeDataToJson (data: Object) {
         fs.writeFileSync("./srcApp/app/data.json", JSON.stringify(data, null, 2));
     }
 

@@ -88,7 +88,7 @@ export class ProfessorX {
         const endTimestamp = new Date().getTime();
         const difference = new Date(endTimestamp - this.startTimestamp).getTime();
         OutputStore.writeOutputStoreToJson(outputStores);
-        OutputStore.appendDataToJson(OutputStore.setRunTime(difference));
+        OutputStore.writeDataToJson(OutputStore.setRunTime(difference));
     }
 
     private async testRunner () {
