@@ -1,6 +1,5 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<link href="http://www.cssscript.com/demo/circular-progress-bar-plain-html-css/css-circular-prog-bar.css" rel="stylesheet"
-/>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
@@ -24,26 +23,28 @@
 <div class="container">
   <div class="panel panel-default">
     <div class="col-md-4">  
-        <div class="panel-heading">Mutation Score</div>
-        <div class="c100 p{{totalMutationScore}} big green">
-          <span>{{totalMutationScore}}%</span>
-          <div class="slice">
-            <div class="bar"></div>
-            <div class="fill"></div>
-    </div>
+      <div class="panel-heading">Mutation Score</div>
+        <div class="panel-body">
+          <div class="c100 p{{totalMutationScore}} big blue">
+            <span>{{totalMutationScore}}%</span>
+              <div class="slice">
+                <div class="bar"></div>
+                <div class="fill"></div>
+          </div>
+        </div>
 </div>
 
     </div>
     <div class="col-md-4">
         <div class="panel-heading">Killed Mutants</div>
         <div class="panel-body">
-          <h1 class="display-1">{{totalFailedTests}}</h1>
+          <h1 class="display-1 large-text">{{totalFailedTests}}</h1>
         </div>
     </div>
     <div class="col-md-4">
         <div class="panel-heading">Surviving Mutants</div>
         <div class="panel-body">
-          <h1 class="display-1">{{totalPassedTests}}</h1>
+          <h1 class="display-1 large-text">{{totalPassedTests}}</h1>
         </div>
     </div>
   </div>
