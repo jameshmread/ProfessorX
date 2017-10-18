@@ -14,20 +14,19 @@
     "@angular/platform-browser": "^4.2.4",
     "@angular/platform-browser-dynamic": "^4.2.4",
     "@angular/router": "^4.2.4",
-    "@types/node": "^8.0.17",
     "bootstrap": "^3.3.7",
     "core-js": "^2.4.1",
     "font-awesome": "^4.7.0",
     "mochawesome": "^2.3.0",
     "rxjs": "^5.4.2",
-    "typescript": "^2.4.2",
+    "typescript": "^2.5.3",
     "zone.js": "^0.8.14"
   },
   "devDependencies": {
     "@types/chai": "^4.0.2",
     "@types/mocha": "^2.2.41",
     "chai": "^4.1.0",
-    "mocha": "^3.4.2",
+    "mocha": "^4.0.1",
     "ts-node": "^3.3.0",
     "tslint": "^5.5.0",
     "typings": "^2.1.1",
@@ -46,8 +45,7 @@
     "karma-coverage-istanbul-reporter": "^1.2.1",
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
-    "protractor": "~5.1.2",
-    "typescript": "~2.3.3"
+    "protractor": "~5.1.2"
   },
   "scripts": {
     "test": "mocha --opts ./mocha.opts",
