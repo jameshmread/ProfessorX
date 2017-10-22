@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 
 import * as outputStore from "./outputStoreData.json";
-import * as data from "./data.json";
+// import * as data from "./data.json";
 
 @Component({
   selector: "app-root",
@@ -11,7 +11,7 @@ import * as data from "./data.json";
 export class AppComponent {
 
   // way too many variables here, need to refactor into an object
-  public duration = data;
+  public duration;
   public sourceFilePath: string;
   public sourceFiles: Array<string> = [];
   public runner: string;
@@ -29,6 +29,7 @@ export class AppComponent {
   public totalMutationScore: number;
 
   constructor () {
+    this.importData();
     this.sourceFilePath = (outputStore[0][0]["SRC_FILE_PATH"]);
     this.sourceFiles.push(outputStore[0][0]["SRC_FILE"]);
     this.runner = (outputStore[0][0]["RUNNER"]);
@@ -47,6 +48,10 @@ export class AppComponent {
     this.totalPassedTests = this.getSumOfArrayElements(this.passedTests);
     this.totalFailedTests = this.getSumOfArrayElements(this.failedTests);
     console.log(this);
+  }
+
+  public async importData () {
+      await import("./data.json").then((data) => {this.duration = data; });
   }
 
   public getProgramTotalMutationScore (mutationScores: Array<number>) {
