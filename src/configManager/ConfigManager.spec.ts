@@ -21,7 +21,6 @@ describe("Config manager", () => {
 
     it("should throw error if no configuration is given", () => {
         config.config = null;
-        console.log(config);
         expect(() => {
             config.configValid();
         }).to.throw(Error);

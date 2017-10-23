@@ -1,5 +1,5 @@
 {
-  "name": "testProject",
+  "name": "testproject",
   "version": "0.0.0",
   "dependencies": {
     "typescript": "^2.3.2"
