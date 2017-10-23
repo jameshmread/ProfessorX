@@ -9,7 +9,7 @@ export class ProgressBarComponent implements OnInit {
 
   constructor () { }
 
-  ngOnInit() {
+  public ngOnInit () {
   }
 
 }

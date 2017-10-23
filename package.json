@@ -54,7 +54,7 @@
     "lint": "tslint ./src/**/*.ts",
     "start": "ts-node ./src/index.ts",
     "ts-node": "ts-node",
-    "lint-app": "ng lint",
+    "lint-app": "tslint ./srcApp/**/*.ts",
     "test-app": "ng test",
     "build-app": "ng build && npm run test-app && npm run lint-app",
     "serve-app": "ng serve",

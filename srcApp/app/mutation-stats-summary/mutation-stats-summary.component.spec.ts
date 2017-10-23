@@ -1,8 +1,8 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { MutationStatsSummaryComponent } from './mutation-stats-summary.component';
+import { MutationStatsSummaryComponent } from "./mutation-stats-summary.component";
 
-describe('MutationStatsSummaryComponent', () => {
+describe("MutationStatsSummaryComponent", () => {
   let component: MutationStatsSummaryComponent;
   let fixture: ComponentFixture<MutationStatsSummaryComponent>;
 
@@ -19,7 +19,7 @@ describe('MutationStatsSummaryComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });
