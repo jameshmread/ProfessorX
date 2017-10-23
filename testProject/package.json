@@ -1,6 +1,5 @@
-<<<<<<< HEAD
 {
-  "name": "testProject",
+  "name": "testproject",
   "version": "0.0.0",
   "dependencies": {
     "typescript": "^2.3.2"
@@ -22,28 +21,3 @@
     "TP-start": "ts-node ./src/HelloWorld.ts"
   }
 }
-=======
-{
-  "name": "testProject",
-  "version": "0.0.0",
-  "dependencies": {
-    "typescript": "^2.3.2"
-  },
-  "devDependencies": {
-    "@types/chai": "^4.0.1",
-    "@types/mocha": "^2.2.41",
-    "chai": "^4.1.0",
-    "mocha": "^3.4.2",
-    "ts-node": "^3.2.0",
-    "tslint": "^5.5.0",
-    "typings": "^2.1.1"
-  },
-  "scripts": {
-    "TP-test": "mocha --opts ./mocha.opts",
-    "TP-test:watch": "mocha --opts ./mocha.opts --watch",
-    "TP-build": "tsc HelloWorld.ts",
-    "TP-lint": "tslint ./src/**/*.ts",
-    "TP-start": "ts-node ./src/HelloWorld.ts"
-  }
-}
->>>>>>> master

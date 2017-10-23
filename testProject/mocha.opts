@@ -1,10 +1,4 @@
-<<<<<<< HEAD
 --require ts-node/register 
 --reporter dot
 --watch-extensions ts 
-=======
---require ts-node/register 
---reporter dot
---watch-extensions ts 
->>>>>>> master
 ./src/**/*.spec.ts
