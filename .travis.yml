@@ -9,4 +9,4 @@ before_install:
 - if [[ `npm -v` < 4* ]]; then npm i -g npm@4; fi
 
 script: 
-- npm run build-all
+- npm run build
