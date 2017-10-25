@@ -1,7 +1,6 @@
 import { Component } from "@angular/core";
 
 import * as outputStore from "./outputStoreData.json";
-// import * as data from "./data.json";
 
 @Component({
   selector: "app-root",
@@ -27,6 +26,8 @@ export class AppComponent {
   public totalPassedTests: number;
   public totalFailedTests: number;
   public totalMutationScore: number;
+
+  public currentTab = "Dashboard";
 
   constructor () {
     this.importData();
@@ -65,5 +66,9 @@ export class AppComponent {
 
   public getSumOfArrayElements (numberArray: Array<number>) {
     return numberArray.reduce((a, b) => a + b, 0);
+  }
+
+  public getCurrentTab (event){
+    this.currentTab = event;
   }
 }
