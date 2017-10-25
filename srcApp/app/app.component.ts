@@ -28,11 +28,11 @@ export class AppComponent {
   public totalFailedTests: number;
   public totalMutationScore: number;
 
-  public currentTab = "Dashboard";
+  public currentTab = "In-Depth View";
 
-  public cities = [{label: "Edinburgh", value: {id: 1, name: "edinburgh", code: "edb"}},
+  public cities = [{label: "HelloWorld.ts", value: {id: 1, name: "HelloWorld.ts"}},
   {label: "Glasgow", value: {id: 2, name: "glas", code: "gl"}}];
-  public selectedCity = "Edinburgh";
+  public selectedCity = "HelloWorld.ts";
 
   constructor () {
     this.importData();
