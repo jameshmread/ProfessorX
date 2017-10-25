@@ -22,5 +22,5 @@
 </div>
 
 <div *ngIf="currentTab == 'In-Depth View'">
-  HELLO WORLD
+    <p-dropdown [options]="cities" [(ngModel)]="selectedCity"></p-dropdown>
 </div>

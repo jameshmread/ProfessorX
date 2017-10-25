@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 
+import {SelectItem} from "primeng/primeng";
 import * as outputStore from "./outputStoreData.json";
 
 @Component({
@@ -28,6 +29,10 @@ export class AppComponent {
   public totalMutationScore: number;
 
   public currentTab = "Dashboard";
+
+  public cities = [{label: "Edinburgh", value: {id: 1, name: "edinburgh", code: "edb"}},
+  {label: "Glasgow", value: {id: 2, name: "glas", code: "gl"}}];
+  public selectedCity = "Edinburgh";
 
   constructor () {
     this.importData();
