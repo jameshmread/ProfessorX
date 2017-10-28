@@ -53,19 +53,14 @@ describe("Output Store", () => {
         expect(outputStore.mutatedCode).to.equal("}");
     });
 
-    it("should set mutation score to 100 when given 0, 1", () => {
-        outputStore.setMutationScore(0, 1);
-        expect(outputStore.mutationScore).to.equal(100);
+    it("mutant should be killed with failed tests > 0", () => {
+        outputStore.wasMutantKilled(1);
+        expect(outputStore.mutantKilled).to.equal(true);
     });
 
-    it("should set mutation score to 0 when given 1, 0", () => {
-        outputStore.setMutationScore(1, 0);
-        expect(outputStore.mutationScore).to.equal(0);
-    });
-
-    it("should set mutation score to 67 when given 1, 2", () => {
-        outputStore.setMutationScore(1, 2);
-        expect(outputStore.mutationScore).to.equal(67);
+    it("mutant should survive with failed tests = 0", () => {
+        outputStore.wasMutantKilled(0);
+        expect(outputStore.mutantKilled).to.equal(false);
     });
 
     it("should set runtime to a date format of 0,0,0,0,300 when given 300", () => {

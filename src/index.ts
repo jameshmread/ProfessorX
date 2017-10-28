@@ -40,6 +40,7 @@ export class ProfessorX {
     }
 
     public async main () {
+        // will be mutateFiles -> mutateNodesInsideFiles
         await this.mutateNodes();
         console.log("outputstore array", this.outputStores);
         this.finishRun(this.outputStores);
@@ -78,6 +79,8 @@ export class ProfessorX {
             this.outputStore.setModifiedSourceCode(this.sourceObj.getModifiedSourceCode());
 
             this.mochaRunner = new MochaTestRunner([testFile], this.config.runnerConfig);
+            // dont need to create a test runner object every time probably (unless this allows for parallel running)
+
             await this.testRunner();
             this.cleaner.deleteTestFile(testFile);
         }

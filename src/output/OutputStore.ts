@@ -15,7 +15,7 @@ export class OutputStore {
     public mutatedCode: string;
     public numberOfFailedTests: number;
     public numberOfPassedTests: number;
-    public mutationScore;
+    public mutantKilled;
 
     // public passedTestsDescription: Array<String>;
     // public failedTestsDescription: Array<String>;
@@ -68,7 +68,7 @@ export class OutputStore {
     public setNumberOfTests (testResult: ITestResult){
         this.numberOfPassedTests = parseInt(testResult.passed, 0);
         this.numberOfFailedTests = parseInt(testResult.failed, 0);
-        this.setMutationScore(this.numberOfPassedTests, this.numberOfFailedTests);
+        this.wasMutantKilled(this.numberOfFailedTests);
     }
 
     public setOrigionalSourceCode (code: string): void {
@@ -81,8 +81,8 @@ export class OutputStore {
         this.mutatedCode = codeLines[this.lineNumber].trim();
     }
 
-    public setMutationScore (passedTests: number, failedTests: number) {
-        const totalTestsRan = passedTests + failedTests;
-        this.mutationScore = Math.round((failedTests / totalTestsRan) * 100);
+    // was the mutant killed? true is killed (good)
+    public wasMutantKilled (failedTests: number) {
+        this.mutantKilled = failedTests > 0;
     }
 }
