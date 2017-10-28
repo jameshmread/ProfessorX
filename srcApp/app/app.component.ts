@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 
-import {SelectItem} from "primeng/primeng";
+
 // import * as outputStore from "./outputStoreData.json";
 
 @Component({
@@ -20,7 +20,7 @@ export class AppComponent {
   public lineNumbers: Array<number> = [];
   public origionalCode: Array<string> = [];
   public mutatedCode: Array<string> = [];
-  //
+
   // public passedTests: Array<number> = [];
   // public failedTests: Array<number> = [];
   // due to changes, are these needed?
@@ -31,10 +31,6 @@ export class AppComponent {
   public mutatorResults: Array<boolean> = [];
 
   public currentTab = "In-Depth View";
-
-  public cities = [{label: "HelloWorld.ts", value: {id: 1, name: "HelloWorld.ts"}},
-  {label: "Glasgow", value: {id: 2, name: "glas", code: "gl"}}];
-  public selectedCity = "HelloWorld.ts";
 
   constructor () {
     this.importData();
@@ -58,11 +54,13 @@ export class AppComponent {
 
   private setMutationInformation (outputStore: Object) {
     this.sourceFilePath = (outputStore[0]["SRC_FILE_PATH"]);
-    this.sourceFiles.push(outputStore[0]["SRC_FILE"]);
     this.runner = (outputStore[0]["RUNNER"]);
     this.runnerConfig = outputStore[0]["RUNNER_CONFIG"];
 
     for (let i = 0; i < Object.keys(outputStore).length; i++) {
+      if (this.sourceFiles.indexOf(outputStore[i]["SRC_FILE"]) < 0){
+        this.sourceFiles.push(outputStore[i]["SRC_FILE"]);
+      }
       this.testFilePaths.push(outputStore[i]["testFilePath"]);
       this.lineNumbers.push(outputStore[i]["lineNumber"]);
       this.mutatedCode.push(outputStore[i]["mutatedCode"]);
