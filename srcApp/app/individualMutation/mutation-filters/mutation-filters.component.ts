@@ -13,7 +13,7 @@ export class MutationFiltersComponent implements OnInit {
 
   @Input() public srcFiles: Array<string> = [];
 
-  public sourceFiles: Array<IPrimengDropdown> =
+  public sourceFilesDropDown: Array<IPrimengDropdown> =
   [{label: "Select Source File", value: {id: -1, name: "Select"}}];
 
   public selectedSourceFile = "Select";
@@ -21,8 +21,12 @@ export class MutationFiltersComponent implements OnInit {
   constructor () { }
 
   public ngOnInit () {
+    this.addSourceFileDropdownOptions();
+  }
+
+  public addSourceFileDropdownOptions () {
     for (let i = 0; i < this.srcFiles.length; i++) {
-      this.sourceFiles.push(
+      this.sourceFilesDropDown.push(
         {
           label: this.srcFiles[i],
           value: {id: i, name: this.srcFiles[i]}
