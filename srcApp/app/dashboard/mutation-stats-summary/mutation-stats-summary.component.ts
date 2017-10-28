@@ -8,8 +8,8 @@ import { Component, OnInit, Input } from "@angular/core";
 export class MutationStatsSummaryComponent implements OnInit {
 
   @Input() public totalMutationScore;
-  @Input() public totalFailedTests;
-  @Input() public totalPassedTests;
+  @Input() public killedMutants;
+  @Input() public survivingMutants;
 
   constructor () { }
 

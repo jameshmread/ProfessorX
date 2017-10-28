@@ -1,21 +1,24 @@
 import { TestBed, async } from "@angular/core/testing";
 import { AppComponent } from "./app.component";
 describe("AppComponent", () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        AppComponent
-      ]
-    }).compileComponents();
-  }));
-  it("should create the app", async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  }));
+  let component;
+  beforeEach(() => {
+    component = new AppComponent();
+  });
 
+  it("should return 1 when given [true, false]", () => {
+    expect(component.getKilledMutants([true, false])).toEqual(1);
+  });
 
-  xit("should return 0 when given a null array", () => {
+  it("should return 2 when given [true, true]", () => {
+    expect(component.getKilledMutants([true, true])).toEqual(2);
+  });
 
+  it("should return 0 when given [false, false]", () => {
+    expect(component.getKilledMutants([false, false])).toEqual(0);
+  });
+
+  it("should return 2 when given [false, true, true]", () => {
+    expect(component.getKilledMutants([false, true, true])).toEqual(2);
   });
 });
