@@ -13,13 +13,13 @@ export class AppComponent {
   // way too many variables here, need to refactor into an object
   public duration;
   public outputStore: Object;
+
   public runner: string;
   public runnerConfig: Object;
   public testFilePaths: Array<string> = [];
   public lineNumbers: Array<number> = [];
   public origionalCode: Array<string> = [];
   public mutatedCode: Array<string> = [];
-  public mutatorResults: Array<boolean> = [];
   //
   // public passedTests: Array<number> = [];
   // public failedTests: Array<number> = [];
@@ -28,9 +28,7 @@ export class AppComponent {
   // fields passed to other components
   public sourceFilePath: string;
   public sourceFiles: Array<string> = [];
-  public totalSurvivingMutants: number;
-  public totalKilledMutants: number;
-  public totalMutationScore: number;
+  public mutatorResults: Array<boolean> = [];
 
   public currentTab = "In-Depth View";
 
@@ -54,19 +52,6 @@ export class AppComponent {
       });
   }
 
-  public getProgramTotalMutationScore (mutationScores: Array<boolean>) {
-    const totalScore = this.getKilledMutants(mutationScores);
-    if (mutationScores.length === 0 || totalScore === 0){
-      return 0;
-    } else {
-      return totalScore / mutationScores.length;
-    }
-  }
-
-  public getKilledMutants (mutatorResults: Array<boolean>): number {
-    return mutatorResults.filter((a) => a === true).length;
-  }
-
   public getCurrentTab (event){
     this.currentTab = event;
   }
@@ -87,8 +72,5 @@ export class AppComponent {
       // see above, probably dont need these two ^^
       this.mutatorResults.push(outputStore[i]["mutantKilled"]);
     }
-    this.totalKilledMutants = this.getKilledMutants(this.mutatorResults);
-    this.totalSurvivingMutants = this.mutatorResults.length - this.totalKilledMutants;
-    // this.totalMutationScore = this.totalKilledMutants - this.totalSurvivingMutants
   }
 }

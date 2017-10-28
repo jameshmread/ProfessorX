@@ -7,13 +7,29 @@ import { Component, OnInit, Input } from "@angular/core";
 })
 export class MutationStatsSummaryComponent implements OnInit {
 
-  @Input() public totalMutationScore;
-  @Input() public killedMutants;
-  @Input() public survivingMutants;
+  @Input() public mutatorResults: Array<boolean> = [];
 
-  constructor () { }
+  public killedMutants;
+  public survivingMutants;
+
+  public totalMutationScore;
 
   public ngOnInit () {
+    this.killedMutants = this.getKilledMutants(this.mutatorResults);
+    this.survivingMutants = this.mutatorResults.length - this.killedMutants;
+    this.setMutationScore();
   }
 
+  public setMutationScore (){
+      if (this.survivingMutants === 0){
+        this.totalMutationScore = 100;
+      }else {
+        this.totalMutationScore =
+        (this.killedMutants / (this.survivingMutants + this.killedMutants)) * 100;
+      }
+  }
+
+  public getKilledMutants (mutatorResults: Array<boolean>): number {
+    return mutatorResults.filter((a) => a === true).length;
+  }
 }

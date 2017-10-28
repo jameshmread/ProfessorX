@@ -13,7 +13,7 @@
 
   <app-progress-bar></app-progress-bar>
 
-  <app-mutation-stats-summary [totalMutationScore]="totalMutationScore" [killedMutants]="totalKilledMutants" [survivingMutants]="totalSurvivingMutants">
+  <app-mutation-stats-summary [mutatorResults]="mutatorResults">
   </app-mutation-stats-summary>
 
   <app-mutated-files-summary [sourceFiles]="sourceFiles" [sourceFilePath]="sourceFilePath"></app-mutated-files-summary>
