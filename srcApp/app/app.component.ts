@@ -1,14 +1,11 @@
 import { Component } from "@angular/core";
 
-
-// import * as outputStore from "./outputStoreData.json";
-
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.css"]
 })
-export class AppComponent {
+export class AppComponent{
 
   // way too many variables here, need to refactor into an object
   public duration;
@@ -30,11 +27,12 @@ export class AppComponent {
   public sourceFiles: Array<string> = [];
   public mutatorResults: Array<boolean> = [];
 
-  public currentTab = "In-Depth View";
+  public currentTab = "Dashboard";
 
   constructor () {
     this.importData();
     this.importOutputStores();
+    console.log(this);
   }
 
   public async importData () {

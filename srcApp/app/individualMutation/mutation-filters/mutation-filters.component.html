@@ -11,11 +11,10 @@
         <div class="panel panel-body">
           
           <div class="col-md-6">        
-            <p-dropdown [options]="sourceFiles" [(ngModel)]="selectedSourceFile"></p-dropdown>
-            Associated test file
+            <p-dropdown [options]="sourceFilesDropDown" [(ngModel)]="selectedSourceFile"></p-dropdown>
           </div>
           <div class="col-md-6">
-            <p-dropdown [options]="cities" [(ngModel)]="selectedCity"></p-dropdown>
+            <p-dropdown [options]="mutatorsDropdown" [(ngModel)]="selectedMutator"></p-dropdown>
             Description of mutator
           </div>
       </div>

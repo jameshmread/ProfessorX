@@ -12,11 +12,15 @@ import { IPrimengDropdown } from "../../../../interfaces/IPrimengDropdown";
 export class MutationFiltersComponent implements OnInit {
 
   @Input() public srcFiles: Array<string> = [];
+  @Input() public mutators: Array<{mutatorName: string, mutatorDescription: string}> = [];
 
   public sourceFilesDropDown: Array<IPrimengDropdown> =
   [{label: "Select Source File", value: {id: -1, name: "Select"}}];
-
   public selectedSourceFile = "Select";
+
+  public mutatorsDropdown: Array<IPrimengDropdown> =
+  [{label: "Select Mutator", value: {id: -1, name: "Select"}}];
+  public selectedMutator = "Select";
 
   constructor () { }
 
