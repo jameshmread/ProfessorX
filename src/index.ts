@@ -49,6 +49,7 @@ export class ProfessorX {
         await this.mutateAllNodeTypes();
         console.log("outputstore array", this.outputStores);
         this.finishRun(this.outputStores);
+        this.cleaner.deleteMutatedFiles(this.cleaner.findMutatedFiles());
     }
 
     public async mutateAllNodeTypes () {
