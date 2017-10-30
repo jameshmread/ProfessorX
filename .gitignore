@@ -5,7 +5,7 @@ mochawesome-report/
 npm-debug.log
 srcApp/app/outputStoreData.json
 srcApp/app/data.json
-testProject/src/**/*.m.ts
+testProject/src/*.m.ts
 
 # compiled output
 /dist

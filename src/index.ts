@@ -27,7 +27,7 @@ export class ProfessorX {
     public nodes: Array<IMutatableNode> = new Array<IMutatableNode>();
 
     public cleaner: Cleaner;
-    public mochaRunner: MochaTestRunner;
+    public mochaRunner;
 
     public constructor () {
         this.startTimestamp = new Date().getTime();
@@ -40,57 +40,63 @@ export class ProfessorX {
         // this will need to be given a new source object for every file
         this.codeInspector = new CodeInspector(this.fileHandler.getSourceObject());
 
-
-
         this.cleaner = new Cleaner(this.config.filePath);
     }
 
     public async main () {
         // will be mutateFiles -> mutateNodesInsideFiles
-        // await this.mutateNodes();
-        // console.log("outputstore array", this.outputStores);
-        // this.finishRun(this.outputStores);
         this.getAllNodes();
+        await this.mutateAllNodeTypes();
+        console.log("outputstore array", this.outputStores);
+        this.finishRun(this.outputStores);
     }
 
-    /* I do want to separate this function up even more
-        but for now it would reduce debugging time to leave it as one
-    */
-    public async mutateNodes () {
-        // for (const sampleNode of this.nodes) {
-        //     this.outputStore = new OutputStore(
-        //         this.config.filePath,
-        //         this.config.fileToMutate,
-        //         this.config.testRunner,
-        //         this.config.runnerConfig
-        //     );
-        //     // resets modified code after a mutation
-        //     this.sourceObj.resetModified();
-        //     // performs the modification at a specific position
-        //     this.sourceObj.modifyCode(
-        //         sampleNode.pos,
-        //         sampleNode.end,
-        //         MutationFactory.getSingleMutation(ts.SyntaxKind.PlusToken)
-        //     );
-        //     // writes this change to a NEW src file
-        //     this.fileHandler.writeTempSourceModifiedFile(this.sourceObj.getModifiedSourceCode());
-        //     // creates a new test file with a reference to the NEW source file
-        //     const testFile = this.fileHandler.createTempTestModifiedFile();
+    public async mutateAllNodeTypes () {
+        for (const currentNode of this.nodes) {
+            await this.mutateAllNodesOfType(currentNode);
+        }
+    }
 
-        //     this.outputStore.setTestFile(testFile);
-        //     this.outputStore.setLineNumber(
-        //         ts.getLineAndCharacterOfPosition(
-        //             this.sourceObj.getOriginalSourceObject(), sampleNode.pos).line);
+    public async mutateAllNodesOfType (currentNode: IMutatableNode) {
+        for (let i = 0; i < currentNode.positions.length; i++) {
+            this.outputStore = new OutputStore(
+                this.config.filePath,
+                this.config.fileToMutate,
+                this.config.testRunner,
+                this.config.runnerConfig
+            );
+            // resets modified code after a mutation
+            this.sourceObj.resetModified();
+            // performs the modification at a specific position
+            console.log("pre modify", i);
+            this.sourceObj.modifyCode(
+                currentNode.positions[i]["pos"],
+                currentNode.positions[i]["end"],
+                MutationFactory.getSingleMutation(currentNode.syntaxType)
+            );
+            console.log("post modify", i);
+            // writes this change to a NEW src file
+            this.fileHandler.writeTempSourceModifiedFile(this.sourceObj.getModifiedSourceCode());
+            // creates a new test file with a reference to the NEW source file
+            const testFile = this.fileHandler.createTempTestModifiedFile();
 
-        //     this.outputStore.setOrigionalSourceCode(this.sourceObj.getOriginalSourceCode());
-        //     this.outputStore.setModifiedSourceCode(this.sourceObj.getModifiedSourceCode());
+            this.outputStore.setTestFile(testFile);
+            this.outputStore.setLineNumber(
+                ts.getLineAndCharacterOfPosition(
+                    this.sourceObj.getOriginalSourceObject(),
+                    currentNode.positions[i]["pos"]).line
+                );
 
-        //     this.mochaRunner = new MochaTestRunner([testFile], this.config.runnerConfig);
-        //     // dont need to create a test runner object every time probably (unless this allows for parallel running)
+            this.outputStore.setOrigionalSourceCode(this.sourceObj.getOriginalSourceCode());
+            this.outputStore.setModifiedSourceCode(this.sourceObj.getModifiedSourceCode());
 
-        //     await this.testRunner();
-        //     this.cleaner.deleteTestFile(testFile);
-        // }
+            this.mochaRunner = new MochaTestRunner([testFile], this.config.runnerConfig);
+            // dont need to create a test runner object every time probably (unless this allows for parallel running)
+
+            await this.testRunner();
+            this.cleaner.deleteTestFile(testFile);
+            // dont like how im deleting and re creating the test file for every node
+        }
     }
 
     public getAllNodes () {
