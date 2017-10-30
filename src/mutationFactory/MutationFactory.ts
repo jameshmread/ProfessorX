@@ -13,11 +13,11 @@ export class MutationFactory {
     ];
 
     public static syntaxMutationMap: IsyntaxMutationMap = {
-        37: ["-", "/", "*"], // plus
-        38: ["+"], // minus
-        39: ["/"], // multiply
-        101: ["false"], // true
-        86: ["true"] // false
+        37: [" - ", "/", "*"], // plus
+        38: [" + "], // minus
+        39: [" / "], // multiply
+        101: [" false"], // true
+        86: [" true"] // false
     };
 
     private static mutatorDescriptions: Array<string> = [

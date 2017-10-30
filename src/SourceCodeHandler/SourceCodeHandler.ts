@@ -21,7 +21,7 @@ export class SourceCodeHandler {
         this.modifiedSourceCode = this.originalSourceObject.getText();
     }
 
-    public modifyCode ( start: number, end: number, replacement: string) {
+    public modifyCode (start: number, end: number, replacement: string) {
         this.modifiedSourceCode =
         this.modifiedSourceCode.substring(0, start)
         + replacement
