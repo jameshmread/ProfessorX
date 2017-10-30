@@ -10,4 +10,12 @@ export class HelloWorld {
     public takeAway (a: number, b: number) {
         return a - b;
     }
+
+    public truth () {
+        return true;
+    }
+
+    public false () {
+        return false;
+    }
 }
