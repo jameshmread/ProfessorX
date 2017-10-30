@@ -14,18 +14,18 @@ export class AppComponent{
   public runner: string;
   public runnerConfig: Object;
   public testFilePaths: Array<string> = [];
+
+  // may not need
   public lineNumbers: Array<number> = [];
   public origionalCode: Array<string> = [];
   public mutatedCode: Array<string> = [];
-
-  // public passedTests: Array<number> = [];
-  // public failedTests: Array<number> = [];
-  // due to changes, are these needed?
+  // may not need
 
   // fields passed to other components
   public sourceFilePath: string;
   public sourceFiles: Array<string> = [];
   public mutatorResults: Array<boolean> = [];
+  public survivingMutants: Array<Object> = [];
 
   public currentTab = "Dashboard";
 
@@ -59,14 +59,15 @@ export class AppComponent{
       if (this.sourceFiles.indexOf(outputStore[i]["SRC_FILE"]) < 0){
         this.sourceFiles.push(outputStore[i]["SRC_FILE"]);
       }
-      this.testFilePaths.push(outputStore[i]["testFilePath"]);
-      this.lineNumbers.push(outputStore[i]["lineNumber"]);
-      this.mutatedCode.push(outputStore[i]["mutatedCode"]);
-      this.origionalCode.push(outputStore[i]["origionalCode"]);
-      // this.passedTests.push(outputStore[i]["numberOfPassedTests"]);
-      // this.failedTests.push(outputStore[i]["numberOfFailedTests"]);
-      // see above, probably dont need these two ^^
+      if (outputStore[i]["mutantKilled"] === false){
+        this.survivingMutants.push(outputStore[i]);
+      }
+      // this.testFilePaths.push(outputStore[i]["testFilePath"]);
+      // this.lineNumbers.push(outputStore[i]["lineNumber"]);
+      // this.mutatedCode.push(outputStore[i]["mutatedCode"]);
+      // this.origionalCode.push(outputStore[i]["origionalCode"]);
       this.mutatorResults.push(outputStore[i]["mutantKilled"]);
     }
+    console.log(this.survivingMutants);
   }
 }

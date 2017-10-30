@@ -22,19 +22,8 @@
 
   <app-mutation-filters [srcFiles]="sourceFiles"></app-mutation-filters>
   
-  <div class="container"> 
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-          <h3 class="panel-title">Chosen Mutator on <code>HelloWorld.ts</code></h3>
-        </div>
-        <div class="panel-body">
-          <code style="font-size: 20px">return true; --</code>
-          <code style="font-size: 20px">return false; ++</code>
-          Panel content
-        </div>
-    </div>
-    
-  </div>
+  <app-code-change-display [survivingMutants]="survivingMutants">
+  </app-code-change-display>
   
 
 

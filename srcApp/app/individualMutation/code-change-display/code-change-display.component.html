@@ -1,0 +1,14 @@
+<div class="container"> 
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">Chosen Mutator on <code>HelloWorld.ts</code></h3>
+        </div>
+        <div class="panel-body">
+          <div *ngFor="let survivor of survivingMutants; let i = index">
+              Line # {{lineNumbers[i]}} <code style="font-size: 20px">{{origionalCode[i]}} --</code>
+            <br>
+            Line # {{lineNumbers[i]}} <code style="font-size: 20px; color: green">{{mutatedCode[i]}} ++</code>
+          </div>
+        </div>
+    </div>
+</div>

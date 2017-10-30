@@ -10,6 +10,7 @@ import { ProgressBarComponent } from "./dashboard/progress-bar/progress-bar.comp
 import { MutationStatsSummaryComponent } from "./dashboard/mutation-stats-summary/mutation-stats-summary.component";
 import { MutatedFilesSummaryComponent } from "./dashboard/mutated-files-summary/mutated-files-summary.component";
 import { MutationFiltersComponent } from "./individualMutation/mutation-filters/mutation-filters.component";
+import { CodeChangeDisplayComponent } from "./individualMutation/code-change-display/code-change-display.component";
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { MutationFiltersComponent } from "./individualMutation/mutation-filters/
     ProgressBarComponent,
     MutationStatsSummaryComponent,
     MutatedFilesSummaryComponent,
-    MutationFiltersComponent
+    MutationFiltersComponent,
+    CodeChangeDisplayComponent
   ],
   imports: [
     BrowserModule,
