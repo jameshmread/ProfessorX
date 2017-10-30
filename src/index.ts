@@ -12,20 +12,22 @@ import { OutputStore } from "./output/OutputStore";
 import { Cleaner } from "./cleanup/Cleaner";
 import { ITestResult } from "../interfaces/ITestResult";
 import { Printer } from "./output/printer/Printer";
+import { IMutatableNode } from "../interfaces/IMutatableNode";
 
 export class ProfessorX {
 
-    public startTimestamp = new Date().getTime();
-    public config;
+    public startTimestamp;
+    public config: ConfigManager;
     public outputStore: OutputStore;
     public outputStores: Array<OutputStore>;
-    public testFileHandler;
-    public fileHandler;
-    public sourceObj;
-    public codeInspector;
-    public nodes;
-    public cleaner;
-    public mochaRunner;
+    public testFileHandler: TestFileHandler;
+    public fileHandler: FileHandler;
+    public sourceObj: SourceCodeHandler;
+    public codeInspector: CodeInspector;
+    public nodes: Array<IMutatableNode> = new Array<IMutatableNode>();
+
+    public cleaner: Cleaner;
+    public mochaRunner: MochaTestRunner;
 
     public constructor () {
         this.startTimestamp = new Date().getTime();
@@ -34,58 +36,73 @@ export class ProfessorX {
         this.testFileHandler = new TestFileHandler(this.config.filePath);
         this.fileHandler = new FileHandler(this.config.filePath, this.config.fileToMutate);
         this.sourceObj = new SourceCodeHandler(this.fileHandler.getSourceObject());
+
+        // this will need to be given a new source object for every file
         this.codeInspector = new CodeInspector(this.fileHandler.getSourceObject());
-        this.nodes = this.codeInspector.findObjectsOfSyntaxKind(ts.SyntaxKind.PlusToken);
+
+
+
         this.cleaner = new Cleaner(this.config.filePath);
     }
 
     public async main () {
         // will be mutateFiles -> mutateNodesInsideFiles
-        await this.mutateNodes();
-        console.log("outputstore array", this.outputStores);
-        this.finishRun(this.outputStores);
+        // await this.mutateNodes();
+        // console.log("outputstore array", this.outputStores);
+        // this.finishRun(this.outputStores);
+        this.getAllNodes();
     }
 
     /* I do want to separate this function up even more
         but for now it would reduce debugging time to leave it as one
     */
     public async mutateNodes () {
-        for (const sampleNode of this.nodes) {
-            this.outputStore = new OutputStore(
-                this.config.filePath,
-                this.config.fileToMutate,
-                this.config.testRunner,
-                this.config.runnerConfig
-            );
-            // resets modified code after a mutation
-            this.sourceObj.resetModified();
-            // performs the modification at a specific position
-            this.sourceObj.modifyCode(
-                sampleNode.pos,
-                sampleNode.end,
-                MutationFactory.getSingleMutation(ts.SyntaxKind.PlusToken)
-            );
-            // writes this change to a NEW src file
-            this.fileHandler.writeTempSourceModifiedFile(this.sourceObj.getModifiedSourceCode());
-            // creates a new test file with a reference to the NEW source file
-            const testFile = this.fileHandler.createTempTestModifiedFile();
+        // for (const sampleNode of this.nodes) {
+        //     this.outputStore = new OutputStore(
+        //         this.config.filePath,
+        //         this.config.fileToMutate,
+        //         this.config.testRunner,
+        //         this.config.runnerConfig
+        //     );
+        //     // resets modified code after a mutation
+        //     this.sourceObj.resetModified();
+        //     // performs the modification at a specific position
+        //     this.sourceObj.modifyCode(
+        //         sampleNode.pos,
+        //         sampleNode.end,
+        //         MutationFactory.getSingleMutation(ts.SyntaxKind.PlusToken)
+        //     );
+        //     // writes this change to a NEW src file
+        //     this.fileHandler.writeTempSourceModifiedFile(this.sourceObj.getModifiedSourceCode());
+        //     // creates a new test file with a reference to the NEW source file
+        //     const testFile = this.fileHandler.createTempTestModifiedFile();
 
-            this.outputStore.setTestFile(testFile);
-            this.outputStore.setLineNumber(
-                ts.getLineAndCharacterOfPosition(
-                    this.sourceObj.getOriginalSourceObject(), sampleNode.pos).line);
+        //     this.outputStore.setTestFile(testFile);
+        //     this.outputStore.setLineNumber(
+        //         ts.getLineAndCharacterOfPosition(
+        //             this.sourceObj.getOriginalSourceObject(), sampleNode.pos).line);
 
-            this.outputStore.setOrigionalSourceCode(this.sourceObj.getOriginalSourceCode());
-            this.outputStore.setModifiedSourceCode(this.sourceObj.getModifiedSourceCode());
+        //     this.outputStore.setOrigionalSourceCode(this.sourceObj.getOriginalSourceCode());
+        //     this.outputStore.setModifiedSourceCode(this.sourceObj.getModifiedSourceCode());
 
-            this.mochaRunner = new MochaTestRunner([testFile], this.config.runnerConfig);
-            // dont need to create a test runner object every time probably (unless this allows for parallel running)
+        //     this.mochaRunner = new MochaTestRunner([testFile], this.config.runnerConfig);
+        //     // dont need to create a test runner object every time probably (unless this allows for parallel running)
 
-            await this.testRunner();
-            this.cleaner.deleteTestFile(testFile);
-        }
+        //     await this.testRunner();
+        //     this.cleaner.deleteTestFile(testFile);
+        // }
     }
 
+    public getAllNodes () {
+        MutationFactory.mutatableTokens.forEach((syntaxItem) => {
+            console.log(syntaxItem);
+            this.nodes.push({
+                syntaxType: syntaxItem,
+                positions : this.codeInspector.findObjectsOfSyntaxKind(syntaxItem)
+            });
+        });
+        console.log(this.nodes);
+    }
 
     public finishRun (outputStores) {
         const endTimestamp = new Date().getTime();
