@@ -15,12 +15,6 @@ export class AppComponent{
   public runnerConfig: Object;
   public testFilePaths: Array<string> = [];
 
-  // may not need
-  public lineNumbers: Array<number> = [];
-  public origionalCode: Array<string> = [];
-  public mutatedCode: Array<string> = [];
-  // may not need
-
   // fields passed to other components
   public sourceFilePath: string;
   public sourceFiles: Array<string> = [];
@@ -62,10 +56,6 @@ export class AppComponent{
       if (outputStore[i]["mutantKilled"] === false){
         this.survivingMutants.push(outputStore[i]);
       }
-      // this.testFilePaths.push(outputStore[i]["testFilePath"]);
-      // this.lineNumbers.push(outputStore[i]["lineNumber"]);
-      // this.mutatedCode.push(outputStore[i]["mutatedCode"]);
-      // this.origionalCode.push(outputStore[i]["origionalCode"]);
       this.mutatorResults.push(outputStore[i]["mutantKilled"]);
     }
     console.log(this.survivingMutants);
