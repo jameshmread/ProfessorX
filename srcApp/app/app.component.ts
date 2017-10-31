@@ -8,7 +8,7 @@ import { Component } from "@angular/core";
 export class AppComponent{
 
   // way too many variables here, need to refactor into an object
-  public duration;
+  public importedData;
   public outputStore: Object;
 
   public runner: string;
@@ -16,6 +16,7 @@ export class AppComponent{
   public testFilePaths: Array<string> = [];
 
   // fields passed to other components
+  public duration = [];
   public sourceFilePath: string;
   public sourceFiles: Array<string> = [];
   public mutatorResults: Array<boolean> = [];
@@ -30,7 +31,17 @@ export class AppComponent{
   }
 
   public async importData () {
-      await import("./data.json").then((data) => {this.duration = data; });
+      await import("./data.json").then((data) => {
+        this.getDuration(data);
+      });
+  }
+
+  public getDuration (data) {
+    this.duration.push(data["d"]);
+    this.duration.push(data["h"]);
+    this.duration.push(data["m"]);
+    this.duration.push(data["s"]);
+    this.duration.push(data["ms"]);
   }
 
   public async importOutputStores () {

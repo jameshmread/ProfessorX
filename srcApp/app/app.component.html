@@ -8,7 +8,13 @@
 <div *ngIf="currentTab == 'Dashboard'">
   <div class="container">
     <h1 class="display-1 duration">Time Taken</h1>
-    <h1 class="display-1 duration">01:15:33</h1>
+    <h1 class="display-1 duration">
+      {{duration[0]}}d
+      {{duration[1]}}h 
+      {{duration[2]}}m
+      {{duration[3]}}s
+      {{duration[4]}}ms
+    </h1>
   </div>
 
   <app-progress-bar></app-progress-bar>
