@@ -5,10 +5,16 @@
         </div>
         <div class="panel-body">
           <div *ngFor="let survivor of survivingMutants; let i = index">
-              Line # {{lineNumbers[i]}} <code style="font-size: 20px">{{origionalCode[i]}} --</code>
-            <br>
-            Line # {{lineNumbers[i]}} <code style="font-size: 20px; color: green">{{mutatedCode[i]}} ++</code>
+              Line # {{lineNumbers[i]}} <code class="code-snippit-style removed-code">{{origionalCode[i]}}
+              </code>
+              <div class="glyphicon glyphicon-minus red"></div>
+              <div class="glyphicon glyphicon-minus red" ></div>
+              <br>
+              Line # {{lineNumbers[i]}} <code class="code-snippit-style added-code">{{mutatedCode[i]}}</code>
+              <div class="glyphicon glyphicon-plus green"></div>
+              <div class="glyphicon glyphicon-plus green" ></div>
           </div>
+          <br>
         </div>
     </div>
 </div>

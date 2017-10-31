@@ -1,0 +1,22 @@
+.code-snippit-style { 
+      font-size: 30px;
+      font-family: Courier New, Courier, monospace
+}
+
+.removed-code {
+      color: black;
+      background: rgba(255, 0, 0, 0.575);
+}
+
+.added-code {
+      color: black;
+      background: rgba(0, 255, 76, 0.575);
+}
+
+.green {
+      color: green;
+}
+
+.red {
+      color: red;
+}
