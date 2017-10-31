@@ -16,6 +16,7 @@ export class MutationFactory {
         37: [" - ", "/", "*"], // plus
         38: [" + "], // minus
         39: [" / "], // multiply
+        44: ["++"],
         101: [" false"], // true
         86: [" true"] // false
     };

@@ -8,7 +8,7 @@ export class HelloWorld {
     }
 
     public takeAway (a: number, b: number) {
-        return a - b;
+        return a - b--;
     }
 
     public truth () {
