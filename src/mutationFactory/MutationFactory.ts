@@ -13,8 +13,8 @@ export class MutationFactory {
     ];
 
     public static syntaxMutationMap: IsyntaxMutationMap = {
-        37: [" - ", "/", "*"], // plus
-        38: [" + "], // minus
+        37: [" - ", " / ", " * "], // plus
+        38: [" + ",  " / ", " * "], // minus
         39: [" / "], // multiply
         44: ["++"],
         101: [" false"], // true
@@ -31,5 +31,9 @@ export class MutationFactory {
 
     public static getSingleMutation (syntaxKind: SyntaxKind): string {
         return this.syntaxMutationMap[syntaxKind][0];
+    }
+
+    public static getMultipleMutations (syntaxKind: SyntaxKind): Array<string> {
+        return this.syntaxMutationMap[syntaxKind];
     }
 }
