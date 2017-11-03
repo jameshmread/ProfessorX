@@ -20,3 +20,8 @@
 .red {
       color: red;
 }
+
+.code-panel {
+      border-width: 8px;
+      background: white;
+}
