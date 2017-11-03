@@ -1,0 +1,37 @@
+<div class="container"> 
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">Chosen Mutator on <code>HelloWorld.ts</code></h3>
+        </div>
+        <div class="panel-body">
+          <div *ngFor="let codeObject of codeObjects">
+            <div class="jumbotron" style="padding: 10px">
+                <div class="container">
+                    <h3 class="panel-title">Mutation Name</h3>
+                    <div class="col-md-6">
+                        <div class="panel panel-danger code-panel" >
+                            <div class="panel-body" >
+                                Line # {{codeObject.lineNumber}}
+                                <code class="code-snippit-style removed-code">{{codeObject.origionalCode}}</code>
+                                <div class="glyphicon glyphicon-minus red"></div>
+                                <div class="glyphicon glyphicon-minus red"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="panel panel-success code-panel">
+                            <div class="panel-body">
+                                Line # {{codeObject.lineNumber}}
+                                <code class="code-snippit-style added-code">{{codeObject.mutatedCode}}</code>
+                                <div class="glyphicon glyphicon-plus green"></div>
+                                <div class="glyphicon glyphicon-plus green" ></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+          <br>
+        </div>
+    </div>
+</div>

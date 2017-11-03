@@ -3,16 +3,35 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-<app-navbar></app-navbar>
+<app-navbar (currentTab)="getCurrentTab($event)"></app-navbar>
 
-<div class="container">
-  <h1 class="display-1 duration">Time Taken</h1>
-  <h1 class="display-1 duration">01:15:33</h1>
+<div *ngIf="currentTab == 'Dashboard'">
+  <div class="container">
+    <h1 class="display-1 duration">Time Taken</h1>
+    <h1 class="display-1 duration">
+      {{duration[0]}}d
+      {{duration[1]}}h 
+      {{duration[2]}}m
+      {{duration[3]}}s
+      {{duration[4]}}ms
+    </h1>
+  </div>
+
+  <app-progress-bar></app-progress-bar>
+
+  <app-mutation-stats-summary [mutatorResults]="mutatorResults"></app-mutation-stats-summary>
+
+  <app-mutated-files-summary [sourceFiles]="sourceFiles" [sourceFilePath]="sourceFilePath"></app-mutated-files-summary>
 </div>
 
-<app-progress-bar></app-progress-bar>
+<div *ngIf="currentTab == 'In-Depth View'">
 
-<app-mutation-stats-summary [totalMutationScore]="totalMutationScore" [totalFailedTests]="totalFailedTests" [totalPassedTests]="totalPassedTests">
-</app-mutation-stats-summary>
+  <app-mutation-filters [srcFiles]="sourceFiles"></app-mutation-filters>
+  
+  <app-code-change-display [survivingMutants]="survivingMutants">
+  </app-code-change-display>
+  
 
-<app-mutated-files-summary [sourceFiles]="sourceFiles" [sourceFilePath]="sourceFilePath"></app-mutated-files-summary>
+
+
+</div>

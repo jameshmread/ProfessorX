@@ -1,0 +1,9 @@
+exclude:
+- /e2e/.*
+- /interfaces/.*
+- /karma.conf.js
+- /protractor.conf.js
+component_depth: 1
+languages:
+- javascript
+- typescript

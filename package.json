@@ -18,6 +18,7 @@
     "core-js": "^2.4.1",
     "font-awesome": "^4.7.0",
     "mochawesome": "^2.3.0",
+    "primeng": "^4.2.2",
     "rxjs": "^5.4.2",
     "typescript": "^2.5.3",
     "zone.js": "^0.8.14"
@@ -51,14 +52,15 @@
     "test": "mocha --opts ./mocha.opts",
     "build": "npm run test && npm run lint",
     "test:watch": "mocha --opts ./mocha.opts --watch",
-    "lint": "tslint ./src/**/*.ts",
-    "start": "ts-node ./src/index.ts",
+    "lint-src": "tslint ./src/**/*.ts",
+    "start": "ts-node ./src/index.ts && npm run serve-app",
     "ts-node": "ts-node",
-    "lint-app": "ng lint",
+    "lint-app": "tslint ./srcApp/**/*.ts",
     "test-app": "ng test",
     "build-app": "ng build && npm run test-app && npm run lint-app",
-    "serve-app": "ng serve",
-    "build-all": "npm run build && npm run build-app"
+    "serve-app": "ng serve -port 4200 & powershell.exe -command ./StartApp.ps1",
+    "build-all": "npm run build && npm run build-app",
+    "lint": "npm run lint-src && npm run lint-app"
   },
   "repository": {
     "type": "git",

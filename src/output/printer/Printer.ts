@@ -100,7 +100,7 @@ export class Printer {
     private buildMutationScore (): string {
         return this.LABELS.mutationScore
         + this.LABELS.doubleSpaceToken
-        + this.outputStore.mutationScore
+        + this.outputStore.mutantKilled
         + this.LABELS.percentage
         + this.LABELS.returnToken
         ;
