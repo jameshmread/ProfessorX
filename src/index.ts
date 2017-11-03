@@ -50,6 +50,7 @@ export class ProfessorX {
         console.log("outputstore array", this.outputStores);
         this.finishRun(this.outputStores);
         this.cleaner.deleteMutatedFiles(this.cleaner.findMutatedFiles());
+        console.log("number of mutated nodes", this.nodes.length);
     }
 
     public async mutateAllNodeTypes () {
@@ -69,13 +70,11 @@ export class ProfessorX {
             // resets modified code after a mutation
             this.sourceObj.resetModified();
             // performs the modification at a specific position
-            console.log("pre modify", i);
             this.sourceObj.modifyCode(
                 currentNode.positions[i]["pos"],
                 currentNode.positions[i]["end"],
                 MutationFactory.getSingleMutation(currentNode.syntaxType)
             );
-            console.log("post modify", i);
             // writes this change to a NEW src file
             this.fileHandler.writeTempSourceModifiedFile(this.sourceObj.getModifiedSourceCode());
             // creates a new test file with a reference to the NEW source file
@@ -104,7 +103,7 @@ export class ProfessorX {
         MutationFactory.mutatableTokens.forEach((syntaxItem) => {
             console.log(syntaxItem);
             this.nodes.push({
-                syntaxType: syntaxItem,
+                syntaxType : syntaxItem,
                 positions : this.codeInspector.findObjectsOfSyntaxKind(syntaxItem)
             });
         });
