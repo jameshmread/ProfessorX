@@ -11,20 +11,11 @@ import { ICodeDisplay } from "../../../../interfaces/ICodeDisplay";
 export class CodeChangeDisplayComponent implements OnInit {
 
   @Input() public survivingMutants = {};
-  public codeObject: Array<ICodeDisplay> = [];
-
-  private srcFiles = [];
-  private lineNumbers = [];
-  private origionalCode = [];
-  private mutatedCode = [];
-
-
-  constructor () {
-  }
+  public codeObjects: Array<ICodeDisplay> = [];
 
   public ngOnInit () {
     for (let i = 0; i < Object.keys(this.survivingMutants).length; i++){
-      this.codeObject.push({
+      this.codeObjects.push({
         lineNumber: this.survivingMutants[i]["lineNumber"],
         sourceFile: this.survivingMutants[i]["SRC_FILE"],
         origionalCode: this.survivingMutants[i]["origionalCode"],
@@ -32,10 +23,10 @@ export class CodeChangeDisplayComponent implements OnInit {
       });
       // mutator type needs to be brought in too
     }
+    this.sortCodeByLineNumber();
   }
 
   public sortCodeByLineNumber () {
-    this.codeObject.sort((a, b) => a.lineNumber - b.lineNumber);
+    this.codeObjects.sort((a, b) => a.lineNumber - b.lineNumber);
   }
-
 }

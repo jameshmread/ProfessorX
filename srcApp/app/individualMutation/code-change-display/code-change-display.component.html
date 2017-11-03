@@ -4,13 +4,13 @@
           <h3 class="panel-title">Chosen Mutator on <code>HelloWorld.ts</code></h3>
         </div>
         <div class="panel-body">
-          <div *ngFor="let survivor of survivingMutants; let i = index">
-              Line # {{lineNumbers[i]}} <code class="code-snippit-style removed-code">{{origionalCode[i]}}
+          <div *ngFor="let codeObject of codeObjects">
+              Line # {{codeObject.lineNumber}} <code class="code-snippit-style removed-code">{{codeObject.origionalCode}}
               </code>
               <div class="glyphicon glyphicon-minus red"></div>
               <div class="glyphicon glyphicon-minus red" ></div>
               <br>
-              Line # {{lineNumbers[i]}} <code class="code-snippit-style added-code">{{mutatedCode[i]}}</code>
+              Line # {{codeObject.lineNumber}} <code class="code-snippit-style added-code">{{codeObject.mutatedCode}}</code>
               <div class="glyphicon glyphicon-plus green"></div>
               <div class="glyphicon glyphicon-plus green" ></div>
           </div>

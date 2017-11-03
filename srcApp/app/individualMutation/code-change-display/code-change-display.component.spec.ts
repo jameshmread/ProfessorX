@@ -8,7 +8,7 @@ describe("CodeChangeDisplayComponent", () => {
   });
 
   it("should return line numbers ordered 1,2 when given 2,1", () => {
-    ccdc.codeObject = [{
+    ccdc.codeObjects = [{
       lineNumber: 2,
       sourceFile: "s",
       origionalCode: "a+b",
@@ -22,12 +22,12 @@ describe("CodeChangeDisplayComponent", () => {
     }
     ];
     ccdc.sortCodeByLineNumber();
-    expect(ccdc.codeObject[0].lineNumber).toEqual(1);
-    expect(ccdc.codeObject[1].lineNumber).toEqual(2);
+    expect(ccdc.codeObjects[0].lineNumber).toEqual(1);
+    expect(ccdc.codeObjects[1].lineNumber).toEqual(2);
   });
 
   it("should return line numbers ordered 1,2 when given 1, 2", () => {
-    ccdc.codeObject = [{
+    ccdc.codeObjects = [{
       lineNumber: 1,
       sourceFile: "s",
       origionalCode: "a+b",
@@ -41,12 +41,12 @@ describe("CodeChangeDisplayComponent", () => {
     }
     ];
     ccdc.sortCodeByLineNumber();
-    expect(ccdc.codeObject[0].lineNumber).toEqual(1);
-    expect(ccdc.codeObject[1].lineNumber).toEqual(2);
+    expect(ccdc.codeObjects[0].lineNumber).toEqual(1);
+    expect(ccdc.codeObjects[1].lineNumber).toEqual(2);
   });
 
   it("should return line numbers ordered 1,2,3 when given 2,3,1", () => {
-    ccdc.codeObject = [{
+    ccdc.codeObjects = [{
       lineNumber: 2,
       sourceFile: "s",
       origionalCode: "a+b",
@@ -66,13 +66,13 @@ describe("CodeChangeDisplayComponent", () => {
     }
     ];
     ccdc.sortCodeByLineNumber();
-    expect(ccdc.codeObject[0].lineNumber).toEqual(1);
-    expect(ccdc.codeObject[1].lineNumber).toEqual(2);
-    expect(ccdc.codeObject[2].lineNumber).toEqual(3);
+    expect(ccdc.codeObjects[0].lineNumber).toEqual(1);
+    expect(ccdc.codeObjects[1].lineNumber).toEqual(2);
+    expect(ccdc.codeObjects[2].lineNumber).toEqual(3);
   });
 
   it("should return line numbers ordered 1,1 when given 1, 1", () => {
-    ccdc.codeObject = [{
+    ccdc.codeObjects = [{
       lineNumber: 1,
       sourceFile: "s",
       origionalCode: "a+b",
@@ -86,7 +86,7 @@ describe("CodeChangeDisplayComponent", () => {
     }
     ];
     ccdc.sortCodeByLineNumber();
-    expect(ccdc.codeObject[0].lineNumber).toEqual(1);
-    expect(ccdc.codeObject[1].lineNumber).toEqual(1);
+    expect(ccdc.codeObjects[0].lineNumber).toEqual(1);
+    expect(ccdc.codeObjects[1].lineNumber).toEqual(1);
   });
 });
