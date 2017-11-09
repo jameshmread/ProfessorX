@@ -47,10 +47,8 @@ export class ProfessorX {
         // will be mutateFiles -> mutateNodesInsideFiles
         this.getAllNodes();
         await this.mutateAllNodeTypes();
-        console.log("outputstore array", this.outputStores);
         this.finishRun(this.outputStores);
         this.cleaner.deleteMutatedFiles(this.cleaner.findMutatedFiles());
-        console.log("number of mutated nodes", this.nodes.length);
     }
 
     public async mutateAllNodeTypes () {
@@ -82,15 +80,7 @@ export class ProfessorX {
                 // creates a new test file with a reference to the NEW source file
                 const testFile = this.fileHandler.createTempTestModifiedFile();
 
-                this.outputStore.setTestFile(testFile);
-                this.outputStore.setLineNumber(
-                    ts.getLineAndCharacterOfPosition(
-                        this.sourceObj.getOriginalSourceObject(),
-                        currentNode.positions[i]["pos"]).line
-                    );
-
-                this.outputStore.setOrigionalSourceCode(this.sourceObj.getOriginalSourceCode());
-                this.outputStore.setModifiedSourceCode(this.sourceObj.getModifiedSourceCode());
+                this.setOutputStoreInfo(testFile, currentNode, i);
 
                 this.mochaRunner = new MochaTestRunner([testFile], this.config.runnerConfig);
                 // dont need to create a test runner object every time probably
@@ -103,7 +93,19 @@ export class ProfessorX {
         }
     }
 
-    public getAllNodes () {
+    private setOutputStoreInfo (testFile: string, currentNode: IMutatableNode, i: number) {
+        this.outputStore.setTestFile(testFile);
+
+        this.outputStore.setLineNumber(
+            ts.getLineAndCharacterOfPosition(
+                this.sourceObj.getOriginalSourceObject(),
+                currentNode.positions[i]["pos"]).line
+        );
+        this.outputStore.setOrigionalSourceCode(this.sourceObj.getOriginalSourceCode());
+        this.outputStore.setModifiedSourceCode(this.sourceObj.getModifiedSourceCode());
+    }
+
+    private getAllNodes () {
         MutationFactory.mutatableTokens.forEach((syntaxItem) => {
             this.nodes.push({
                 syntaxType : syntaxItem,
@@ -112,10 +114,7 @@ export class ProfessorX {
         });
     }
 
-    public mutateNodeToMultipleTypes () {
-    }
-
-    public finishRun (outputStores) {
+    private finishRun (outputStores) {
         const endTimestamp = new Date().getTime();
         const difference = new Date(endTimestamp - this.startTimestamp).getTime();
         OutputStore.writeOutputStoreToJson(outputStores);
