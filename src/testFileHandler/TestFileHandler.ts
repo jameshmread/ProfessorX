@@ -1,5 +1,5 @@
 import { ITestResult } from "../../interfaces/ITestResult";
-import * as fs from "fs";
+import * as fs from "memfs";
 import { FileHandler } from "../FileHandler/FileHandler";
 
 export class TestFileHandler {
