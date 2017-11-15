@@ -47,10 +47,8 @@ export class ProfessorX {
         // will be mutateFiles -> mutateNodesInsideFiles
         this.getAllNodes();
         await this.mutateAllNodeTypes();
-        console.log("outputstore array", this.outputStores);
         this.finishRun(this.outputStores);
         this.cleaner.deleteMutatedFiles(this.cleaner.findMutatedFiles());
-        console.log("number of mutated nodes", this.nodes.length);
     }
 
     public async mutateAllNodeTypes () {
@@ -60,57 +58,63 @@ export class ProfessorX {
     }
 
     public async mutateAllNodesOfType (currentNode: IMutatableNode) {
+        const mutationOptions = MutationFactory.getMultipleMutations(currentNode.syntaxType);
         for (let i = 0; i < currentNode.positions.length; i++) {
-            this.outputStore = new OutputStore(
-                this.config.filePath,
-                this.config.fileToMutate,
-                this.config.testRunner,
-                this.config.runnerConfig
-            );
-            // resets modified code after a mutation
-            this.sourceObj.resetModified();
-            // performs the modification at a specific position
-            this.sourceObj.modifyCode(
-                currentNode.positions[i]["pos"],
-                currentNode.positions[i]["end"],
-                MutationFactory.getSingleMutation(currentNode.syntaxType)
-            );
-            // writes this change to a NEW src file
-            this.fileHandler.writeTempSourceModifiedFile(this.sourceObj.getModifiedSourceCode());
-            // creates a new test file with a reference to the NEW source file
-            const testFile = this.fileHandler.createTempTestModifiedFile();
-
-            this.outputStore.setTestFile(testFile);
-            this.outputStore.setLineNumber(
-                ts.getLineAndCharacterOfPosition(
-                    this.sourceObj.getOriginalSourceObject(),
-                    currentNode.positions[i]["pos"]).line
+            for (let j = 0; j < mutationOptions.length; j++){
+                this.outputStore = new OutputStore(
+                    this.config.filePath,
+                    this.config.fileToMutate,
+                    this.config.testRunner,
+                    this.config.runnerConfig
                 );
+                // resets modified code after a mutation
+                this.sourceObj.resetModified();
+                // performs the modification at a specific position
+                this.sourceObj.modifyCode(
+                    currentNode.positions[i]["pos"],
+                    currentNode.positions[i]["end"],
+                    mutationOptions[j]
+                );
+                // writes this change to a NEW src file
+                this.fileHandler.writeTempSourceModifiedFile(this.sourceObj.getModifiedSourceCode());
+                // creates a new test file with a reference to the NEW source file
+                const testFile = this.fileHandler.createTempTestModifiedFile();
 
-            this.outputStore.setOrigionalSourceCode(this.sourceObj.getOriginalSourceCode());
-            this.outputStore.setModifiedSourceCode(this.sourceObj.getModifiedSourceCode());
+                this.setOutputStoreInfo(testFile, currentNode, i);
 
-            this.mochaRunner = new MochaTestRunner([testFile], this.config.runnerConfig);
-            // dont need to create a test runner object every time probably (unless this allows for parallel running)
+                this.mochaRunner = new MochaTestRunner([testFile], this.config.runnerConfig);
+                // dont need to create a test runner object every time probably
+                // (unless this allows for parallel running)
 
-            await this.testRunner();
-            this.cleaner.deleteTestFile(testFile);
-            // dont like how im deleting and re creating the test file for every node
+                await this.testRunner();
+                this.cleaner.deleteTestFile(testFile);
+                // dont like how im deleting and re creating the test file for every node
+            }
         }
     }
 
-    public getAllNodes () {
+    private setOutputStoreInfo (testFile: string, currentNode: IMutatableNode, i: number) {
+        this.outputStore.setTestFile(testFile);
+
+        this.outputStore.setLineNumber(
+            ts.getLineAndCharacterOfPosition(
+                this.sourceObj.getOriginalSourceObject(),
+                currentNode.positions[i]["pos"]).line
+        );
+        this.outputStore.setOrigionalSourceCode(this.sourceObj.getOriginalSourceCode());
+        this.outputStore.setModifiedSourceCode(this.sourceObj.getModifiedSourceCode());
+    }
+
+    private getAllNodes () {
         MutationFactory.mutatableTokens.forEach((syntaxItem) => {
-            console.log(syntaxItem);
             this.nodes.push({
                 syntaxType : syntaxItem,
                 positions : this.codeInspector.findObjectsOfSyntaxKind(syntaxItem)
             });
         });
-        console.log(this.nodes);
     }
 
-    public finishRun (outputStores) {
+    private finishRun (outputStores) {
         const endTimestamp = new Date().getTime();
         const difference = new Date(endTimestamp - this.startTimestamp).getTime();
         OutputStore.writeOutputStoreToJson(outputStores);

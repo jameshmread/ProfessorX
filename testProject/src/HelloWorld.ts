@@ -3,19 +3,15 @@ export class HelloWorld {
         return a + b;
     }
 
-    public add3Numbers (a: number, b: number) {
-        return a + 3;
+    public add3Numbers (a: number, b: number, c: number) {
+        return a + b + c;
     }
 
     public takeAway (a: number, b: number) {
-        return a - b--;
+        return a - b;
     }
 
     public truth () {
         return true;
-    }
-
-    public false () {
-        return false;
     }
 }
