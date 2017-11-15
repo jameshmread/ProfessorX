@@ -1,5 +1,6 @@
 import * as ts from "typescript";
 import * as fs from "fs";
+import * as memfs from "memfs";
 
 export class FileHandler {
     public static readonly M_SOURCE_FILE_SUFFIX = ".m.ts";
@@ -40,13 +41,13 @@ export class FileHandler {
     public createTempTestModifiedFile (): string {
         const updatedContents = this.mutateTestFileReference(this.getTestFileContents());
         const tempFilename = this.FULL_PATH + FileHandler.counter++ + FileHandler.M_TEST_FILE_SUFFIX;
-        fs.writeFileSync(tempFilename, updatedContents);
+        memfs.writeFileSync(tempFilename, updatedContents);
         return tempFilename;
     }
 
     public writeTempSourceModifiedFile (modifiedCode: string): string {
         const tempFilename = this.FULL_PATH + FileHandler.counter + FileHandler.M_SOURCE_FILE_SUFFIX;
-        fs.writeFileSync(tempFilename, modifiedCode);
+        memfs.writeFileSync(tempFilename, modifiedCode);
         return tempFilename;
     }
 

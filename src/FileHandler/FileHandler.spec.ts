@@ -1,6 +1,5 @@
 import { FileHandler } from "./FileHandler";
 import { expect } from "chai";
-import * as fs from "fs";
 
 describe("Testing FileHandler", () => {
     const fh = new FileHandler("./src/FileHandler/", "FileHandler.ts");
