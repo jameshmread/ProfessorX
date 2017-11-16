@@ -4,6 +4,8 @@ import * as vFs from "memfs";
 export class VirtualFsManager {
       public static sourceFiles: Array<{fileName: string, contents: Buffer}> = [];
       public static testFiles: Array<{fileName: string, contents: Buffer}> = [];
+      public static virtualDirectory = "/src/";
+
       private projectDirectory: Array<string>;
 
       constructor (public projectFilePath: string){
@@ -11,15 +13,15 @@ export class VirtualFsManager {
       }
 
       public createVirtualFs () {
-            vFs.mkdirpSync("/src/");
+            vFs.mkdirpSync(VirtualFsManager.virtualDirectory);
             for (let i = 0; i < VirtualFsManager.sourceFiles.length; i++) {
                   vFs.writeFileSync(
-                        "/src/" +
+                        VirtualFsManager.virtualDirectory +
                         VirtualFsManager.sourceFiles[i].fileName,
                         VirtualFsManager.sourceFiles[i].contents
                   );
                   vFs.writeFileSync(
-                        "/src/" +
+                        VirtualFsManager.virtualDirectory +
                         VirtualFsManager.testFiles[i].fileName,
                         VirtualFsManager.testFiles[i].contents
                   );
