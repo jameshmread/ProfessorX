@@ -12,10 +12,12 @@ import { Cleaner } from "./cleanup/Cleaner";
 import { ITestResult } from "../interfaces/ITestResult";
 import { Printer } from "./output/printer/Printer";
 import { IMutatableNode } from "../interfaces/IMutatableNode";
+import { VirtualFsManager } from "./virtualFsManager/VirtualFsManager";
 
 export class ProfessorX {
 
     public startTimestamp;
+    public virtualFm: VirtualFsManager;
     public config: ConfigManager;
     public outputStore: OutputStore;
     public outputStores: Array<OutputStore>;
@@ -29,15 +31,16 @@ export class ProfessorX {
 
     public constructor () {
         this.startTimestamp = new Date().getTime();
-        this.outputStores = new Array<OutputStore>();
         this.config = new ConfigManager();
-        this.fileHandler = new FileHandler(this.config.filePath, this.config.fileToMutate);
+        this.virtualFm = new VirtualFsManager(this.config.filePath);
+        this.outputStores = new Array<OutputStore>();
+        this.fileHandler = new FileHandler(VirtualFsManager.virtualDirectory, this.config.fileToMutate);
         this.sourceObj = new SourceCodeHandler(this.fileHandler.getSourceObject());
 
         // this will need to be given a new source object for every file
         this.codeInspector = new CodeInspector(this.fileHandler.getSourceObject());
 
-        this.cleaner = new Cleaner(this.config.filePath);
+        this.cleaner = new Cleaner(VirtualFsManager.virtualDirectory);
     }
 
     public async main () {

@@ -14,6 +14,7 @@ export class MochaTestRunner {
     constructor (testFiles : Array<string>, config: Object) {
         this.mocha = new Mocha(config);
         this.testFiles = testFiles;
+        console.log(testFiles);
     }
 
     public addFiles (): boolean {
