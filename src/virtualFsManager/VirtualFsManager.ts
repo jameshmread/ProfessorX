@@ -2,21 +2,45 @@ import * as diskFs from "fs";
 import * as vFs from "memfs";
 
 export class VirtualFsManager {
-      public static sourceFiles: Array<Buffer> = [];
-      public static testFiles: Array<Buffer> = [];
+      public static sourceFiles: Array<{fileName: string, contents: Buffer}> = [];
+      public static testFiles: Array<{fileName: string, contents: Buffer}> = [];
       private projectDirectory: Array<string>;
 
       constructor (public projectFilePath: string){
             this.projectDirectory = diskFs.readdirSync(projectFilePath);
       }
 
+      public createVirtualFs () {
+            vFs.mkdirpSync("/src/");
+            for (let i = 0; i < VirtualFsManager.sourceFiles.length; i++) {
+                  vFs.writeFileSync(
+                        "/src/" +
+                        VirtualFsManager.sourceFiles[i].fileName,
+                        VirtualFsManager.sourceFiles[i].contents
+                  );
+                  vFs.writeFileSync(
+                        "/src/" +
+                        VirtualFsManager.testFiles[i].fileName,
+                        VirtualFsManager.testFiles[i].contents
+                  );
+            }
+      }
+
       public getProjectFiles () {
             this.projectDirectory.forEach((file) => {
                   if (this.isTypescriptSourceFile(file)){
-                        VirtualFsManager.sourceFiles.push(diskFs.readFileSync(this.projectFilePath + file));
+                        VirtualFsManager.sourceFiles.push(
+                              {
+                                    fileName: file,
+                                    contents: diskFs.readFileSync(this.projectFilePath + file)
+                              });
                   }
                   if (this.isTypescriptTestFile(file)){
-                        VirtualFsManager.testFiles.push(diskFs.readFileSync(this.projectFilePath + file));
+                        VirtualFsManager.testFiles.push(
+                              {
+                                    fileName: file,
+                                    contents: diskFs.readFileSync(this.projectFilePath + file)
+                              });
                   }
             });
             if (!this.sourceFileCountMatchTestFileCount()){
