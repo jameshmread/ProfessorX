@@ -19,6 +19,10 @@ export class VirtualFsManager {
                         VirtualFsManager.testFiles.push(diskFs.readFileSync(this.projectFilePath + file));
                   }
             });
+            if (!this.sourceFileCountMatchTestFileCount()){
+                  throw new Error(`Source files missing some test files:
+                  The number of source files does not match the number of test files.`);
+            }
       }
 
       public isTypescriptSourceFile (fileName: string): boolean {
@@ -30,5 +34,9 @@ export class VirtualFsManager {
       public isTypescriptTestFile (fileName: string): boolean {
             return fileName.indexOf(".spec.ts", fileName.length - 8) >= 0;
 
+      }
+
+      public sourceFileCountMatchTestFileCount (): boolean {
+            return VirtualFsManager.sourceFiles.length - VirtualFsManager.testFiles.length === 0;
       }
 }

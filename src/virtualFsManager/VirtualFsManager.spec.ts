@@ -45,4 +45,13 @@ describe("Testing Virtual FS Manager", () => {
             expect(VirtualFsManager.sourceFiles.length).to.equal(1);
             expect(VirtualFsManager.testFiles.length).to.equal(1);
     });
+
+    it("should return false with arrays of 1 and 0", () => {
+            VirtualFsManager.sourceFiles.push(null);
+            expect(vfs.sourceFileCountMatchTestFileCount()).to.equal(false);
+    });
+
+    it("should return true with arrays of 0 and 0", () => {
+            expect(vfs.sourceFileCountMatchTestFileCount()).to.equal(true);
+    });
 });
