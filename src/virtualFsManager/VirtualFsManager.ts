@@ -10,6 +10,8 @@ export class VirtualFsManager {
 
       constructor (public projectFilePath: string){
             this.projectDirectory = diskFs.readdirSync(projectFilePath);
+            this.getProjectFiles();
+            this.createVirtualFs();
       }
 
       public createVirtualFs () {

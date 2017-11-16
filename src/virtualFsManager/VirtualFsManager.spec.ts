@@ -10,9 +10,9 @@ describe("Testing Virtual FS Manager", () => {
       let testProjectPath;
       beforeEach(() => {
             testProjectPath = "./testProject/src/";
-            vfs = new VirtualFsManager(testProjectPath);
             VirtualFsManager.sourceFiles = [];
             VirtualFsManager.testFiles = [];
+            vfs = new VirtualFsManager(testProjectPath);
       });
 
       it("returns false with a js file", () => {
@@ -44,7 +44,6 @@ describe("Testing Virtual FS Manager", () => {
       });
 
       it("should create 2 arrays of 1 length with one test file and source", () => {
-            vfs.getProjectFiles();
             expect(VirtualFsManager.sourceFiles.length).to.equal(1);
             expect(VirtualFsManager.testFiles.length).to.equal(1);
       });
@@ -59,8 +58,6 @@ describe("Testing Virtual FS Manager", () => {
       });
 
       it("should be able to read a file from the vfs", () => {
-            vfs.getProjectFiles();
-            vfs.createVirtualFs();
             expect(fs.readFileSync("/src/" + "HelloWorld.ts")).to.not.equal(null);
       });
 });
