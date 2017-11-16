@@ -7,7 +7,6 @@ import { SourceCodeHandler } from "./SourceCodeHandler/SourceCodeHandler";
 import { MutationFactory } from "./mutationFactory/MutationFactory";
 import { MochaTestRunner } from "./mocha-testRunner/Mocha-TestRunner";
 import { ConfigManager } from "./configManager/ConfigManager";
-import { TestFileHandler } from "./testFileHandler/TestFileHandler";
 import { OutputStore } from "./output/OutputStore";
 import { Cleaner } from "./cleanup/Cleaner";
 import { ITestResult } from "../interfaces/ITestResult";
@@ -20,12 +19,10 @@ export class ProfessorX {
     public config: ConfigManager;
     public outputStore: OutputStore;
     public outputStores: Array<OutputStore>;
-    public testFileHandler: TestFileHandler;
     public fileHandler: FileHandler;
     public sourceObj: SourceCodeHandler;
     public codeInspector: CodeInspector;
     public nodes: Array<IMutatableNode> = new Array<IMutatableNode>();
-
     public cleaner: Cleaner;
     public mochaRunner;
 
@@ -33,7 +30,6 @@ export class ProfessorX {
         this.startTimestamp = new Date().getTime();
         this.outputStores = new Array<OutputStore>();
         this.config = new ConfigManager();
-        this.testFileHandler = new TestFileHandler(this.config.filePath);
         this.fileHandler = new FileHandler(this.config.filePath, this.config.fileToMutate);
         this.sourceObj = new SourceCodeHandler(this.fileHandler.getSourceObject());
 
@@ -87,8 +83,8 @@ export class ProfessorX {
                 // (unless this allows for parallel running)
 
                 await this.testRunner();
-                this.cleaner.deleteTestFile(testFile);
                 // dont like how im deleting and re creating the test file for every node
+                this.cleaner.deleteTestFile(testFile);
             }
         }
     }

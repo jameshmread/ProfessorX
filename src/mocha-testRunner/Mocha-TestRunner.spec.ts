@@ -1,8 +1,6 @@
 import { expect } from "chai";
-import * as Mocha from "mocha";
 
 import { MochaTestRunner } from "./Mocha-TestRunner";
-import { TestFileHandler } from "../testFileHandler/TestFileHandler";
 
 describe("Mocha-TestRunner", () => {
     let testRunner: MochaTestRunner;

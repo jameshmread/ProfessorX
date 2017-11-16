@@ -37,16 +37,16 @@ export class FileHandler {
             ts.createSourceFile(this.filename, this.getSourceCode (), ts.ScriptTarget.ES2015, true);
     }
 
+    public writeTempSourceModifiedFile (modifiedCode: string): string {
+        const tempFilename = this.FULL_PATH + FileHandler.counter + FileHandler.M_SOURCE_FILE_SUFFIX;
+        fs.writeFileSync(tempFilename, modifiedCode);
+        return tempFilename;
+    }
+
     public createTempTestModifiedFile (): string {
         const updatedContents = this.mutateTestFileReference(this.getTestFileContents());
         const tempFilename = this.FULL_PATH + FileHandler.counter++ + FileHandler.M_TEST_FILE_SUFFIX;
         fs.writeFileSync(tempFilename, updatedContents);
-        return tempFilename;
-    }
-
-    public writeTempSourceModifiedFile (modifiedCode: string): string {
-        const tempFilename = this.FULL_PATH + FileHandler.counter + FileHandler.M_SOURCE_FILE_SUFFIX;
-        fs.writeFileSync(tempFilename, modifiedCode);
         return tempFilename;
     }
 

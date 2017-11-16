@@ -24,7 +24,7 @@ export class Cleaner {
 
     public deleteMutatedFiles (filesToDelete: Array<string>) {
         for (let i = 0; i < filesToDelete.length; i++) {
-            fs.unlinkSync(this.FILE_PATH + filesToDelete[i]);
+            fs.unlink(this.FILE_PATH + filesToDelete[i]);
         }
     }
 
@@ -32,7 +32,7 @@ export class Cleaner {
         if (!this.isTestFile(filePath)) {
             throw new Error(`${filePath} is not a mutated test file. Aborting...`);
         }
-        fs.unlinkSync(filePath);
+        fs.unlink(filePath);
     }
 
     public isTestFile (filePath: string): boolean {
