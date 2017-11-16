@@ -1,5 +1,4 @@
 import * as ts from "typescript";
-import * as fs from "fs";
 import * as memfs from "memfs";
 
 export class FileHandler {
@@ -13,15 +12,16 @@ export class FileHandler {
     private testFileName: string;
 
     constructor (private path: string, private filename: string) {
+        // might not need these checks since using virtual system but keeping for now
         if (!(filename.substring(filename.length - 3) === ".ts")) {
             throw new Error("Typescript files must end with .ts");
         }
         this.FULL_PATH = path + filename;
-        if (!fs.existsSync(this.FULL_PATH)) {
+        if (!memfs.existsSync(this.FULL_PATH)) {
             throw new Error("File doesn't exist");
         }
         this.testFileName = path + filename.substring(0, filename.length - 2) + "spec.ts";
-        if (!fs.existsSync(this.testFileName)) {
+        if (!memfs.existsSync(this.testFileName)) {
             throw new Error("No existing test file that matches this file");
         }
     }
@@ -60,7 +60,7 @@ export class FileHandler {
     }
 
     private readFile (path: string): string {
-        return fs.readFileSync(path).toString();
+        return memfs.readFileSync(path).toString();
     }
 
     private getTestFileContents (): string {
