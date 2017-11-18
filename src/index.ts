@@ -44,7 +44,6 @@ export class ProfessorX {
         this.getAllNodes();
         await this.mutateAllNodeTypes();
         this.finishRun(this.outputStores);
-        this.cleaner.deleteMutatedFiles(this.cleaner.findMutatedFiles());
     }
 
     public async mutateAllNodeTypes () {
@@ -72,7 +71,7 @@ export class ProfessorX {
                     mutationOptions[j]
                 );
                 // writes this change to a NEW src file
-                this.fileHandler.writeTempSourceModifiedFile(this.sourceObj.getModifiedSourceCode());
+                const srcFile = this.fileHandler.writeTempSourceModifiedFile(this.sourceObj.getModifiedSourceCode());
                 // creates a new test file with a reference to the NEW source file
                 const testFile = this.fileHandler.createTempTestModifiedFile();
 
@@ -85,6 +84,7 @@ export class ProfessorX {
                 await this.testRunner();
                 // dont like how im deleting and re creating the test file for every node
                 this.cleaner.deleteTestFile(testFile);
+                this.cleaner.deleteSourceFile(srcFile);
             }
         }
     }
