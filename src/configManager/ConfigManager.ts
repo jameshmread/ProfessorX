@@ -3,18 +3,18 @@ const config = require("../../profx-config.json");
 /*tslint:enable:no-var-requires*/
 
 export class ConfigManager {
+    public static filePath: string;
+    public static fileToMutate: string;
+    public static testRunner: string;
+    public static runnerConfig: Object;
+    public static displayPort: string;
     public config = config;
-    public filePath: string;
-    public fileToMutate: string;
-    public testRunner: string;
-    public runnerConfig: Object;
-    public displayPort: string;
 
     constructor (){
-        this.filePath = this.config["filePath"];
-        this.fileToMutate = this.config["fileToMutate"];
-        this.testRunner = this.config["testRunner"];
-        this.runnerConfig = this.config["runnerConfig"];
+        ConfigManager.filePath = this.config["filePath"];
+        ConfigManager.fileToMutate = this.config["fileToMutate"];
+        ConfigManager.testRunner = this.config["testRunner"];
+        ConfigManager.runnerConfig = this.config["runnerConfig"];
         this.configValid();
     }
 
