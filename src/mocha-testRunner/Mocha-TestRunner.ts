@@ -1,41 +1,24 @@
 import * as Mocha from "mocha";
 
 import { ITestResult } from "../../interfaces/ITestResult";
-import { Printer } from "../output/printer/Printer";
 import { OutputStore } from "../output/OutputStore";
 
 export class MochaTestRunner {
 
     public testResult: ITestResult;
-    public testFiles: Array<string> = [];
-    // should this be changed to a single string?
     public mocha: Mocha;
 
-    constructor (testFiles : Array<string>, config: Object) {
+    constructor (config: Object) {
         this.mocha = new Mocha(config);
-        this.testFiles = testFiles;
     }
 
-    public addFiles (): boolean {
-        if (this.testFiles.length === 0) {
-            return false;
-        }
-        for (let i = 0; i < this.testFiles.length; i++){
-            this.mocha.addFile(this.testFiles[i]);
-        }
-        return true;
-    }
-
-    public runTests (outputStore: OutputStore) {
-        if (this.testFiles.length === 0 || this.testFiles === void 0) {
-            return;
-        }
+    public runTests (outputStore: OutputStore, testFile: string) {
+        this.mocha.addFile(testFile);
         let runner = null;
         return new Promise((resolve, reject) => {
             runner = this.mocha.run(() => {
-                const testResult: ITestResult = this.createTestResult(runner.stats);
                 // not 100% happy with this but it works, so for now it can stay
-                outputStore.setNumberOfTests(testResult);
+                outputStore.setNumberOfTests(this.createTestResult(runner.stats));
                 resolve(outputStore);
             });
         });
