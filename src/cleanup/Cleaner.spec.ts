@@ -11,12 +11,6 @@ describe("Cleaner", () => {
     beforeEach(() => {
     });
 
-    it("finds no files when there are none with the M test file suffix", () => {
-        cleaner = new Cleaner("./testProject/");
-        cleaner.findMutatedFiles();
-        expect(cleaner.filesToDelete.length).to.equal(0);
-    });
-
     it("a filename that ends with the target extension is flagged as file to delete", () => {
         cleaner = new Cleaner("./testProject/");
         expect(cleaner.isTestFile("itis.m.ts")).to.equal(true);
