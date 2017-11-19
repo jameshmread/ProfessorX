@@ -1,10 +1,10 @@
 import { expect } from "chai";
 
 import { ITestResult } from "../../interfaces/ITestResult";
-import { OutputStore } from "./OutputStore";
+import { OutputStoreManager } from "./OutputStoreManager";
 
 describe("Output Store", () => {
-    let outputStore: OutputStore;
+    let outputStore: OutputStoreManager;
     const origionalCode = `export class HelloWorld {
         public addNumbers (a: number, b: number) {
             return a + b;
@@ -13,7 +13,7 @@ describe("Output Store", () => {
     const firstLine = "export class HelloWorld {";
     let testResult: ITestResult;
     beforeEach(() => {
-        outputStore = new OutputStore("", "", "", {});
+        outputStore = new OutputStoreManager("", "", "", {});
         testResult = {passed: "0", failed: "2", totalRan: "0", duration: "20"};
     });
 
@@ -64,10 +64,10 @@ describe("Output Store", () => {
     });
 
     it("should set runtime to a date format of 0,0,0,0,300 when given 300", () => {
-        expect(OutputStore.setRunTime(300)).to.eql({d: 0, h: 0, m: 0, s: 0, ms: 300});
+        expect(OutputStoreManager.setRunTime(300)).to.eql({d: 0, h: 0, m: 0, s: 0, ms: 300});
     });
 
     it("should set runtime to 0,0,0,1,1 when given 1001", () => {
-        expect(OutputStore.setRunTime(1001)).to.eql({d: 0, h: 0, m: 0, s: 1, ms: 1});
+        expect(OutputStoreManager.setRunTime(1001)).to.eql({d: 0, h: 0, m: 0, s: 1, ms: 1});
     });
 });

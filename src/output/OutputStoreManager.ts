@@ -2,7 +2,7 @@ import * as fs from "fs";
 
 import { ITestResult } from "../../interfaces/ITestResult";
 
-export class OutputStore {
+export class OutputStoreManager {
 
     public readonly SRC_FILE_PATH: string;
     public readonly SRC_FILE: string;
@@ -17,9 +17,6 @@ export class OutputStore {
     public numberOfPassedTests: number;
     public mutantKilled;
 
-    // public passedTestsDescription: Array<String>;
-    // public failedTestsDescription: Array<String>;
-
     public constructor (
         srcPath: string,
         srcFile: string,
@@ -32,7 +29,7 @@ export class OutputStore {
         this.RUNNER_CONFIG = runnerConfig;
     }
 
-    public static writeOutputStoreToJson (outputStores: Array<OutputStore>) {
+    public static writeOutputStoreToJson (outputStores: Array<OutputStoreManager>) {
        fs.writeFileSync("./srcApp/app/outputStoreData.json", JSON.stringify(outputStores, null, 2));
     }
 
