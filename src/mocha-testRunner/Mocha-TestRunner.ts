@@ -1,7 +1,7 @@
 import * as Mocha from "mocha";
 
 import { ITestResult } from "../../interfaces/ITestResult";
-import { OutputStore } from "../output/OutputStore";
+import { OutputStoreManager } from "../output/OutputStoreManager";
 
 export class MochaTestRunner {
 
@@ -12,7 +12,7 @@ export class MochaTestRunner {
         this.mocha = new Mocha(config);
     }
 
-    public runTests (outputStore: OutputStore, testFile: string) {
+    public runTests (outputStore: OutputStoreManager, testFile: string) {
         this.mocha.addFile(testFile);
         let runner = null;
         return new Promise((resolve, reject) => {
