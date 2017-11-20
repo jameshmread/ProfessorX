@@ -1,8 +1,11 @@
 import * as fs from "fs";
+import * as ts from "typescript";
 
 import { ITestResult } from "../../interfaces/ITestResult";
 import { OutputStore } from "../../DTOs/OutputStore";
 import { IDurationFormat } from "../../interfaces/IDurationFormat";
+import { IMutatableNode } from "../../interfaces/IMutatableNode";
+import { SourceCodeHandler } from "../SourceCodeHandler/SourceCodeHandler";
 
 export class OutputStoreManager {
 
@@ -39,8 +42,25 @@ export class OutputStoreManager {
         this.currentOutputStore = outputStore;
     }
 
-    public saveOutputStore (): void {
+    public addStoreToList (): void {
         OutputStoreManager.outputStoreList.push(this.currentOutputStore);
+    }
+    // needs a test
+    public configureStoreData (
+        testFile: string,
+        currentNode: IMutatableNode,
+        instanceOfNode: number,
+        sourceObj: SourceCodeHandler
+    ) {
+        this.setTestFile(testFile);
+        // consider setting test file once per file since it is just duplication
+        this.setLineNumber(
+            ts.getLineAndCharacterOfPosition(
+                sourceObj.getOriginalSourceObject(),
+                currentNode.positions[instanceOfNode]["pos"]).line
+        );
+        this.setOrigionalSourceCode(sourceObj.getOriginalSourceCode());
+        this.setModifiedSourceCode(sourceObj.getModifiedSourceCode());
     }
 
     public setTestFile (filename: string): void {
