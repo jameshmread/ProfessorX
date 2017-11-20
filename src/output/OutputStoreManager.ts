@@ -1,33 +1,16 @@
 import * as fs from "fs";
 
 import { ITestResult } from "../../interfaces/ITestResult";
+import { OutputStore } from "../../DTOs/OutputStore";
+import { IDurationFormat } from "../../interfaces/IDurationFormat";
 
 export class OutputStoreManager {
 
-    public readonly SRC_FILE_PATH: string;
-    public readonly SRC_FILE: string;
-    public readonly RUNNER: string;
-    public readonly RUNNER_CONFIG: Object;
-
-    public testFilePath: string;
-    public lineNumber: number;
-    public origionalCode: string;
-    public mutatedCode: string;
-    public numberOfFailedTests: number;
-    public numberOfPassedTests: number;
-    public mutantKilled;
+    public static outputStoreList: Array<OutputStore> = [];
 
     public constructor (
-        srcPath: string,
-        srcFile: string,
-        testRunner: string,
-        runnerConfig: Object
-    ) {
-        this.SRC_FILE_PATH = srcPath;
-        this.SRC_FILE = srcFile;
-        this.RUNNER = testRunner;
-        this.RUNNER_CONFIG = runnerConfig;
-    }
+        private outputStoreData: OutputStore
+    ) {}
 
     public static writeOutputStoreToJson (outputStores: Array<OutputStoreManager>) {
        fs.writeFileSync("./srcApp/app/outputStoreData.json", JSON.stringify(outputStores, null, 2));
@@ -37,7 +20,7 @@ export class OutputStoreManager {
         fs.writeFileSync("./srcApp/app/data.json", JSON.stringify(data, null, 2));
     }
 
-    public static setRunTime (runTime: number) {
+    public static setRunTime (runTime: number): IDurationFormat {
         /*
             convert millis to date time adapted from
             https://gist.github.com/remino/1563878
@@ -54,32 +37,43 @@ export class OutputStoreManager {
         return { d, h, m, s, ms };
     }
 
-    public setTestFile (filename: string) {
-        this.testFilePath = filename;
+    public saveOutputStore (): void {
+        OutputStoreManager.outputStoreList.push(this.outputStoreData);
+    }
+
+    public setTestFile (filename: string): void {
+        this.outputStoreData.testFilePath = filename;
     }
 
     public setLineNumber (lineNumber: number): void {
-        this.lineNumber = lineNumber;
+        this.outputStoreData.lineNumber = lineNumber;
     }
 
-    public setNumberOfTests (testResult: ITestResult){
-        this.numberOfPassedTests = parseInt(testResult.passed, 0);
-        this.numberOfFailedTests = parseInt(testResult.failed, 0);
-        this.wasMutantKilled(this.numberOfFailedTests);
+    public setNumberOfTests (testResult: ITestResult): void {
+        this.outputStoreData.numberOfPassedTests = parseInt(testResult.passed, 0);
+        this.outputStoreData.numberOfFailedTests = parseInt(testResult.failed, 0);
+        this.outputStoreData.mutantKilled =
+        this.wasMutantKilled(this.outputStoreData.numberOfFailedTests);
     }
 
     public setOrigionalSourceCode (code: string): void {
-        const codeLines = code.split("\n");
-        this.origionalCode = codeLines[this.lineNumber].trim();
+        const codeLines = this.splitCodeByLine(code);
+        this.outputStoreData.origionalCode =
+        codeLines[this.outputStoreData.lineNumber].trim();
     }
 
     public setModifiedSourceCode (code: string): void {
-        const codeLines = code.split("\n");
-        this.mutatedCode = codeLines[this.lineNumber].trim();
+        const codeLines = this.splitCodeByLine(code);
+        this.outputStoreData.mutatedCode =
+        codeLines[this.outputStoreData.lineNumber].trim();
     }
 
     // was the mutant killed? true is killed (good)
-    public wasMutantKilled (failedTests: number) {
-        this.mutantKilled = failedTests > 0;
+    public wasMutantKilled (failedTests: number): boolean {
+        return failedTests > 0;
+    }
+
+    private splitCodeByLine (code: string): Array<string> {
+        return code.split("\n");
     }
 }
