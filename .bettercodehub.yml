@@ -3,7 +3,11 @@ exclude:
 - /interfaces/.*
 - /karma.conf.js
 - /protractor.conf.js
+- /srcApp/app/app.module.ts
+- /srcApp/environments/.*
+- /srcApp/main.ts
+- /srcApp/polyfills.ts
+- /srcApp/test.ts
 component_depth: 1
 languages:
-- javascript
 - typescript
