@@ -14,10 +14,13 @@ export class MochaTestRunner {
     public runTests (outputStoreManager: OutputStoreManager, testFile: string) {
         this.mocha.addFile(testFile);
         let runner = null;
+        return new Promise((resolve, reject) => {
         runner = this.mocha.run(() => {
                 // not 100% happy with this but it works, so for now it can stay
                 outputStoreManager.setNumberOfTests(this.createTestResult(runner.stats));
+                resolve();
             });
+        });
     }
 
     public createTestResult (stats): ITestResult {
