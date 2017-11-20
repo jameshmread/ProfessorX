@@ -21,7 +21,7 @@ export class OutputStoreManager {
        );
     }
 
-    public static setRunTime (runTime: number): IDurationFormat {
+    public static setRunTime (runTime: number) {
         /*
             convert millis to date time adapted from
             https://gist.github.com/remino/1563878
@@ -35,7 +35,7 @@ export class OutputStoreManager {
         m = m % 60;
         const d = Math.floor(h / 24);
         h = h % 24;
-        return { d, h, m, s, ms };
+        this.writeDataToJson({ d, h, m, s, ms });
     }
 
     public setCurrentOutputStore (outputStore: OutputStore) {
@@ -95,8 +95,8 @@ export class OutputStoreManager {
         return failedTests > 0;
     }
 
-    private static writeDataToJson () {
-        fs.writeFileSync("./srcApp/app/data.json", JSON.stringify(OutputStoreManager.setRunTime, null, 2));
+    private static writeDataToJson (data: IDurationFormat) {
+        fs.writeFileSync("./srcApp/app/data.json", JSON.stringify(data, null, 2));
     }
 
     private splitCodeByLine (code: string): Array<string> {
