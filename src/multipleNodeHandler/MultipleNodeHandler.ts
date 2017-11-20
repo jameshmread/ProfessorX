@@ -31,21 +31,20 @@ export class MultipleNodeHandler {
 
       public async mutateSingleNodeType (mutationOptions: Array<string>, currentNode: IMutatableNode, i: number) {
             for (let j = 0; j < mutationOptions.length; j++) {
-                  this.outputStoreManager.setCurrentOutputStore(new OutputStore(
-                        ConfigManager.filePath,
-                        ConfigManager.fileToMutate,
-                        ConfigManager.testRunner,
-                        ConfigManager.runnerConfig
-                  ));
-                  // possibly need to make new output store?
-                  // resets modified code after a mutation
-                  this.sourceObj.resetModified();
-                  // performs the modification at a specific position
+                  this.outputStoreManager.setCurrentOutputStore(
+                        new OutputStore(
+                              ConfigManager.filePath, ConfigManager.fileToMutate,
+                              ConfigManager.testRunner, ConfigManager.runnerConfig
+                        )
+                  );
+
+                  this.sourceObj.resetModified(); // resets modified code after a mutation
                   this.sourceObj.modifyCode(
                         currentNode.positions[i]["pos"],
                         currentNode.positions[i]["end"],
                         mutationOptions[j]
-                  );
+                  ); // performs the modification at a specific position
+
                   // writes this change to a NEW src file
                   const srcFile = this.fileHandler.writeTempSourceModifiedFile(this.sourceObj.getModifiedSourceCode());
                   // creates a new test file with a reference to the NEW source file
