@@ -1,7 +1,6 @@
-import { HelloWorld } from "./HelloWorld";
-
-import * as ts from "typescript";
 import { expect } from "chai";
+
+import { HelloWorld } from "./HelloWorld";
 
 describe("Test Project addition function", () => {
     let hello: HelloWorld;

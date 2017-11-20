@@ -5,6 +5,7 @@ export class FileHandler {
     public static readonly M_SOURCE_FILE_SUFFIX = ".m.ts";
     public static readonly M_TEST_FILE_SUFFIX = ".spec" + FileHandler.M_SOURCE_FILE_SUFFIX;
     private static counter = 0;
+
     private readonly FULL_PATH: string;
     private sourceCode: string;
     private sourceObject: ts.SourceFile;
@@ -12,12 +13,12 @@ export class FileHandler {
     private testFileName: string;
 
     constructor (private path: string, private filename: string) {
-        if (!(filename.substring(filename.length - 3) === ".ts")) {
-            throw new Error("Typescript files must end with .ts");
-        }
         this.FULL_PATH = path + filename;
         if (!fs.existsSync(this.FULL_PATH)) {
-            throw new Error("File doesn't exist");
+            throw new Error(`File '${this.FULL_PATH}' doesn't exist`);
+        }
+        if (!(filename.substring(filename.length - 3) === ".ts")) {
+            throw new Error("Typescript files must end with .ts");
         }
         this.testFileName = path + filename.substring(0, filename.length - 2) + "spec.ts";
         if (!fs.existsSync(this.testFileName)) {
