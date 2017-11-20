@@ -5,23 +5,19 @@ import { OutputStoreManager } from "../output/OutputStoreManager";
 
 export class MochaTestRunner {
 
-    public testResult: ITestResult;
-    public mocha: Mocha;
+    private mocha: Mocha;
 
     constructor (config: Object) {
         this.mocha = new Mocha(config);
     }
 
-    public runTests (outputStore: OutputStoreManager, testFile: string) {
+    public runTests (outputStoreManager: OutputStoreManager, testFile: string) {
         this.mocha.addFile(testFile);
         let runner = null;
-        return new Promise((resolve, reject) => {
-            runner = this.mocha.run(() => {
+        runner = this.mocha.run(() => {
                 // not 100% happy with this but it works, so for now it can stay
-                outputStore.setNumberOfTests(this.createTestResult(runner.stats));
-                resolve(outputStore);
+                outputStoreManager.setNumberOfTests(this.createTestResult(runner.stats));
             });
-        });
     }
 
     public createTestResult (stats): ITestResult {
