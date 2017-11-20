@@ -16,6 +16,7 @@ export class ProfessorX {
     public multiNodeHandler: MultipleNodeHandler;
 
     public constructor () {
+        const configManager = new ConfigManager();
         this.startTimestamp = new Date().getTime();
         this.fileHandler = new FileHandler(ConfigManager.filePath, ConfigManager.fileToMutate);
         this.sourceObj = new SourceCodeHandler(this.fileHandler.getSourceObject());
