@@ -21,7 +21,8 @@ describe("Output Store", () => {
         {}
     );
     beforeEach(() => {
-        osm = new OutputStoreManager(outputStore);
+        osm = new OutputStoreManager();
+        osm.setCurrentOutputStore(outputStore);
         testResult = {passed: "0", failed: "2", totalRan: "0", duration: "20"};
     });
 

@@ -7,17 +7,15 @@ import { IDurationFormat } from "../../interfaces/IDurationFormat";
 export class OutputStoreManager {
 
     public static outputStoreList: Array<OutputStore> = [];
+    private currentOutputStore: OutputStore;
 
     public constructor (
-        private outputStoreData: OutputStore
     ) {}
 
-    public static writeOutputStoreToJson (outputStores: Array<OutputStoreManager>) {
-       fs.writeFileSync("./srcApp/app/outputStoreData.json", JSON.stringify(outputStores, null, 2));
-    }
-
-    public static writeDataToJson (data: Object) {
-        fs.writeFileSync("./srcApp/app/data.json", JSON.stringify(data, null, 2));
+    public static writeOutputStoreToJson () {
+       fs.writeFileSync("./srcApp/app/outputStoreData.json",
+        JSON.stringify(OutputStoreManager.outputStoreList, null, 2)
+       );
     }
 
     public static setRunTime (runTime: number): IDurationFormat {
@@ -37,40 +35,48 @@ export class OutputStoreManager {
         return { d, h, m, s, ms };
     }
 
+    public setCurrentOutputStore (outputStore: OutputStore) {
+        this.currentOutputStore = outputStore;
+    }
+
     public saveOutputStore (): void {
-        OutputStoreManager.outputStoreList.push(this.outputStoreData);
+        OutputStoreManager.outputStoreList.push(this.currentOutputStore);
     }
 
     public setTestFile (filename: string): void {
-        this.outputStoreData.testFilePath = filename;
+        this.currentOutputStore.testFilePath = filename;
     }
 
     public setLineNumber (lineNumber: number): void {
-        this.outputStoreData.lineNumber = lineNumber;
+        this.currentOutputStore.lineNumber = lineNumber;
     }
 
     public setNumberOfTests (testResult: ITestResult): void {
-        this.outputStoreData.numberOfPassedTests = parseInt(testResult.passed, 0);
-        this.outputStoreData.numberOfFailedTests = parseInt(testResult.failed, 0);
-        this.outputStoreData.mutantKilled =
-        this.wasMutantKilled(this.outputStoreData.numberOfFailedTests);
+        this.currentOutputStore.numberOfPassedTests = parseInt(testResult.passed, 0);
+        this.currentOutputStore.numberOfFailedTests = parseInt(testResult.failed, 0);
+        this.currentOutputStore.mutantKilled =
+        this.wasMutantKilled(this.currentOutputStore.numberOfFailedTests);
     }
 
     public setOrigionalSourceCode (code: string): void {
         const codeLines = this.splitCodeByLine(code);
-        this.outputStoreData.origionalCode =
-        codeLines[this.outputStoreData.lineNumber].trim();
+        this.currentOutputStore.origionalCode =
+        codeLines[this.currentOutputStore.lineNumber].trim();
     }
 
     public setModifiedSourceCode (code: string): void {
         const codeLines = this.splitCodeByLine(code);
-        this.outputStoreData.mutatedCode =
-        codeLines[this.outputStoreData.lineNumber].trim();
+        this.currentOutputStore.mutatedCode =
+        codeLines[this.currentOutputStore.lineNumber].trim();
     }
 
     // was the mutant killed? true is killed (good)
     public wasMutantKilled (failedTests: number): boolean {
         return failedTests > 0;
+    }
+
+    private static writeDataToJson () {
+        fs.writeFileSync("./srcApp/app/data.json", JSON.stringify(OutputStoreManager.setRunTime, null, 2));
     }
 
     private splitCodeByLine (code: string): Array<string> {
