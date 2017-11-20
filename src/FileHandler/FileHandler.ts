@@ -12,12 +12,12 @@ export class FileHandler {
     private testFileName: string;
 
     constructor (private path: string, private filename: string) {
-        if (!(filename.substring(filename.length - 3) === ".ts")) {
-            throw new Error("Typescript files must end with .ts");
-        }
         this.FULL_PATH = path + filename;
         if (!fs.existsSync(this.FULL_PATH)) {
-            throw new Error("File doesn't exist");
+            throw new Error(`File '${this.FULL_PATH}' doesn't exist`);
+        }
+        if (!(filename.substring(filename.length - 3) === ".ts")) {
+            throw new Error("Typescript files must end with .ts");
         }
         this.testFileName = path + filename.substring(0, filename.length - 2) + "spec.ts";
         if (!fs.existsSync(this.testFileName)) {
