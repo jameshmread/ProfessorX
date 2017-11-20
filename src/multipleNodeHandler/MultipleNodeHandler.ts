@@ -20,12 +20,6 @@ export class MultipleNodeHandler {
             public fileHandler: FileHandler
       ) {
             this.outputStoreManager = new OutputStoreManager();
-            this.outputStore = new OutputStore(
-                  ConfigManager.filePath,
-                  ConfigManager.fileToMutate,
-                  ConfigManager.testRunner,
-                  ConfigManager.runnerConfig
-            );
       }
 
       public async mutateAllNodesOfType (currentNode: IMutatableNode) {
@@ -37,7 +31,12 @@ export class MultipleNodeHandler {
 
       public async mutateSingleNodeType (mutationOptions: Array<string>, currentNode: IMutatableNode, i: number) {
             for (let j = 0; j < mutationOptions.length; j++) {
-                  this.outputStoreManager.setCurrentOutputStore(this.outputStore);
+                  this.outputStoreManager.setCurrentOutputStore(new OutputStore(
+                        ConfigManager.filePath,
+                        ConfigManager.fileToMutate,
+                        ConfigManager.testRunner,
+                        ConfigManager.runnerConfig
+                  ));
                   // possibly need to make new output store?
                   // resets modified code after a mutation
                   this.sourceObj.resetModified();
@@ -53,13 +52,12 @@ export class MultipleNodeHandler {
                   const testFile = this.fileHandler.createTempTestModifiedFile();
 
                   this.outputStoreManager.configureStoreData(testFile, currentNode, i, this.sourceObj);
-
                   this.mochaRunner = new MochaTestRunner(ConfigManager.runnerConfig);
                   await this.mochaRunner.runTests(this.outputStoreManager, testFile);
                   // dont like how im deleting and re creating the test file for every node
+                  this.outputStoreManager.addStoreToList();
                   Cleaner.deleteTestFile(testFile);
                   Cleaner.deleteSourceFile(srcFile);
-                  this.outputStoreManager.addStoreToList();
             }
       }
 
