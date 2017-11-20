@@ -36,6 +36,7 @@ export class OutputStoreManager {
         const d = Math.floor(h / 24);
         h = h % 24;
         this.writeDataToJson({ d, h, m, s, ms });
+        return { d, h, m, s, ms };
     }
 
     public setCurrentOutputStore (outputStore: OutputStore) {
