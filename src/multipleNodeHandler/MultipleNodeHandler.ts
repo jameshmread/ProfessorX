@@ -26,7 +26,6 @@ export class MultipleNodeHandler {
                   ConfigManager.testRunner,
                   ConfigManager.runnerConfig
             );
-            this.mochaRunner = new MochaTestRunner(ConfigManager.runnerConfig);
       }
 
       public async mutateAllNodesOfType (currentNode: IMutatableNode) {
@@ -39,6 +38,7 @@ export class MultipleNodeHandler {
       public async mutateSingleNodeType (mutationOptions: Array<string>, currentNode: IMutatableNode, i: number) {
             for (let j = 0; j < mutationOptions.length; j++) {
                   this.outputStoreManager.setCurrentOutputStore(this.outputStore);
+                  // possibly need to make new output store?
                   // resets modified code after a mutation
                   this.sourceObj.resetModified();
                   // performs the modification at a specific position
@@ -54,7 +54,7 @@ export class MultipleNodeHandler {
 
                   this.outputStoreManager.configureStoreData(testFile, currentNode, i, this.sourceObj);
 
-
+                  this.mochaRunner = new MochaTestRunner(ConfigManager.runnerConfig);
                   await this.mochaRunner.runTests(this.outputStoreManager, testFile);
                   // dont like how im deleting and re creating the test file for every node
                   Cleaner.deleteTestFile(testFile);
