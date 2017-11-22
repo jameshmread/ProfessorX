@@ -1,30 +1,30 @@
-import * as ts from "typescript";
+import { SourceFile } from "typescript";
+import { SourceObject } from "../../DTOs/SourceObject";
 
 export class SourceCodeHandler {
-    private modifiedSourceCode: string = this.originalSourceObject.getText();
 
-    constructor (private readonly originalSourceObject: ts.SourceFile) {}
+    constructor (private readonly sourceObj: SourceObject) {}
 
-    public getOriginalSourceObject (): ts.SourceFile {
-        return this.originalSourceObject;
+    public getOriginalSourceObject (): SourceFile {
+        return this.sourceObj.origionalSourceObject;
     }
 
     public getOriginalSourceCode (): string {
-        return this.originalSourceObject.getText();
+        return this.sourceObj.origionalSourceObject.getText();
     }
 
     public getModifiedSourceCode (): string {
-        return this.modifiedSourceCode;
+        return this.sourceObj.modifiedSourceCode;
     }
 
     public resetModified (): void {
-        this.modifiedSourceCode = this.originalSourceObject.getText();
+        this.sourceObj.modifiedSourceCode = this.sourceObj.origionalSourceObject.getText();
     }
 
     public modifyCode (start: number, end: number, replacement: string) {
-        this.modifiedSourceCode =
-        this.modifiedSourceCode.substring(0, start)
+        this.sourceObj.modifiedSourceCode =
+        this.sourceObj.modifiedSourceCode.substring(0, start)
         + replacement
-        + this.modifiedSourceCode.substring(end + 1, this.modifiedSourceCode.length);
+        + this.sourceObj.modifiedSourceCode.substring(end + 1, this.sourceObj.modifiedSourceCode.length);
     }
 }

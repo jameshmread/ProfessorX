@@ -1,10 +1,11 @@
 import * as ts from "typescript";
 import { expect } from "chai";
 import { SourceCodeHandler } from "./SourceCodeHandler";
+import { SourceObject } from "../../DTOs/SourceObject";
 
 describe("Testing SourceCodeHandler", () => {
     let code: string;
-    let sourceObj;
+    let sourceObj: SourceObject;
     let sch: SourceCodeHandler;
 
     beforeEach(() => {
@@ -12,7 +13,7 @@ describe("Testing SourceCodeHandler", () => {
             let x: number = 3 + 9;
             const y: boolean = true;
         `;
-        sourceObj = ts.createSourceFile("", code, ts.ScriptTarget.ES5, true);
+        sourceObj = new SourceObject(ts.createSourceFile("", code, ts.ScriptTarget.ES5, true));
         sch = new SourceCodeHandler(sourceObj);
     });
 
