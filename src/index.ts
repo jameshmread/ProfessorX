@@ -10,6 +10,7 @@ import { OutputStore } from "../DTOs/OutputStore";
 import * as worker from "child_process";
 import * as os from "os";
 import { SourceObject } from "../DTOs/SourceObject";
+import { FileObject } from "../DTOs/FileObject";
 
 export class ProfessorX {
     public startTimestamp: number;
@@ -22,7 +23,7 @@ export class ProfessorX {
     public constructor () {
         const configManager = new ConfigManager();
         this.startTimestamp = new Date().getTime();
-        this.fileHandler = new FileHandler(ConfigManager.filePath, ConfigManager.fileToMutate);
+        this.fileHandler = new FileHandler(new FileObject(ConfigManager.filePath, ConfigManager.fileToMutate));
         this.sourceObj = new SourceObject(this.fileHandler.getSourceObject());
         // above two will need to be given a new source object for every file
 
@@ -35,7 +36,6 @@ export class ProfessorX {
         for (let i = 0; i < 4; i++){
             workers.push(worker.fork("./src/Worker.ts"));
             workers[i].addListener("message", () => {});
-            console.log("dd");
         }
         for (let i = 0; i < 4; i++) {
             workers[i].send("55");

@@ -1,9 +1,9 @@
 import * as fs from "fs";
 
-import { FileHandler } from "../FileHandler/FileHandler";
+import { FileObject } from "../../DTOs/FileObject";
 
 export class Cleaner {
-    public static readonly fileExtensionToRemove = FileHandler.M_SOURCE_FILE_SUFFIX;
+    public static readonly fileExtensionToRemove = FileObject.M_SOURCE_FILE_SUFFIX;
     public static filesToDelete: Array<string> = [];
 
     public static deleteSourceFile (fileToDelete: string) {
