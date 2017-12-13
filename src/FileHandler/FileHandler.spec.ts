@@ -26,13 +26,13 @@ describe("Testing FileHandler", () => {
 
     it("modifying the reference of a test file to the mutated code should work", () => {
         expect(fh.mutateTestFileReference(`import { FileHandler } from "./FileHandler";`)).to.eql
-            (`import { FileHandler } from "./FileHandler.ts0.m";`);
+            (`import { FileHandler } from "./FileHandler.ts0C0.m";`);
     });
 
     it("modifying the reference of a test file to the mutated code should work", () => {
         const fileHandler = new FileHandler(new FileObject("./testProject/src/", "HelloWorld.ts"));
         expect(fileHandler.mutateTestFileReference(`import { HelloWorld } from "./HelloWorld";`)).to.eql
-            (`import { HelloWorld } from "./HelloWorld.ts0.m";`);
+            (`import { HelloWorld } from "./HelloWorld.ts0C0.m";`);
     });
 
 });

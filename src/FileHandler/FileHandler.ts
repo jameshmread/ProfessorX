@@ -35,14 +35,16 @@ export class FileHandler {
     }
 
     public writeTempSourceModifiedFile (modifiedCode: string): string {
-        const tempFilename = this.file.fullPath + FileObject.counter + FileObject.M_SOURCE_FILE_SUFFIX;
+        const tempFilename = 
+        this.file.fullPath + FileObject.counter + "C" + this.file.coreNumber + FileObject.M_SOURCE_FILE_SUFFIX;
         fs.writeFileSync(tempFilename, modifiedCode);
         return tempFilename;
     }
 
     public createTempTestModifiedFile (): string {
         const updatedContents = this.mutateTestFileReference(this.getTestFileContents());
-        const tempFilename = this.file.fullPath + FileObject.counter++ + FileObject.M_TEST_FILE_SUFFIX;
+        const tempFilename =
+            this.file.fullPath + FileObject.counter++ + "C" + this.file.coreNumber + FileObject.M_TEST_FILE_SUFFIX;
         fs.writeFileSync(tempFilename, updatedContents);
         return tempFilename;
     }
@@ -51,7 +53,7 @@ export class FileHandler {
         const filenameNoExtension = this.file.filename.substring(0, this.file.filename.length - 3);
         contents = contents.replace(
             "/" + filenameNoExtension,
-            "/" + filenameNoExtension + ".ts" + FileObject.counter + ".m");
+            "/" + filenameNoExtension + ".ts" + FileObject.counter + "C" + this.file.coreNumber + ".m");
         return contents;
     }
 
