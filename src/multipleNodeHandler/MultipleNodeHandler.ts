@@ -26,14 +26,9 @@ export class MultipleNodeHandler {
             this.outputStoreManager = new OutputStoreManager();
       }
 
-      public async mutateAllNodesOfType (currentNode: IMutatableNode) {
-            const mutationOptions = MutationFactory.getMultipleMutations(currentNode.syntaxType);
-            for (let i = 0; i < currentNode.positions.length; i++) {
-                  await this.mutateSingleNodeType(mutationOptions, currentNode, i);
-            }
-      }
 
-      public async mutateSingleNodeType (mutationOptions: Array<string>, currentNode: IMutatableNode, i: number) {
+      public async mutateSingleNode (currentNode: IMutatableNode) {
+            const mutationOptions = MutationFactory.getMultipleMutations(currentNode.syntaxType);
             for (let j = 0; j < mutationOptions.length; j++) {
                   this.outputStoreManager.setCurrentOutputStore(
                         new OutputStore(
@@ -44,8 +39,8 @@ export class MultipleNodeHandler {
 
                   this.sourceCodeHandler.resetModified(); // resets modified code after a mutation
                   this.sourceCodeHandler.modifyCode(
-                        currentNode.positions[i]["pos"],
-                        currentNode.positions[i]["end"],
+                        currentNode.positions["pos"],
+                        currentNode.positions["end"],
                         mutationOptions[j]
                   ); // performs the modification at a specific position
 
@@ -55,7 +50,7 @@ export class MultipleNodeHandler {
                   // creates a new test file with a reference to the NEW source file
                   const testFile = this.fileHandler.createTempTestModifiedFile();
 
-                  this.outputStoreManager.configureStoreData(testFile, currentNode, i, this.sourceCodeHandler);
+                  this.outputStoreManager.configureStoreData(testFile, currentNode, this.sourceCodeHandler);
                   this.mochaRunner = new MochaTestRunner(ConfigManager.runnerConfig);
                   await this.mochaRunner.runTests(this.outputStoreManager, testFile);
                   // dont like how im deleting and re creating the test file for every node

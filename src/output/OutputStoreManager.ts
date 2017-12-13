@@ -16,9 +16,9 @@ export class OutputStoreManager {
     ) {}
 
     public static writeOutputStoreToJson () {
-       fs.writeFileSync("./srcApp/app/outputStoreData.json",
+        fs.writeFileSync("./srcApp/app/outputStoreData.json",
         JSON.stringify(OutputStoreManager.outputStoreList, null, 2)
-       );
+        );
     }
 
     public static setRunTime (runTime: number) {
@@ -50,7 +50,6 @@ export class OutputStoreManager {
     public configureStoreData (
         testFile: string,
         currentNode: IMutatableNode,
-        instanceOfNode: number,
         sourceObj: SourceCodeHandler
     ) {
         this.setTestFile(testFile);
@@ -58,7 +57,7 @@ export class OutputStoreManager {
         this.setLineNumber(
             ts.getLineAndCharacterOfPosition(
                 sourceObj.getOriginalSourceObject(),
-                currentNode.positions[instanceOfNode]["pos"]).line
+                currentNode.positions["pos"]).line
         );
         this.setOrigionalSourceCode(sourceObj.getOriginalSourceCode());
         this.setModifiedSourceCode(sourceObj.getModifiedSourceCode());
