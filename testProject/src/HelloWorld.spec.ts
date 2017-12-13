@@ -22,11 +22,11 @@ describe("Test Project addition function", () => {
     it("inputting 1 and 1 should return 0", () => {
         const expected = 0;
         const actual = hello.takeAway(1, 1);
-        expect(true).to.equal(true);
+        expect(actual).to.equal(expected);
     });
 
-    it("should return true", () => {
-        expect(hello.truth()).to.equal(true);
+    it("should always pass", () => {
+        expect(hello.truth()).to.equal(hello.truth());
     });
 
 });
