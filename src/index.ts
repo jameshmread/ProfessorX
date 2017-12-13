@@ -35,22 +35,22 @@ export class ProfessorX {
 
     }
 
-    public  main () {
+    public async main () {
         // will be mutateFiles -> mutateNodesInsideFiles
+        this.nodes = this.getAllNodes();
+        this.splitNodes();
         // JSON.stringify(new OutputStore("path", "file", "runner", {}))
         // for (let i = 0; i < this.logicalCores; i++){
         //     this.workers.push(worker.fork("./src/Worker.ts"));
         //     this.workers[i].addListener("message", () => {});
         // }
        
-        // this.multiNodeHandler = new MultipleNodeHandler(
-        //     this.sourceObj,
-        //     this.fileObj
-        // );
-        this.nodes = this.getAllNodes();
-        this.splitNodes();
-        // await this.mutateAllNodeTypes();
-        // this.finishRun();
+        this.multiNodeHandler = new MultipleNodeHandler(
+            this.sourceObj,
+            this.fileObj
+        );
+        await this.mutateAllNodes();
+        this.finishRun();
     }
 
     public getAllNodes () {
@@ -64,7 +64,7 @@ export class ProfessorX {
         });
         return this.nodes;
   }
-
+    // splits nodes evenly among logical cpu cores
     private splitNodes () {
         const splitNodes = [];
         let coreChosen = 0;
@@ -83,9 +83,9 @@ export class ProfessorX {
         return splitNodes;
     }
 
-    private async mutateAllNodeTypes () {
+    private async mutateAllNodes () {
         for (const currentNode of this.nodes) {
-            await this.multiNodeHandler.mutateAllNodesOfType(currentNode);
+            await this.multiNodeHandler.mutateSingleNode(currentNode);
         }
     }
 
