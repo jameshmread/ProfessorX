@@ -6,6 +6,8 @@ export class FileObject {
       public static readonly M_TEST_FILE_SUFFIX = ".spec" + FileObject.M_SOURCE_FILE_SUFFIX;
       public static counter = 0;
 
+      public coreNumber = 0;
+
       public fullPath: string;
       public path: string;
       public filename: string;
