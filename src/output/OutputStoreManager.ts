@@ -15,9 +15,9 @@ export class OutputStoreManager {
     public constructor (
     ) {}
 
-    public static writeOutputStoreToJson () {
+    public static writeOutputStoreToJson (collatedResults) {
         fs.writeFileSync("./srcApp/app/outputStoreData.json",
-        JSON.stringify(OutputStoreManager.outputStoreList, null, 2)
+        JSON.stringify(collatedResults, null, 2)
         );
     }
 

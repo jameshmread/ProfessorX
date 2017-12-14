@@ -10,10 +10,11 @@ import { MochaTestRunner } from "../mocha-testRunner/Mocha-TestRunner";
 import { OutputStore } from "../../DTOs/OutputStore";
 import { SourceObject } from "../../DTOs/SourceObject";
 import { FileObject } from "../../DTOs/FileObject";
+import { Worker } from "../Worker";
 
 export class MultipleNodeHandler {
       private outputStoreManager: OutputStoreManager;
-      private outputStore: OutputStore;
+      private outputStore: OutputStore; // needed?
       private mochaRunner: MochaTestRunner;
       private sourceCodeHandler: SourceCodeHandler;
       private fileHandler: FileHandler;
@@ -58,5 +59,6 @@ export class MultipleNodeHandler {
                   Cleaner.deleteTestFile(testFile);
                   Cleaner.deleteSourceFile(srcFile);
             }
+            Worker.workerResults.push(OutputStoreManager.outputStoreList);
       }
 }
