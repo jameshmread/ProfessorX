@@ -9,14 +9,18 @@ export class MutationFactory {
         SyntaxKind.TrueKeyword,
         SyntaxKind.FalseKeyword,
         SyntaxKind.PlusPlusToken,
-        SyntaxKind.MinusMinusToken
+        SyntaxKind.MinusMinusToken,
+        SyntaxKind.BarBarToken,
+        SyntaxKind.GreaterThanToken
     ];
 
     public static syntaxMutationMap: IsyntaxMutationMap = {
+        29: [" < ", " <= ", ">=", " != ", " = "],
         37: [" - ", " / ", " * "], // plus
         38: [" + ",  " / ", " * "], // minus
         39: [" / "], // multiply
         44: ["++"],
+        54: [" && "],
         101: [" false"], // true
         86: [" true"] // false
     };
