@@ -34,7 +34,8 @@ export class Worker {
 
       public async execute () {
             await this.mutateAllNodes();
-            process.send(JSON.stringify(Worker.workerResults));
+            Worker.workerResults = [].concat.apply([], Worker.workerResults);
+            process.send(Worker.workerResults);
             process.exit(0);
       }
 

@@ -1,8 +1,6 @@
 export class OutputStore {
       public readonly SRC_FILE_PATH: string;
       public readonly SRC_FILE: string;
-      public readonly RUNNER: string;
-      public readonly RUNNER_CONFIG: Object;
 
       public testFilePath: string;
       public lineNumber: number;
@@ -14,13 +12,9 @@ export class OutputStore {
 
       public constructor (
             srcPath: string,
-            srcFile: string,
-            testRunner: string,
-            runnerConfig: Object
+            srcFile: string
         ) {
             this.SRC_FILE_PATH = srcPath;
             this.SRC_FILE = srcFile;
-            this.RUNNER = testRunner;
-            this.RUNNER_CONFIG = runnerConfig;
         }
 }

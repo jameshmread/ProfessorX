@@ -3,6 +3,8 @@ import * as os from "os";
 
 import { IMutatableNode } from "../interfaces/IMutatableNode";
 import { OutputStoreManager } from "./output/OutputStoreManager";
+import { EndResult } from "../DTOs/EndResult";
+import { ConfigManager } from "./configManager/ConfigManager";
 
 export class Supervisor {
       public static startTimestamp: number;
@@ -54,16 +56,22 @@ export class Supervisor {
       private static collateResults (data) {
             this.threadResults.push(data);
             if (this.threadResults.length >= Supervisor.logicalCores) {
+                  this.threadResults = [].concat.apply([], this.threadResults);
                   Supervisor.finishRun();
                   return;
             }
       }
 
       private static finishRun () {
-            console.log("FINISH RUN--------------------------------");
             const endTimestamp = new Date().getTime();
             const difference = new Date(endTimestamp - this.startTimestamp).getTime();
-            OutputStoreManager.writeOutputStoreToJson(Supervisor.threadResults);
+
+            const endResult = new EndResult(
+                  ConfigManager.testRunner,
+                  ConfigManager.runnerConfig,
+                  Supervisor.threadResults
+            );
+            OutputStoreManager.writeOutputStoreToJson(endResult);
             OutputStoreManager.setRunTime(difference);
         }
 }
