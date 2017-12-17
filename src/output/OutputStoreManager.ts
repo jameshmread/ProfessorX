@@ -9,19 +9,18 @@ import { SourceCodeHandler } from "../SourceCodeHandler/SourceCodeHandler";
 
 export class OutputStoreManager {
 
-    public static outputStoreList: Array<OutputStore> = [];
+    public static outputStoreList = new Array<OutputStore>();
     private currentOutputStore: OutputStore;
 
     public constructor (
     ) {}
 
-    public static writeOutputStoreToJson () {
-       fs.writeFileSync("./srcApp/app/outputStoreData.json",
-        JSON.stringify(OutputStoreManager.outputStoreList, null, 2)
-       );
+    public static writeOutputStoreToJson (collatedResults) {
+        fs.writeFileSync("./srcApp/app/outputStoreData.json",
+        JSON.stringify(collatedResults, null, 2));
     }
 
-    public static setRunTime (runTime: number) {
+    public static setRunTime (runTime: number): IDurationFormat {
         /*
             convert millis to date time adapted from
             https://gist.github.com/remino/1563878
@@ -39,29 +38,28 @@ export class OutputStoreManager {
         return { d, h, m, s, ms };
     }
 
-    public setCurrentOutputStore (outputStore: OutputStore) {
+    public setCurrentOutputStore (outputStore: OutputStore): void {
         this.currentOutputStore = outputStore;
     }
 
     public addStoreToList (): void {
         OutputStoreManager.outputStoreList.push(this.currentOutputStore);
     }
-    // needs a test
+
     public configureStoreData (
         testFile: string,
         currentNode: IMutatableNode,
-        instanceOfNode: number,
-        sourceObj: SourceCodeHandler
+        sourceCodeHandler: SourceCodeHandler
     ) {
         this.setTestFile(testFile);
         // consider setting test file once per file since it is just duplication
         this.setLineNumber(
             ts.getLineAndCharacterOfPosition(
-                sourceObj.getOriginalSourceObject(),
-                currentNode.positions[instanceOfNode]["pos"]).line
+                sourceCodeHandler.getOriginalSourceObject(),
+                currentNode.positions["pos"]).line
         );
-        this.setOrigionalSourceCode(sourceObj.getOriginalSourceCode());
-        this.setModifiedSourceCode(sourceObj.getModifiedSourceCode());
+        this.setOrigionalSourceCode(sourceCodeHandler.getOriginalSourceCode());
+        this.setModifiedSourceCode(sourceCodeHandler.getModifiedSourceCode());
     }
 
     public setTestFile (filename: string): void {

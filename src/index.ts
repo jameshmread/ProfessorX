@@ -1,52 +1,53 @@
+import { IMutatableNode } from "../interfaces/IMutatableNode";
+import { ConfigManager } from "./configManager/ConfigManager";
 import { FileHandler } from "./FileHandler/FileHandler";
 import { CodeInspector } from "./CodeInspector/CodeInspector";
 import { SourceCodeHandler } from "./SourceCodeHandler/SourceCodeHandler";
 import { OutputStoreManager } from "./output/OutputStoreManager";
-import { ConfigManager } from "./configManager/ConfigManager";
-import { IMutatableNode } from "../interfaces/IMutatableNode";
-import { MultipleNodeHandler } from "./multipleNodeHandler/MultipleNodeHandler";
+import { MutationFactory } from "./mutationFactory/MutationFactory";
+import { Supervisor } from "./Supervisor";
+
+import { SourceObject } from "../DTOs/SourceObject";
 import { OutputStore } from "../DTOs/OutputStore";
+import { FileObject } from "../DTOs/FileObject";
 
 export class ProfessorX {
-    public startTimestamp: number;
+
     public fileHandler: FileHandler;
-    public sourceObj: SourceCodeHandler;
+    public sourceObj: SourceObject;
+    public fileObj: FileObject;
     public codeInspector: CodeInspector;
-    public nodes: Array<IMutatableNode>;
-    public multiNodeHandler: MultipleNodeHandler;
+    public nodes = new Array<IMutatableNode>();
+    public supervisor: Supervisor;
 
     public constructor () {
         const configManager = new ConfigManager();
-        this.startTimestamp = new Date().getTime();
-        this.fileHandler = new FileHandler(ConfigManager.filePath, ConfigManager.fileToMutate);
-        this.sourceObj = new SourceCodeHandler(this.fileHandler.getSourceObject());
-        // above two will need to be given a new source object for every file
+        this.fileObj = new FileObject(ConfigManager.filePath, ConfigManager.fileToMutate);
+        this.fileHandler = new FileHandler(this.fileObj);
+        this.sourceObj = new SourceObject(this.fileHandler.getSourceObject());
+        this.codeInspector = new CodeInspector(this.sourceObj.origionalSourceObject);
+        // above two will need to be given a new source object / file path for every file
     }
 
     public async main () {
         // will be mutateFiles -> mutateNodesInsideFiles
-        this.multiNodeHandler = new MultipleNodeHandler(
-            this.sourceObj,
-            new CodeInspector(this.fileHandler.getSourceObject()),
-            this.fileHandler
-        );
-        this.nodes = this.multiNodeHandler.getAllNodes();
-        await this.mutateAllNodeTypes();
-        this.finishRun();
+        this.nodes = this.getAllNodes();
+        this.supervisor = new Supervisor(this.nodes);
     }
 
-    private async mutateAllNodeTypes () {
-        for (const currentNode of this.nodes) {
-            await this.multiNodeHandler.mutateAllNodesOfType(currentNode);
-        }
-    }
+    public getAllNodes () {
+        MutationFactory.mutatableTokens.forEach((syntaxItem) => {
+            this.codeInspector.findObjectsOfSyntaxKind(syntaxItem).forEach((token) => {
+                this.nodes.push({
+                    syntaxType : syntaxItem,
+                    positions : token
+                });
+            });
+        });
+        return this.nodes;
+  }
 
-    private finishRun () {
-        const endTimestamp = new Date().getTime();
-        const difference = new Date(endTimestamp - this.startTimestamp).getTime();
-        OutputStoreManager.writeOutputStoreToJson();
-        OutputStoreManager.setRunTime(difference);
-    }
+
 }
 const x = new ProfessorX();
 x.main();

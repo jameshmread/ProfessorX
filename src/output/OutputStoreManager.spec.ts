@@ -14,12 +14,8 @@ describe("Output Store", () => {
     }`;
     const firstLine = "export class HelloWorld {";
     let testResult: ITestResult;
-    outputStore = new OutputStore(
-        "./TestPath",
-        "SourceFileName.ts",
-        "Mocha-TestRunner",
-        {}
-    );
+    outputStore = new OutputStore("./TestPath", "SourceFileName.ts");
+
     beforeEach(() => {
         osm = new OutputStoreManager();
         osm.setCurrentOutputStore(outputStore);
