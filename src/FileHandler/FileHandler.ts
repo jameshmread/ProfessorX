@@ -35,7 +35,7 @@ export class FileHandler {
     }
 
     public writeTempSourceModifiedFile (modifiedCode: string): string {
-        const tempFilename = 
+        const tempFilename =
         this.file.fullPath + FileObject.counter + "C" + this.file.coreNumber + FileObject.M_SOURCE_FILE_SUFFIX;
         fs.writeFileSync(tempFilename, modifiedCode);
         return tempFilename;
