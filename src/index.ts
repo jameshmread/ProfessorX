@@ -7,7 +7,6 @@ import { OutputStoreManager } from "./output/OutputStoreManager";
 import { MutationFactory } from "./mutationFactory/MutationFactory";
 import { Supervisor } from "./Supervisor";
 
-
 import { SourceObject } from "../DTOs/SourceObject";
 import { OutputStore } from "../DTOs/OutputStore";
 import { FileObject } from "../DTOs/FileObject";

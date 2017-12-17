@@ -14,7 +14,6 @@ import { Worker } from "../Worker";
 
 export class MultipleNodeHandler {
       private outputStoreManager: OutputStoreManager;
-      private outputStore: OutputStore; // needed?
       private mochaRunner: MochaTestRunner;
       private sourceCodeHandler: SourceCodeHandler;
       private fileHandler: FileHandler;
@@ -32,10 +31,7 @@ export class MultipleNodeHandler {
             const mutationOptions = MutationFactory.getMultipleMutations(currentNode.syntaxType);
             for (let j = 0; j < mutationOptions.length; j++) {
                   this.outputStoreManager.setCurrentOutputStore(
-                        new OutputStore(
-                              ConfigManager.filePath, ConfigManager.fileToMutate,
-                              ConfigManager.testRunner, ConfigManager.runnerConfig
-                        )
+                        new OutputStore(ConfigManager.filePath, ConfigManager.fileToMutate)
                   );
 
                   this.sourceCodeHandler.resetModified(); // resets modified code after a mutation
