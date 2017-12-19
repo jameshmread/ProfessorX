@@ -21,6 +21,7 @@ export class ProfessorX {
     public supervisor: Supervisor;
 
     public constructor () {
+        console.log("Setting up environment. \n");
         const configManager = new ConfigManager();
         this.fileObj = new FileObject(ConfigManager.filePath, ConfigManager.fileToMutate);
         this.fileHandler = new FileHandler(this.fileObj);
@@ -31,7 +32,9 @@ export class ProfessorX {
 
     public async main () {
         // will be mutateFiles -> mutateNodesInsideFiles
+        console.log("Finding Nodes... \n");
         this.nodes = this.getAllNodes();
+        console.log("Found ", this.nodes.length, "mutatable nodes. \n");
         this.supervisor = new Supervisor(this.nodes);
     }
 

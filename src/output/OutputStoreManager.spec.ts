@@ -67,10 +67,10 @@ describe("Output Store", () => {
     });
 
     it("should set runtime to a date format of 0,0,0,0,300 when given 300", () => {
-        expect(OutputStoreManager.setRunTime(300)).to.eql({d: 0, h: 0, m: 0, s: 0, ms: 300});
+        expect(OutputStoreManager.calculateRunTime(300)).to.eql({d: 0, h: 0, m: 0, s: 0, ms: 300});
     });
 
     it("should set runtime to 0,0,0,1,1 when given 1001", () => {
-        expect(OutputStoreManager.setRunTime(1001)).to.eql({d: 0, h: 0, m: 0, s: 1, ms: 1});
+        expect(OutputStoreManager.calculateRunTime(1001)).to.eql({d: 0, h: 0, m: 0, s: 1, ms: 1});
     });
 });

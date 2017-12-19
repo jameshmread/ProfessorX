@@ -6,6 +6,11 @@ import { OutputStoreManager } from "./output/OutputStoreManager";
 import { EndResult } from "../DTOs/EndResult";
 import { ConfigManager } from "./configManager/ConfigManager";
 
+process.on("SIGINT", () => {
+      console.log("SIGINT Caught. Program ending. \n");
+      console.log("Killing Workers");
+});
+
 export class Supervisor {
       public static startTimestamp: number;
 
@@ -20,6 +25,7 @@ export class Supervisor {
             Supervisor.startTimestamp = new Date().getTime();
 
             Supervisor.nodes = nodes;
+            console.log("Splitting nodes among workers \n");
             Supervisor.nodes = Supervisor.splitNodes();
             Supervisor.spawnWorkers();
       }
@@ -39,12 +45,14 @@ export class Supervisor {
                   splitNodes[coreChosen].push(tempNodes[i]);
                   coreChosen++;
             }
+            console.log("Nodes Split: ", splitNodes);
             return splitNodes;
       }
 
       private static spawnWorkers () {
             for (let i = 0; i < Supervisor.logicalCores; i++) {
-                  Supervisor.workers.push(worker.fork("./src/Worker.ts"));
+                  Supervisor.workers.push(worker.fork("./src/Worker.ts", [], {silent: true}));
+                  console.log("Creating Worker: ", i);
                   Supervisor.workers[i].addListener("message", () => {});
                   Supervisor.workers[i].on("message", (data) => {
                         Supervisor.collateResults(data);
@@ -55,7 +63,9 @@ export class Supervisor {
 
       private static collateResults (data) {
             this.threadResults.push(data);
+            console.log("\n Worker Complete \n");
             if (this.threadResults.length >= Supervisor.logicalCores) {
+                  console.log("All workers complete");
                   this.threadResults = [].concat.apply([], this.threadResults);
                   Supervisor.finishRun();
                   return;
@@ -64,14 +74,16 @@ export class Supervisor {
 
       private static finishRun () {
             const endTimestamp = new Date().getTime();
-            const difference = new Date(endTimestamp - this.startTimestamp).getTime();
-
+            const difference = OutputStoreManager.calculateRunTime(
+                   new Date(endTimestamp - this.startTimestamp).getTime()
+            );
+            console.log("Mutations Complete in: ", difference);
             const endResult = new EndResult(
                   ConfigManager.testRunner,
                   ConfigManager.runnerConfig,
                   Supervisor.threadResults
             );
             OutputStoreManager.writeOutputStoreToJson(endResult);
-            OutputStoreManager.setRunTime(difference);
+            OutputStoreManager.writeDataToJson(difference);
         }
 }
