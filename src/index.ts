@@ -29,7 +29,7 @@ export class ProfessorX {
         this.codeInspector = new CodeInspector(this.sourceObj.origionalSourceObject);
         // above two will need to be given a new source object / file path for every file
     }
-    
+
     public async main () {
         // will be mutateFiles -> mutateNodesInsideFiles
         console.log("Finding Nodes... \n");
