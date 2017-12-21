@@ -4,7 +4,7 @@ import { Cleaner } from "./Cleaner";
 describe("Cleaner", () => {
 
     it("should return true when given a source.m.ts file", () => {
-        expect(Cleaner.isMutatedFile("source.m.ts")).to.equal(true);
+        expect(Cleaner.isMutatedFile("HelloWorld.ts1C746.m.ts")).to.equal(true);
     });
 
     it("should return true when given a test.spec.m.ts file", () => {

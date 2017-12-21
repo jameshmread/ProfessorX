@@ -4,7 +4,6 @@ import { FileObject } from "../../DTOs/FileObject";
 import { ConfigManager } from "../configManager/ConfigManager";
 
 export class Cleaner {
-    public static filesToDelete: Array<string> = [];
 
     public static deleteSourceFile (fileToDelete: string) {
         fs.unlink(fileToDelete);
@@ -18,18 +17,17 @@ export class Cleaner {
     }
 
     public static cleanRemainingFiles () {
-        const fileArray = fs.readdir(ConfigManager.filePath, (err, directory) => {
-            console.log("Error Removing Files after termination: ", err);
-        });
+        const fileArray = fs.readdirSync(ConfigManager.filePath);
         Cleaner.removeFoundFiles(
             Cleaner.filterMutatedFiles(fileArray)
         );
     }
 
     public static filterMutatedFiles (fileArray) {
-        return fileArray.filter((element) => {
+        const filtered = fileArray.filter((element) => {
             return Cleaner.isMutatedFile(element);
         });
+        return filtered;
     }
 
 
@@ -40,9 +38,7 @@ export class Cleaner {
 
     private static removeFoundFiles (fileArray) {
         fileArray.forEach((file) => {
-            fs.unlink(file, (err) => {
-                console.log("ERROR removing files: ", err);
-            });
+            fs.unlinkSync(ConfigManager.filePath + file);
         });
     }
 
