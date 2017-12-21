@@ -5,10 +5,12 @@ import { IMutatableNode } from "../interfaces/IMutatableNode";
 import { OutputStoreManager } from "./output/OutputStoreManager";
 import { EndResult } from "../DTOs/EndResult";
 import { ConfigManager } from "./configManager/ConfigManager";
+import { Cleaner } from "./cleanup/Cleaner";
 
 process.on("SIGINT", () => {
       console.log("SIGINT Caught. Program ending. \n");
-      console.log("Killing Workers");
+      console.log("Deleting Files \n");
+      Cleaner.cleanRemainingFiles();
 });
 
 export class Supervisor {
