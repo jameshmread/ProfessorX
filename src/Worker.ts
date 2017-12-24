@@ -1,3 +1,8 @@
+process.on("message", (input) => {
+      const worker = new Worker(JSON.parse(input));
+      worker.execute();
+});
+
 import { Supervisor } from "./Supervisor";
 import { MultipleNodeHandler } from "./multipleNodeHandler/MultipleNodeHandler";
 import { FileObject } from "../DTOs/FileObject";
@@ -5,11 +10,6 @@ import { SourceObject } from "../DTOs/SourceObject";
 import { ConfigManager } from "./configManager/ConfigManager";
 import { FileHandler } from "./FileHandler/FileHandler";
 import { OutputStore } from "../DTOs/OutputStore";
-
-process.on("message", (input) => {
-      const worker = new Worker(JSON.parse(input));
-      worker.execute();
-});
 
 export class Worker {
       public static workerResults = [];
@@ -36,7 +36,6 @@ export class Worker {
             await this.mutateAllNodes();
             Worker.workerResults = [].concat.apply([], Worker.workerResults);
             process.send(Worker.workerResults);
-            process.exit(0);
       }
 
       private async mutateAllNodes () {
