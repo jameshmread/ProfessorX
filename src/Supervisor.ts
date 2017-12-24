@@ -47,17 +47,26 @@ export class Supervisor {
                   splitNodes[coreChosen].push(tempNodes[i]);
                   coreChosen++;
             }
-            console.log("Nodes Split: ", splitNodes);
+            console.log("Nodes Split: ", splitNodes[0].length);
             return splitNodes;
       }
 
       private static spawnWorkers () {
             for (let i = 0; i < Supervisor.logicalCores; i++) {
-                  Supervisor.workers.push(worker.fork("./src/Worker.ts", [], {silent: true}));
+                  Supervisor.workers.push(worker.fork("./src/Worker.ts", [], {}));
                   console.log("Creating Worker: ", i);
-                  Supervisor.workers[i].addListener("message", () => {});
+                  Supervisor.workers[i].on("close", (close, err) => {
+                        console.log("Worker Closed: ", [close, err]);
+                  });
+                  Supervisor.workers[i].on("error", (err) => {
+                        console.log("Worker Error: ", err);
+                  });
+                  Supervisor.workers[i].on("exit", (exit) => {
+                        console.log("Worker Exit: ", exit);
+                  });
                   Supervisor.workers[i].on("message", (data) => {
                         Supervisor.collateResults(data);
+                        Supervisor.workers[i].kill();
                   });
                   Supervisor.workers[i].send(JSON.stringify(Supervisor.nodes[i]));
             }
