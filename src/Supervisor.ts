@@ -96,5 +96,6 @@ export class Supervisor {
             );
             OutputStoreManager.writeOutputStoreToJson(endResult);
             OutputStoreManager.writeDataToJson(difference);
+            Cleaner.cleanRemainingFiles();
         }
 }
