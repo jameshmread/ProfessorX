@@ -15,7 +15,7 @@ export class MutationFactory {
     ];
 
     public static syntaxMutationMap: IsyntaxMutationMap = {
-        29: [" < ", " <= ", ">=", " != ", " = "],
+        29: [" < ", " <= ", ">=", " != ", " = "], // greater than
         37: [" - ", " / ", " * "], // plus
         38: [" + ",  " / ", " * "], // minus
         39: [" / "], // multiply
