@@ -22,10 +22,8 @@ export class Supervisor {
 
       public static threadResults = [];
 
-
       constructor (nodes: Array<IMutatableNode>) {
             Supervisor.startTimestamp = new Date().getTime();
-
             Supervisor.nodes = nodes;
             console.log("Splitting nodes among workers \n");
             Supervisor.nodes = Supervisor.splitNodes();
