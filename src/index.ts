@@ -10,47 +10,64 @@ import { Supervisor } from "./Supervisor";
 import { SourceObject } from "../DTOs/SourceObject";
 import { OutputStore } from "../DTOs/OutputStore";
 import { FileObject } from "../DTOs/FileObject";
+import { IFileDescriptor } from "../interfaces/IFileDescriptor";
 
 export class ProfessorX {
 
-    public fileHandler: FileHandler;
-    public sourceObj: SourceObject;
-    public fileObj: FileObject;
-    public codeInspector: CodeInspector;
-    public nodes = new Array<IMutatableNode>();
+    public fileNameNodes = new Array<IMutatableNode>();
+    public fileDescriptors: Array<IFileDescriptor>;
     public supervisor: Supervisor;
 
     public constructor () {
         console.log("Setting up environment. \n");
         const configManager = new ConfigManager();
-        this.fileObj = new FileObject(ConfigManager.filePath, ConfigManager.fileToMutate);
-        this.fileHandler = new FileHandler(this.fileObj);
-        this.sourceObj = new SourceObject(this.fileHandler.getSourceObject());
-        this.codeInspector = new CodeInspector(this.sourceObj.origionalSourceObject);
-        // above two will need to be given a new source object / file path for every file
+        this.fileDescriptors = new Array<IFileDescriptor>();
     }
 
     public async main () {
         // will be mutateFiles -> mutateNodesInsideFiles
+        console.log("Creating File Objects");
+        this.createAllFileDescriptors();
         console.log("Finding Nodes... \n");
-        this.nodes = this.getAllNodes();
-        console.log("Found ", this.nodes.length, "mutatable nodes. \n");
-        this.supervisor = new Supervisor(this.nodes);
+        this.traverseFiles();
+        console.log("Found ", this.fileNameNodes.length, " mutatable nodes. ");
+        console.log("In ", ConfigManager.filesToMutate.length, " Files \n");
+        console.log("filename nodes ", this.fileNameNodes);
+        this.supervisor = new Supervisor(this.fileNameNodes);
+    }
+    // have to do this twice....
+    private createAllFileDescriptors (): Array<IMutatableNode> {
+        const fileDescriptors = new Array<IMutatableNode>();
+        for (let i = 0; i < ConfigManager.filesToMutate.length; i++) {
+            const fo = new FileObject(ConfigManager.filePath, ConfigManager.filesToMutate[i]);
+            const fh = new FileHandler(fo);
+            const so = new SourceObject(fh.getSourceObject());
+            const ci = new CodeInspector(so.origionalSourceObject);
+            this.fileDescriptors.push({
+                    fileName: ConfigManager.filesToMutate[i],
+                    fileObject: fo, fileHandler: fh, sourceObject: so, codeInspector: ci
+            });
+        }
+        return fileDescriptors;
     }
 
-    public getAllNodes () {
+    private traverseFiles () {
+        for (let i = 0; i < ConfigManager.filesToMutate.length; i++) {
+                this.getAllNodesInFile(this.fileDescriptors[i].codeInspector, i);
+        }
+    }
+
+    private getAllNodesInFile (codeInspector: CodeInspector, i: number): void{
         MutationFactory.mutatableTokens.forEach((syntaxItem) => {
-            this.codeInspector.findObjectsOfSyntaxKind(syntaxItem).forEach((token) => {
-                this.nodes.push({
-                    syntaxType : syntaxItem,
-                    positions : token
+            codeInspector.findObjectsOfSyntaxKind(syntaxItem).forEach((token) => {
+                this.fileNameNodes.push({
+                            syntaxType : syntaxItem,
+                            positions : token,
+                            parentFileName: ConfigManager.filesToMutate[i]
                 });
             });
         });
-        return this.nodes;
-  }
-
-
+    }
 }
 const x = new ProfessorX();
 x.main();
