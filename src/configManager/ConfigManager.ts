@@ -4,15 +4,15 @@ const config = require("../../profx-config.json");
 
 export class ConfigManager {
     public static filePath: string;
-    public static fileToMutate: string;
+    public static filesToMutate: Array<string>;
     public static testRunner: string;
     public static runnerConfig: Object;
     public static displayPort: string;
     public config = config;
 
-    constructor (){
+    constructor () {
         ConfigManager.filePath = this.config["filePath"];
-        ConfigManager.fileToMutate = this.config["fileToMutate"];
+        ConfigManager.filesToMutate = this.config["filesToMutate"];
         ConfigManager.testRunner = this.config["testRunner"];
         ConfigManager.runnerConfig = this.config["runnerConfig"];
         this.configValid();
