@@ -1,6 +1,6 @@
 {
     "filePath" : "./testProject/src/",
-    "fileToMutate" : "HelloWorld.ts",
+    "filesToMutate" : ["HelloWorld.ts", "FileTwo.ts"],
     "testRunner" : "mocha",
     "runnerConfig" : {
         "reporter" : "dot"
