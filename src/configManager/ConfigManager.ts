@@ -14,21 +14,10 @@ export class ConfigManager {
     constructor () {
         ConfigManager.managerConfig = Config.CONFIG;
         ConfigManager.filePath = Config.CONFIG.filePath;
-        // ConfigManager.mutateAllFiles = Config.CONFIG.mutateAllFiles;
-        // ConfigManager.filesToMutate = Config.CONFIG.filesToMutate;
-        // ConfigManager.filesToSkip = Config.CONFIG.filesToSkip;
         ConfigManager.testRunner = Config.CONFIG.testRunner;
         ConfigManager.runnerConfig = Config.CONFIG.runnerConfig;
         this.configValid();
         ConfigManager.getFilesToMutate();
-    }
-
-    public static getFilesToMutate () {
-        if (ConfigManager.mutateAllFiles) {
-            ConfigManager.filesToMutate = ConfigManager.getAllProjectFiles();
-        } else {
-            ConfigManager.filesToMutate = ConfigManager.getPartialProjectFiles();
-        }
     }
 
     public static getAllProjectFiles (): Array<string> {
@@ -45,8 +34,17 @@ export class ConfigManager {
         Object.keys(ConfigManager.managerConfig).forEach((el) => {
             if (ConfigManager.managerConfig[el] === void 0) {
                 throw new Error(
-                    "Professor X config not valid. Not all keys are defined");
+                    "Professor X config not valid. Not all keys are defined"
+                );
             }
-            });
+        });
+    }
+
+    private static getFilesToMutate () {
+        if (ConfigManager.mutateAllFiles) {
+            ConfigManager.filesToMutate = ConfigManager.getAllProjectFiles();
+        } else {
+            ConfigManager.filesToMutate = ConfigManager.getPartialProjectFiles();
+        }
     }
 }

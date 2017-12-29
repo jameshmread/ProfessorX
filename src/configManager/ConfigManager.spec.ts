@@ -69,4 +69,15 @@ describe("Config manager", () => {
         const expected = ["two", "three"];
         expect(actual).to.eql(expected);
     });
+
+    it("should return the filesToMutate when mutate files is true, ignoring filesToSkip", () => {
+        ConfigManager.managerConfig = {
+            mutateAllFiles: true,
+            filesToMutate: ["one", "two", "three", "skipMe"],
+            filesToSkip: ["skipMe", "one", "newFile"]
+        };
+        const actual = ConfigManager.getAllProjectFiles();
+        const expected = ["one", "two", "three", "skipMe"];
+        expect(actual).to.eql(expected);
+    });
 });
