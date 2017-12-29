@@ -29,6 +29,7 @@ export class MultipleNodeHandler {
                         new OutputStore(ConfigManager.filePath, currentNode.parentFileName)
                   ); // file path can be calculated
                   const fo = new FileObject(ConfigManager.filePath, currentNode.parentFileName);
+                  fo.coreNumber = process.pid;
                   this.fileHandler = new FileHandler(fo);
                   const fh = new FileHandler(fo);
                   this.sourceCodeHandler = new SourceCodeHandler(new SourceObject(fh.getSourceObject()));
