@@ -76,8 +76,23 @@ describe("Config manager", () => {
             filesToMutate: ["one", "two", "three", "skipMe"],
             filesToSkip: ["skipMe", "one", "newFile"]
         };
-        const actual = ConfigManager.getAllProjectFiles();
+        ConfigManager.getFilesToMutate();
+        const actual = ConfigManager.filesToMutate;
         const expected = ["one", "two", "three", "skipMe"];
+        expect(ConfigManager.managerConfig.mutateAllFiles).to.equal(true);
+        expect(actual).to.eql(expected);
+    });
+
+    it("should return the filesToMutate - files to skip when files to mutate is false", () => {
+        ConfigManager.managerConfig = {
+            mutateAllFiles: false,
+            filesToMutate: ["one", "two", "three", "skipMe"],
+            filesToSkip: ["skipMe", "one", "newFile"]
+        };
+        ConfigManager.getFilesToMutate();
+        const actual = ConfigManager.filesToMutate;
+        const expected = ["two", "three"];
+        expect(ConfigManager.managerConfig.mutateAllFiles).to.equal(false);
         expect(actual).to.eql(expected);
     });
 });

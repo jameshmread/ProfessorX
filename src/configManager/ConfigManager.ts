@@ -17,7 +17,6 @@ export class ConfigManager {
         ConfigManager.testRunner = Config.CONFIG.testRunner;
         ConfigManager.runnerConfig = Config.CONFIG.runnerConfig;
         this.configValid();
-        ConfigManager.getFilesToMutate();
     }
 
     public static getAllProjectFiles (): Array<string> {
@@ -30,6 +29,14 @@ export class ConfigManager {
         });
     }
 
+    public static getFilesToMutate () {
+        if (ConfigManager.managerConfig.mutateAllFiles) {
+            ConfigManager.filesToMutate = ConfigManager.getAllProjectFiles();
+        } else {
+            ConfigManager.filesToMutate = ConfigManager.getPartialProjectFiles();
+        }
+    }
+
     public configValid () {
         Object.keys(ConfigManager.managerConfig).forEach((el) => {
             if (ConfigManager.managerConfig[el] === void 0) {
@@ -38,13 +45,5 @@ export class ConfigManager {
                 );
             }
         });
-    }
-
-    private static getFilesToMutate () {
-        if (ConfigManager.mutateAllFiles) {
-            ConfigManager.filesToMutate = ConfigManager.getAllProjectFiles();
-        } else {
-            ConfigManager.filesToMutate = ConfigManager.getPartialProjectFiles();
-        }
     }
 }
