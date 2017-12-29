@@ -1,8 +1,0 @@
-{
-    "filePath" : "./testProject/src/",
-    "filesToMutate" : ["HelloWorld.ts", "FileTwo.ts"],
-    "testRunner" : "mocha",
-    "runnerConfig" : {
-        "reporter" : "dot"
-    }
-}
