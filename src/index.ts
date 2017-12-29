@@ -21,6 +21,7 @@ export class ProfessorX {
     public constructor () {
         console.log("Setting up environment. \n");
         const configManager = new ConfigManager();
+        ConfigManager.getFilesToMutate();
         this.fileDescriptors = new Array<IFileDescriptor>();
     }
 
