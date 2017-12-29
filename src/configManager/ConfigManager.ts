@@ -1,30 +1,52 @@
-/*tslint:disable:no-var-requires*/
-const config = require("../../profx-config.json");
-/*tslint:enable:no-var-requires*/
+import { Config } from "../../profx.conf";
 
 export class ConfigManager {
+    public static managerConfig;
+
     public static filePath: string;
     public static filesToMutate: Array<string>;
     public static testRunner: string;
     public static runnerConfig: Object;
-    public static displayPort: string;
-    public config = config;
+
+    private static mutateAllFiles: boolean;
+    private static filesToSkip: Array<string>;
 
     constructor () {
-        ConfigManager.filePath = this.config["filePath"];
-        ConfigManager.filesToMutate = this.config["filesToMutate"];
-        ConfigManager.testRunner = this.config["testRunner"];
-        ConfigManager.runnerConfig = this.config["runnerConfig"];
+        ConfigManager.managerConfig = Config.CONFIG;
+        ConfigManager.filePath = Config.CONFIG.filePath;
+        // ConfigManager.mutateAllFiles = Config.CONFIG.mutateAllFiles;
+        // ConfigManager.filesToMutate = Config.CONFIG.filesToMutate;
+        // ConfigManager.filesToSkip = Config.CONFIG.filesToSkip;
+        ConfigManager.testRunner = Config.CONFIG.testRunner;
+        ConfigManager.runnerConfig = Config.CONFIG.runnerConfig;
         this.configValid();
+        ConfigManager.getFilesToMutate();
+    }
+
+    public static getFilesToMutate () {
+        if (ConfigManager.mutateAllFiles) {
+            ConfigManager.filesToMutate = ConfigManager.getAllProjectFiles();
+        } else {
+            ConfigManager.filesToMutate = ConfigManager.getPartialProjectFiles();
+        }
+    }
+
+    public static getAllProjectFiles (): Array<string> {
+        return ConfigManager.managerConfig.filesToMutate;
+    }
+
+    public static getPartialProjectFiles (): Array<string> {
+        return ConfigManager.managerConfig.filesToMutate.filter((item) => {
+            return ConfigManager.managerConfig.filesToSkip.indexOf(item) < 0;
+        });
     }
 
     public configValid () {
-        Object.keys(this.config).forEach((el) => {
-            if (this.config[el] === void 0) {
+        Object.keys(ConfigManager.managerConfig).forEach((el) => {
+            if (ConfigManager.managerConfig[el] === void 0) {
                 throw new Error(
                     "Professor X config not valid. Not all keys are defined");
             }
             });
-
     }
 }
