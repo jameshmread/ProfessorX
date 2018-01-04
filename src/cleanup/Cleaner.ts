@@ -6,14 +6,14 @@ import { ConfigManager } from "../configManager/ConfigManager";
 export class Cleaner {
 
     public static deleteSourceFile (fileToDelete: string) {
-        fs.unlink(fileToDelete);
+        fs.unlink(fileToDelete, (err) => err );
     }
 
     public static deleteTestFile (filePath: string) {
         if (!Cleaner.isMutatedFile(filePath)) {
             throw new Error(`${filePath} is not a mutated test file. Aborting...`);
         }
-        fs.unlink(filePath);
+        fs.unlink(filePath, (err) => err);
     }
 
     public static cleanRemainingFiles () {
