@@ -8,7 +8,7 @@ describe("Testing Supervisor", () => {
     let supervisor: Supervisor;
     let stubNodes: Array<IMutatableNode>;
     beforeEach(() => {
-        stubNodes = [];
+        stubNodes = createNodes(20);
         supervisor = new Supervisor(stubNodes);
     });
 
