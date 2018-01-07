@@ -1,3 +1,4 @@
+import { ChildProcess } from "child_process";
 import * as worker from "child_process";
 import * as os from "os";
 
@@ -17,7 +18,7 @@ export class Supervisor {
       public static startTimestamp: number;
 
       public static readonly logicalCores: number = os.cpus().length;
-      public static workers = [];
+      public static workers: Array<ChildProcess> = new Array<ChildProcess>();
       public static nodes: Array<IMutatableNode>;
 
       public static threadResults = [];
@@ -53,26 +54,27 @@ export class Supervisor {
             for (let i = 0; i < Supervisor.logicalCores; i++) {
                   Supervisor.workers.push(worker.fork("./src/Worker.ts", [], {}));
                   console.log("Creating Worker: ", i);
-                  Supervisor.workers[i].on("close", (close, err) => {
-                        console.log("Worker Closed: ", [close, err]);
-                  });
-                  Supervisor.workers[i].on("error", (err) => {
-                        console.log("Worker Error: ", err);
-                  });
-                  Supervisor.workers[i].on("exit", (exit) => {
-                        console.log("Worker Exit: ", exit);
-                  });
-                  Supervisor.workers[i].on("message", (data) => {
-                        Supervisor.collateResults(data);
-                        Supervisor.workers[i].kill();
-                  });
+                  Supervisor.createWorkerMessagers(Supervisor.workers[i]);
                   Supervisor.workers[i].send(JSON.stringify(Supervisor.nodes[i]));
             }
       }
 
+      private static createWorkerMessagers (individualWorker: ChildProcess) {
+            individualWorker.on("error", (err) => {
+                  console.log("Worker Error: ", err);
+            });
+            individualWorker.on("exit", (exit) => {
+                  console.log("Worker Exit: ", exit);
+            });
+            individualWorker.on("message", (data) => {
+                  Supervisor.collateResults(data);
+                  console.log("\n Worker: ", individualWorker.pid, "Compelete \n");
+                  individualWorker.kill();
+            });
+      }
+
       private static collateResults (data) {
             this.threadResults.push(data);
-            console.log("\n Worker Complete \n");
             if (this.threadResults.length >= Supervisor.logicalCores) {
                   console.log("All workers complete");
                   this.threadResults = [].concat.apply([], this.threadResults);
