@@ -10,7 +10,7 @@ describe("Config manager", () => {
     });
 
     it("config should not be null", () => {
-        expect(config.config).to.not.equal(void 0);
+        expect(ConfigManager.managerConfig).to.not.equal(void 0);
     });
 
     it("should not throw error for a standard config", () => {
@@ -20,9 +20,79 @@ describe("Config manager", () => {
     });
 
     it("should throw error if no configuration is given", () => {
-        config.config = null;
+        ConfigManager.managerConfig = null;
         expect(() => {
             config.configValid();
         }).to.throw(Error);
+    });
+
+    it("should return all the project files", () => {
+        ConfigManager.managerConfig = {
+            mutateAllFiles: false,
+            filesToMutate: ["one", "two", "three", "skipMe"],
+            filesToSkip: ["skipMe"]
+        };
+        const actual = ConfigManager.getAllProjectFiles().length;
+        const expected = ConfigManager.managerConfig.filesToMutate.length;
+        expect(actual).to.equal(expected);
+    });
+
+    it("should return 0 project files when there are none", () => {
+        ConfigManager.managerConfig = {
+            mutateAllFiles: false,
+            filesToMutate: [],
+            filesToSkip: ["skipMe"]
+        };
+        const actual = ConfigManager.getAllProjectFiles().length;
+        const expected = ConfigManager.managerConfig.filesToMutate.length;
+        expect(actual).to.equal(expected);
+    });
+
+    it("should return the number of files to mutate - the files to skip", () => {
+        ConfigManager.managerConfig = {
+            mutateAllFiles: false,
+            filesToMutate: ["one", "two", "three", "skipMe"],
+            filesToSkip: ["skipMe"]
+        };
+        const actual = ConfigManager.getPartialProjectFiles().length;
+        const expected = 3;
+        expect(actual).to.equal(expected);
+    });
+
+    it("should return the number of files to mutate, files to skip should remove extras", () => {
+        ConfigManager.managerConfig = {
+            mutateAllFiles: false,
+            filesToMutate: ["one", "two", "three", "skipMe"],
+            filesToSkip: ["skipMe", "one", "newFile"]
+        };
+        const actual = ConfigManager.getPartialProjectFiles();
+        const expected = ["two", "three"];
+        expect(actual).to.eql(expected);
+    });
+
+    it("should return the filesToMutate when mutate files is true, ignoring filesToSkip", () => {
+        ConfigManager.managerConfig = {
+            mutateAllFiles: true,
+            filesToMutate: ["one", "two", "three", "skipMe"],
+            filesToSkip: ["skipMe", "one", "newFile"]
+        };
+        ConfigManager.getFilesToMutate();
+        const actual = ConfigManager.filesToMutate;
+        const expected = ["one", "two", "three", "skipMe"];
+        expect(ConfigManager.managerConfig.mutateAllFiles).to.equal(true);
+        expect(actual).to.eql(expected);
+    });
+
+    it("should return the filesToMutate - files to skip when files to mutate is false", () => {
+        ConfigManager.managerConfig = {
+            mutateAllFiles: false,
+            filesToMutate: ["one", "two", "three", "skipMe"],
+            filesToSkip: ["skipMe", "one", "newFile"]
+        };
+        ConfigManager.getFilesToMutate();
+        const actual = ConfigManager.filesToMutate;
+        const expected = ["two", "three"];
+        expect(ConfigManager.managerConfig.mutateAllFiles).to.equal(false);
+        expect(actual).to.eql(expected);
     });
 });

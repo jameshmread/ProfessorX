@@ -17,22 +17,22 @@ export class MultipleNodeHandler {
       private mochaRunner: MochaTestRunner;
       private sourceCodeHandler: SourceCodeHandler;
       private fileHandler: FileHandler;
-      constructor (
-            public sourceObj: SourceObject,
-            public fileObj: FileObject
-      ) {
-            this.sourceCodeHandler = new SourceCodeHandler(sourceObj);
-            this.fileHandler = new FileHandler(fileObj);
+      constructor () {
+            const configManager = new ConfigManager();
             this.outputStoreManager = new OutputStoreManager();
       }
-
 
       public async mutateSingleNode (currentNode: IMutatableNode) {
             const mutationOptions = MutationFactory.getMultipleMutations(currentNode.syntaxType);
             for (let j = 0; j < mutationOptions.length; j++) {
                   this.outputStoreManager.setCurrentOutputStore(
-                        new OutputStore(ConfigManager.filePath, ConfigManager.fileToMutate)
-                  );
+                        new OutputStore(ConfigManager.filePath, currentNode.parentFileName)
+                  ); // file path can be calculated
+                  const fo = new FileObject(ConfigManager.filePath, currentNode.parentFileName);
+                  fo.coreNumber = process.pid;
+                  this.fileHandler = new FileHandler(fo);
+                  const fh = new FileHandler(fo);
+                  this.sourceCodeHandler = new SourceCodeHandler(new SourceObject(fh.getSourceObject()));
 
                   this.sourceCodeHandler.resetModified(); // resets modified code after a mutation
                   this.sourceCodeHandler.modifyCode(

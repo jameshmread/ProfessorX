@@ -3,33 +3,19 @@ process.on("message", (input) => {
       worker.execute();
 });
 
-import { Supervisor } from "./Supervisor";
 import { MultipleNodeHandler } from "./multipleNodeHandler/MultipleNodeHandler";
 import { FileObject } from "../DTOs/FileObject";
 import { SourceObject } from "../DTOs/SourceObject";
-import { ConfigManager } from "./configManager/ConfigManager";
-import { FileHandler } from "./FileHandler/FileHandler";
-import { OutputStore } from "../DTOs/OutputStore";
 
 export class Worker {
       public static workerResults = [];
 
       public multiNodeHandler: MultipleNodeHandler;
       public nodes;
-      public fileHandler: FileHandler;
-
-      public sourceObj: SourceObject;
-      public fileObj: FileObject;
-
 
       constructor (nodesToMutate) {
             this.nodes = nodesToMutate;
-            const configManager = new ConfigManager();
-            this.fileObj = new FileObject(ConfigManager.filePath, ConfigManager.fileToMutate);
-            this.fileObj.coreNumber = Number(process.pid);
-            this.fileHandler = new FileHandler(this.fileObj);
-            this.sourceObj = new SourceObject(this.fileHandler.getSourceObject());
-            this.multiNodeHandler = new MultipleNodeHandler(this.sourceObj, this.fileObj);
+            this.multiNodeHandler = new MultipleNodeHandler();
       }
 
       public async execute () {

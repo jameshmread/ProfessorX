@@ -19,14 +19,15 @@ A Typescript Mutation Testing program designed to give an indication to the qual
 <h3> Using the Professor X Configuration File </h3>
 
 - **filePath** `string`
- - The relative path from the **configuration file** location to the target project directory.
+  - The relative path from the **configuration file** location to the target project directory.
 - **mutateAllFiles** `boolean`
-  - True: All files in the `filePath` directory will be included. **Overrides** `filesToMutate`.
+  - True: All files in the `filesToMutate` directory will be included. **Overrides** `filesToSkip`.
   - False: Uses the `filesToMutate` and `filesToSkip` options to specify files to include / not.
 - **filesToMutate** `Array<string>`
   - A list of files in the `filePath` directory to be targeted by the mutation tester.
 - **filesToSkip** `Array<string>`
   - A list of files in the `filePath` directory to be **skipped** by the mutation tester.
+  - If files are mentioned in **both** `mutateAllFiles` and `filesToSkip`, they will **not** be included to mutate.
 
 - **testRunner** `string`
   - The test runner you are using in your project. **Note**. Currently only Mocha is supported.
@@ -38,17 +39,24 @@ A Typescript Mutation Testing program designed to give an indication to the qual
     
 <h3> Example Configuration File. </h3> 
 
-`profx-config.json`
+`profx.config.ts`
 
-```
-        {
-            "filePath" : "./testProject/src/",
-            "mutateAllFiles": "false",
-            "filesToMutate" : ["HelloWorld.ts", "FileTwo.ts"],
-            "filesToSkip" : ["skipMe.ts"],
-            "testRunner" : "mocha",
-            "runnerConfig" : {
-                "reporter" : "dot"
-            }
+```Typescript
+export class Config {
+    public static readonly CONFIG = {
+        filePath: "./testProject/src/",
+        mutateAllFiles: false,
+        filesToMutate: [
+            "HelloWorld.ts",
+            "FileTwo.ts",
+            "SkipMe.ts"
+        ],
+        filesToSkip: ["SkipMe.ts"],
+        testRunner: "mocha",
+        runnerConfig: {
+            reporter: "dot"
         }
+    };
+}
+
 ```

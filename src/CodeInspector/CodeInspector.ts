@@ -21,3 +21,6 @@ export class CodeInspector {
         return CodeInspector.retrievedObjects;
     }
 }
+// I really want to change how this is done at some point
+// dont want to rely on doing this recursivley every time for each node.
+// instead I want to loop through every file and get all the objects TOTAL
