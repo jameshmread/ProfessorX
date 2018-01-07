@@ -2,11 +2,11 @@ import { ChildProcess } from "child_process";
 import * as worker from "child_process";
 import * as os from "os";
 
-import { IMutatableNode } from "../interfaces/IMutatableNode";
-import { OutputStoreManager } from "./output/OutputStoreManager";
-import { EndResult } from "../DTOs/EndResult";
-import { ConfigManager } from "./configManager/ConfigManager";
-import { Cleaner } from "./cleanup/Cleaner";
+import { IMutatableNode } from "../../interfaces/IMutatableNode";
+import { OutputStoreManager } from "../output/OutputStoreManager";
+import { EndResult } from "../../DTOs/EndResult";
+import { ConfigManager } from "../configManager/ConfigManager";
+import { Cleaner } from "../cleanup/Cleaner";
 
 process.on("SIGINT", () => {
       console.log("SIGINT Caught. Program ending. \n");
@@ -15,28 +15,26 @@ process.on("SIGINT", () => {
 });
 
 export class Supervisor {
-      public static startTimestamp: number;
 
-      public static readonly logicalCores: number = os.cpus().length;
-      public static workers: Array<ChildProcess> = new Array<ChildProcess>();
-      public static nodes: Array<IMutatableNode>;
-
-      public static threadResults = [];
+      public startTimestamp: number;
+      public logicalCores: number;
+      public workers: Array<ChildProcess> = new Array<ChildProcess>();
+      public nodes: Array<Array<IMutatableNode>>;
+      public threadResults = [];
 
       constructor (nodes: Array<IMutatableNode>) {
-            Supervisor.startTimestamp = new Date().getTime();
-            Supervisor.nodes = nodes;
+            this.logicalCores = os.cpus().length;
+            this.startTimestamp = new Date().getTime();
             console.log("Splitting nodes among workers \n");
-            Supervisor.nodes = Supervisor.splitNodes();
-            Supervisor.spawnWorkers();
+            this.nodes = this.splitNodes(nodes);
       }
 
     // splits nodes evenly among logical cpu cores
-      private static splitNodes (): Array<IMutatableNode> {
-            const splitNodes = [];
+      public splitNodes (inputNodes: Array<IMutatableNode>): Array<Array<IMutatableNode>> {
+            const splitNodes: Array<Array<IMutatableNode>> = [];
             let coreChosen = 0;
-            const tempNodes = Supervisor.nodes;
-            for (let i = 0; i < Supervisor.logicalCores; i++) {
+            const tempNodes = inputNodes;
+            for (let i = 0; i < this.logicalCores; i++) {
                   splitNodes.push([]);
             }
             for (let i = 0; i < tempNodes.length; i++) {
@@ -50,16 +48,16 @@ export class Supervisor {
             return splitNodes;
       }
 
-      private static spawnWorkers () {
-            for (let i = 0; i < Supervisor.logicalCores; i++) {
-                  Supervisor.workers.push(worker.fork("./src/Worker.ts", [], {}));
+      public spawnWorkers () {
+            for (let i = 0; i < this.logicalCores; i++) {
+                  this.workers.push(worker.fork("./src/Worker.ts", [], {}));
                   console.log("Creating Worker: ", i);
-                  Supervisor.createWorkerMessagers(Supervisor.workers[i]);
-                  Supervisor.workers[i].send(JSON.stringify(Supervisor.nodes[i]));
+                  this.createWorkerMessagers(this.workers[i]);
+                  this.workers[i].send(JSON.stringify(this.nodes[i]));
             }
       }
 
-      private static createWorkerMessagers (individualWorker: ChildProcess) {
+      private  createWorkerMessagers (individualWorker: ChildProcess) {
             individualWorker.on("error", (err) => {
                   console.log("Worker Error: ", err);
             });
@@ -67,23 +65,23 @@ export class Supervisor {
                   console.log("Worker Exit: ", exit);
             });
             individualWorker.on("message", (data) => {
-                  Supervisor.collateResults(data);
+                  this.collateResults(data);
                   console.log("\n Worker: ", individualWorker.pid, "Compelete \n");
                   individualWorker.kill();
             });
       }
 
-      private static collateResults (data) {
+      private collateResults (data) {
             this.threadResults.push(data);
-            if (this.threadResults.length >= Supervisor.logicalCores) {
+            if (this.threadResults.length >= this.logicalCores) {
                   console.log("All workers complete");
                   this.threadResults = [].concat.apply([], this.threadResults);
-                  Supervisor.finishRun();
+                  this.finishRun();
                   return;
             }
       }
 
-      private static finishRun () {
+      private finishRun () {
             const endTimestamp = new Date().getTime();
             const difference = OutputStoreManager.calculateRunTime(
                    new Date(endTimestamp - this.startTimestamp).getTime()
@@ -92,7 +90,7 @@ export class Supervisor {
             const endResult = new EndResult(
                   ConfigManager.testRunner,
                   ConfigManager.runnerConfig,
-                  Supervisor.threadResults
+                  this.threadResults
             );
             OutputStoreManager.writeOutputStoreToJson(endResult);
             OutputStoreManager.writeDataToJson(difference);
