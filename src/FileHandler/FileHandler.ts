@@ -6,6 +6,7 @@ import { FileObject } from "../../DTOs/FileObject";
 export class FileHandler {
 
     public file: FileObject;
+
     constructor (file: FileObject) {
         this.file = file;
         if (!fs.existsSync(this.file.fullPath)) {
@@ -15,8 +16,7 @@ export class FileHandler {
             throw new Error("Typescript files must end with .ts");
         }
         this.file.testFileName = this.file.path +
-        this.file.filename.substring(0, this.file.filename.length - 2) +
-        "spec.ts";
+        this.file.filename.substring(0, this.file.filename.length - 2) + "spec.ts";
         if (!fs.existsSync(this.file.testFileName)) {
             throw new Error("No existing test file that matches this file");
         }
@@ -44,7 +44,7 @@ export class FileHandler {
     public createTempTestModifiedFile (): string {
         const updatedContents = this.mutateTestFileReference(this.getTestFileContents());
         const tempFilename =
-            this.file.fullPath + FileObject.counter++ + "C" + this.file.coreNumber + FileObject.M_TEST_FILE_SUFFIX;
+        this.file.fullPath + FileObject.counter++ + "C" + this.file.coreNumber + FileObject.M_TEST_FILE_SUFFIX;
         fs.writeFileSync(tempFilename, updatedContents);
         return tempFilename;
     }
@@ -53,7 +53,8 @@ export class FileHandler {
         const filenameNoExtension = this.file.filename.substring(0, this.file.filename.length - 3);
         contents = contents.replace(
             "/" + filenameNoExtension,
-            "/" + filenameNoExtension + ".ts" + FileObject.counter + "C" + this.file.coreNumber + ".m");
+            "/" + filenameNoExtension + ".ts" + FileObject.counter + "C" + this.file.coreNumber + ".m"
+        );
         return contents;
     }
 

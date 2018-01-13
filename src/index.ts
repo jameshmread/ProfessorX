@@ -1,7 +1,7 @@
 import { ConfigManager } from "./configManager/ConfigManager";
 import { FileHandler } from "./FileHandler/FileHandler";
 import { CodeInspector } from "./CodeInspector/CodeInspector";
-import { Supervisor } from "./Supervisor";
+import { Supervisor } from "./supervisor/supervisor";
 import { NodeHandler } from "./nodeHandler/NodeHandler";
 import { SourceObject } from "./../DTOs/SourceObject";
 import { FileObject } from "./../DTOs/FileObject";
@@ -27,6 +27,7 @@ export class ProfessorX {
         console.log("In ", ConfigManager.filesToMutate.length, " Files \n");
         console.log("filename nodes ", this.nodeHandler.fileNameNodes);
         this.supervisor = new Supervisor(this.nodeHandler.fileNameNodes);
+        this.supervisor.spawnWorkers();
     }
 
     // I want to put this somewhere else
