@@ -1,4 +1,9 @@
 import { IMutatableNode } from "../../interfaces/IMutatableNode";
+
+import { OutputStore } from "../../DTOs/OutputStore";
+import { SourceObject } from "../../DTOs/SourceObject";
+import { FileObject } from "../../DTOs/FileObject";
+
 import { MutationFactory } from "../mutationFactory/MutationFactory";
 import { OutputStoreManager } from "../output/OutputStoreManager";
 import { ConfigManager } from "../configManager/ConfigManager";
@@ -6,10 +11,6 @@ import { SourceCodeHandler } from "../SourceCodeHandler/SourceCodeHandler";
 import { Cleaner } from "../cleanup/Cleaner";
 import { FileHandler } from "../FileHandler/FileHandler";
 import { MochaTestRunner } from "../mocha-testRunner/Mocha-TestRunner";
-
-import { OutputStore } from "../../DTOs/OutputStore";
-import { SourceObject } from "../../DTOs/SourceObject";
-import { FileObject } from "../../DTOs/FileObject";
 import { Worker } from "../Worker";
 
 export class MultipleNodeHandler {

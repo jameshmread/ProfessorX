@@ -4,8 +4,6 @@ process.on("message", (input) => {
 });
 
 import { MultipleNodeHandler } from "./multipleNodeHandler/MultipleNodeHandler";
-import { FileObject } from "../DTOs/FileObject";
-import { SourceObject } from "../DTOs/SourceObject";
 
 export class Worker {
       public static workerResults = [];

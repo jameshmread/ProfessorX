@@ -4,7 +4,7 @@ import { ITestResult } from "../../interfaces/ITestResult";
 import { OutputStoreManager } from "./OutputStoreManager";
 import { OutputStore } from "../../DTOs/OutputStore";
 
-describe("Output Store", () => {
+describe("Output Store Manager", () => {
     let outputStore: OutputStore;
     let osm: OutputStoreManager;
     const origionalCode = `export class HelloWorld {
