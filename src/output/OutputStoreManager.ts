@@ -2,9 +2,10 @@ import * as fs from "fs";
 import * as ts from "typescript";
 
 import { ITestResult } from "../../interfaces/ITestResult";
-import { OutputStore } from "../../DTOs/OutputStore";
 import { IDurationFormat } from "../../interfaces/IDurationFormat";
 import { IMutatableNode } from "../../interfaces/IMutatableNode";
+import { OutputStore } from "../../DTOs/OutputStore";
+
 import { SourceCodeHandler } from "../SourceCodeHandler/SourceCodeHandler";
 
 export class OutputStoreManager {

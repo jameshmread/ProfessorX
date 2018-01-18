@@ -1,8 +1,9 @@
+import { IMutatableNode } from "../../interfaces/IMutatableNode";
+import { IFileDescriptor } from "../../interfaces/IFileDescriptor";
+
 import { CodeInspector } from "../CodeInspector/CodeInspector";
 import { MutationFactory } from "../mutationFactory/MutationFactory";
 import { ConfigManager } from "../configManager/ConfigManager";
-import { IMutatableNode } from "../../interfaces/IMutatableNode";
-import { IFileDescriptor } from "../../interfaces/IFileDescriptor";
 
 export class NodeHandler {
 

@@ -3,8 +3,9 @@ import * as worker from "child_process";
 import * as os from "os";
 
 import { IMutatableNode } from "../../interfaces/IMutatableNode";
-import { OutputStoreManager } from "../output/OutputStoreManager";
 import { EndResult } from "../../DTOs/EndResult";
+
+import { OutputStoreManager } from "../output/OutputStoreManager";
 import { ConfigManager } from "../configManager/ConfigManager";
 import { Cleaner } from "../cleanup/Cleaner";
 
@@ -76,17 +77,17 @@ export class Supervisor {
 
       private finishRun () {
             const endTimestamp = new Date().getTime();
-            const difference = OutputStoreManager.calculateRunTime(
+            const timeTaken = OutputStoreManager.calculateRunTime(
                    new Date(endTimestamp - this.startTimestamp).getTime()
             );
-            console.log("Mutations Complete in: ", difference);
+            console.log("Mutations Complete in: ", timeTaken);
             const endResult = new EndResult(
                   ConfigManager.testRunner,
                   ConfigManager.runnerConfig,
                   this.threadResults
             );
             OutputStoreManager.writeOutputStoreToJson(endResult);
-            OutputStoreManager.writeDataToJson(difference);
+            OutputStoreManager.writeDataToJson(timeTaken);
             Cleaner.cleanRemainingFiles();
         }
 }
