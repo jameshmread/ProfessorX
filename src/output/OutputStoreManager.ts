@@ -17,8 +17,10 @@ export class OutputStoreManager {
     ) {}
 
     public static writeOutputStoreToJson (collatedResults) {
-        fs.writeFileSync("./srcApp/app/outputStoreData.json",
-        JSON.stringify(collatedResults, null, 2));
+        fs.writeFileSync(
+            "./outputStoreData.json",
+            JSON.stringify(collatedResults, null, 2
+        ));
     }
 
     public static calculateRunTime (runTime: number): IDurationFormat {
@@ -39,7 +41,7 @@ export class OutputStoreManager {
     }
 
     public static writeDataToJson (data: IDurationFormat) {
-        fs.writeFileSync("./srcApp/app/data.json", JSON.stringify(data, null, 2));
+        fs.writeFileSync("./data.json", JSON.stringify(data, null, 2));
     }
 
     public setCurrentOutputStore (outputStore: OutputStore): void {
