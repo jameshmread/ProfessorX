@@ -31,7 +31,6 @@ describe("Testing NodeHandler ", () => {
     let nodeHandler: NodeHandler;
     beforeEach(() => {
         nodeHandler = new NodeHandler(null);
-        MutationFactory.mutatableTokens = [];
     });
 
     it("should return a list of the + nodes in a file", () => {
