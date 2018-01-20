@@ -14,4 +14,8 @@ export class HelloWorld {
     public truth () {
         return true;
     }
+
+    public helloStrings (h: string, w: string) {
+        return h + w;
+    }
 }
