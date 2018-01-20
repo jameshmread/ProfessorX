@@ -78,7 +78,6 @@
         "strict-boolean-expressions": true,
         "switch-default": true,
         "triple-equals": true,
-        "typeof-compare": true,
         "cyclomatic-complexity": [true, 5],
         "max-classes-per-file": [true, 1],
         "max-file-line-count": [true, 200],
