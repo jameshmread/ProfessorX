@@ -2,11 +2,13 @@ import * as ts from "typescript";
 import { expect } from "chai";
 import { CodeInspector } from "./CodeInspector";
 import { SourceFile, SyntaxKind } from "typescript";
+import { SpecificNodeFinder } from "../../testUtilities/SpecificNodeFinder";
 
 describe("Testing CodeInspector", () => {
     let code;
     let sourceObj: SourceFile;
     let ci: CodeInspector;
+    let nodeFinder: SpecificNodeFinder;
     beforeEach(() => {
         code = `
             let x: number = 3 + 9;
@@ -16,6 +18,7 @@ describe("Testing CodeInspector", () => {
         `;
         sourceObj = ts.createSourceFile("", code, ts.ScriptTarget.ES5, true);
         ci = new CodeInspector(sourceObj);
+        nodeFinder = new SpecificNodeFinder();
     });
 
     it("All plus signs are detected", () => {
@@ -33,8 +36,8 @@ describe("Testing CodeInspector", () => {
         sourceObj = ts.createSourceFile("", code, ts.ScriptTarget.ES5, true);
         ci = new CodeInspector(sourceObj);
 
-        const x = findObjectsOfSyntaxKind(ts.SyntaxKind.PlusToken, sourceObj);
-        const plusNode: ts.Node = x[0];
+        const allPlusNodes = nodeFinder.findObjectsOfSyntaxKind(ts.SyntaxKind.PlusToken, sourceObj);
+        const plusNode: ts.Node = allPlusNodes[0];
         const actual = CodeInspector.checkNodeIsMutatable(plusNode);
         expect(actual).to.equal(false);
     });
@@ -44,8 +47,8 @@ describe("Testing CodeInspector", () => {
         sourceObj = ts.createSourceFile("", code, ts.ScriptTarget.ES5, true);
         ci = new CodeInspector(sourceObj);
 
-        const x = findObjectsOfSyntaxKind(ts.SyntaxKind.PlusToken, sourceObj);
-        const plusNode: ts.Node = x[0];
+        const allPlusNodes = nodeFinder.findObjectsOfSyntaxKind(ts.SyntaxKind.PlusToken, sourceObj);
+        const plusNode: ts.Node = allPlusNodes[0];
         const actual = CodeInspector.checkNodeIsMutatable(plusNode);
         expect(actual).to.equal(true);
     });
@@ -55,20 +58,3 @@ describe("Testing CodeInspector", () => {
         expect(actual.length).to.equal(2);
     });
 });
-
-let retrievedObjects;
-function findObjectsOfSyntaxKind (kind: SyntaxKind, sourceObject) {
-    retrievedObjects = [];
-    return findTokenObjectsOfKind(sourceObject, kind);
-}
-
-function findTokenObjectsOfKind (object: ts.Node, kind: SyntaxKind) {
-    if (object.kind === kind) {
-        retrievedObjects.push(object);
-    }
-    object.forEachChild((element) => {
-        findTokenObjectsOfKind(element, kind);
-    });
-    return retrievedObjects;
-}
-
