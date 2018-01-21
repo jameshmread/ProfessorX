@@ -7,7 +7,7 @@ export class SpecificNodeFinder {
             return this.findTokenObjectsOfKind(sourceObject, kind);
       }
 
-      public findTokenObjectsOfKind (object: Node, kind: SyntaxKind) {
+      private findTokenObjectsOfKind (object: Node, kind: SyntaxKind) {
             if (object.kind === kind) {
                   this.retrievedObjects.push(object);
             }
