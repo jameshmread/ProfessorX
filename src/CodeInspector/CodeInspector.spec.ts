@@ -32,28 +32,6 @@ describe("Testing CodeInspector", () => {
         expect(actual.length).to.equal(3);
     });
 
-    it("should return false when + token is between two strings", () => {
-        code = "'hello' + 'world';";
-        sourceObj = new SourceObjCreator(code).sourceObj;
-        ci = new CodeInspector(sourceObj);
-
-        const allPlusNodes = nodeFinder.findObjectsOfSyntaxKind(SyntaxKind.PlusToken, sourceObj);
-        const plusNode: Node = allPlusNodes[0];
-        const actual = CodeInspector.checkNodeIsMutatable(plusNode);
-        expect(actual).to.equal(false);
-    });
-
-    it("should return true when + token is between two numbers", () => {
-        code = "2 + 2;";
-        sourceObj = new SourceObjCreator(code).sourceObj;
-        ci = new CodeInspector(sourceObj);
-
-        const allPlusNodes = nodeFinder.findObjectsOfSyntaxKind(SyntaxKind.PlusToken, sourceObj);
-        const plusNode: Node = allPlusNodes[0];
-        const actual = CodeInspector.checkNodeIsMutatable(plusNode);
-        expect(actual).to.equal(true);
-    });
-
     it("2 plus signs are detected for mutation when 2 valid ones are placed", () => {
         const actual = ci.findObjectsOfSyntaxKind(SyntaxKind.PlusToken);
         expect(actual.length).to.equal(2);

@@ -1,17 +1,12 @@
 import { Node, SourceFile, SyntaxKind } from "typescript";
+import { ValidMutationRules } from "./ValidMutationRules";
 
 export class CodeInspector {
     private static retrievedObjects: Array<{pos: number, end: number}> = [];
     constructor (private sourceObject: SourceFile) {}
 
     public static checkNodeIsMutatable (node: Node): boolean {
-        let nodeMutatable = true;
-        node.parent.forEachChild((child) => {
-            if (child.kind === SyntaxKind.StringLiteral) {
-                nodeMutatable = false;
-            }
-        });
-        return nodeMutatable;
+        return !ValidMutationRules.hasStringLiteralChild(node);
     }
 
     public findObjectsOfSyntaxKind (kind: SyntaxKind) {
