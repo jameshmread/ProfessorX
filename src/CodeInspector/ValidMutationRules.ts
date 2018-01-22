@@ -2,30 +2,26 @@ import { Node, SyntaxKind, Type } from "typescript";
 
 export class ValidMutationRules {
 
-      public static readonly RULETREE = {
+      public static readonly RULE_TREE = {
             [SyntaxKind.PlusToken]: {
                   [SyntaxKind.BinaryExpression]: {
                         [SyntaxKind.StringLiteral]: false
                   }
             },
             [SyntaxKind.GreaterThanToken || SyntaxKind.LessThanToken]: {
-                  [SyntaxKind.BinaryExpression]: true
+                  [SyntaxKind.BinaryExpression]: {
+                        [SyntaxKind.BinaryExpression] : false
+                  }
             }
       };
 
-      public static nodeKind: SyntaxKind;
-      public static parentKind: SyntaxKind;
-      public static neighbourKind: SyntaxKind;
-      public static ruleDepth;
+      public static nodeFamily: Array<SyntaxKind>;
 
       public static setNodeFamily (node: Node, parent: Node, neighbour: Node) {
-            this.nodeKind = node.kind;
-            this.parentKind = node.parent.kind;
-            this.neighbourKind = node.parent.getChildAt(0).kind;
-            this.ruleDepth = [
-                  ValidMutationRules.nodeKind,
-                  ValidMutationRules.parentKind,
-                  ValidMutationRules.neighbourKind
+            this.nodeFamily = [
+                  node.kind,
+                  parent.kind,
+                  neighbour.kind
             ];
       }
 
@@ -39,18 +35,16 @@ export class ValidMutationRules {
             return childKinds;
       }
 
-      public static traverseRuleTree (kind: Object, ruleDepth): boolean {
-            console.log("kind", kind);
-            if (typeof kind === "boolean") {
-                  console.log("hello", kind);
-                  return kind;
-            }
-            Object.keys(kind).forEach((syntaxKind) => {
-                  if (ValidMutationRules.ruleDepth[ruleDepth] === Number(syntaxKind)) {
-                        return ValidMutationRules.traverseRuleTree(kind[syntaxKind], ruleDepth + 1);
+      public static traverseRuleTree (tree: Object, nodeFamilyIndex: number): boolean {
+            const currentTreePosition = Object.keys(tree);
+            const indexOfFamilyMember = currentTreePosition.indexOf(this.nodeFamily[nodeFamilyIndex].toString());
+            if (indexOfFamilyMember >= 0) {
+                  if (typeof tree[currentTreePosition[0]] === "boolean") {
+                        return tree[currentTreePosition[0]];
                   }
-            });
-            console.log("depth", ruleDepth);
+                  return this.traverseRuleTree(tree[currentTreePosition[indexOfFamilyMember]], nodeFamilyIndex + 1);
+            }
+            return true;
       }
 
       public static isInBinaryExpression (node: Node): boolean {
