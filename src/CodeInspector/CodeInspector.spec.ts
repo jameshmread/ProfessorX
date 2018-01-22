@@ -1,4 +1,4 @@
-import { SourceFile, SyntaxKind, Node } from "typescript";
+import { SourceFile, SyntaxKind } from "typescript";
 import { expect } from "chai";
 
 import { CodeInspector } from "./CodeInspector";
