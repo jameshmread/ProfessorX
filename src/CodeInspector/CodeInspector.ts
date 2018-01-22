@@ -5,7 +5,7 @@ export class CodeInspector {
     private static retrievedObjects: Array<{pos: number, end: number}> = [];
     constructor (private sourceObject: SourceFile) {}
 
-    public static checkNodeIsMutatable (node: Node): boolean {
+    public static isNodeMutatable (node: Node): boolean {
         return !ValidMutationRules.hasStringLiteralChild(node);
     }
 
@@ -18,7 +18,7 @@ export class CodeInspector {
 
     private static findTokenObjectsOfKind (object: Node, kind: SyntaxKind)
     : Array<{pos: number, end: number}> {
-        if (object.kind === kind && CodeInspector.checkNodeIsMutatable(object)) {
+        if (object.kind === kind && CodeInspector.isNodeMutatable(object)) {
             CodeInspector.retrievedObjects.push({pos: object.pos, end: object.end});
         }
         object.forEachChild((element) => {
