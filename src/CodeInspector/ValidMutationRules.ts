@@ -14,30 +14,12 @@ export class ValidMutationRules {
                   }
             }
       };
+      public nodeFamily: Array<SyntaxKind>;
 
-      public static nodeFamily: Array<SyntaxKind>;
-
-      public static setNodeFamily (node: Node, parent: Node, neighbour: Node) {
-            this.nodeFamily = [
-                  node.kind,
-                  parent.kind,
-                  neighbour.kind
-            ];
-      }
-
-      public static getNeighbourKinds (node: Node) {
-            const childKinds: Array<SyntaxKind> = [];
-            node.parent.forEachChild((child) => {
-                  if (child.kind !== node.kind) {
-                        childKinds.push(child.kind);
-                  }
-            });
-            return childKinds;
-      }
-
-      public static traverseRuleTree (tree: Object, nodeFamilyIndex: number): boolean {
+      public traverseRuleTree (tree: Object, nodeFamilyIndex: number): boolean {
             const currentTreePosition = Object.keys(tree);
-            const indexOfFamilyMember = currentTreePosition.indexOf(this.nodeFamily[nodeFamilyIndex].toString());
+            const indexOfFamilyMember =
+            currentTreePosition.indexOf(this.nodeFamily[nodeFamilyIndex].toString());
             if (indexOfFamilyMember >= 0) {
                   if (typeof tree[currentTreePosition[0]] === "boolean") {
                         return tree[currentTreePosition[0]];
@@ -47,17 +29,11 @@ export class ValidMutationRules {
             return true;
       }
 
-      public static isInBinaryExpression (node: Node): boolean {
-            return node.parent.kind === SyntaxKind.BinaryExpression;
-      }
-
-      public static hasStringLiteralChild (node: Node): boolean {
-            let aChildIsStringLiteral = false;
-            node.parent.forEachChild((child) => {
-                  if (child.kind === SyntaxKind.StringLiteral) {
-                      aChildIsStringLiteral = true;
-                  }
-            });
-            return aChildIsStringLiteral;
+      public setNodeFamily (node: Node) {
+            this.nodeFamily = [
+                  node.kind,
+                  node.parent.kind,
+                  node.parent.getChildAt(0).kind
+            ];
       }
 }
