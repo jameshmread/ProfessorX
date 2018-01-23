@@ -1,4 +1,4 @@
-import { Node, SourceFile, SyntaxKind } from "typescript";
+import { Node, SourceFile, SyntaxKind, isTypeNode } from "typescript";
 import { ValidMutationRules } from "./ValidMutationRules";
 
 export class CodeInspector {
@@ -6,7 +6,9 @@ export class CodeInspector {
     constructor (private sourceObject: SourceFile) {}
 
     public static isNodeMutatable (node: Node): boolean {
-        return !ValidMutationRules.hasStringLiteralChild(node);
+        const mutationRules = new ValidMutationRules();
+        mutationRules.setNodeFamily(node);
+        return mutationRules.traverseRuleTree(ValidMutationRules.RULE_TREE, 0);
     }
 
     public findObjectsOfSyntaxKind (kind: SyntaxKind) {
