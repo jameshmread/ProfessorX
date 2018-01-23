@@ -1,4 +1,4 @@
-import { Node, SourceFile, SyntaxKind, isTypeNode } from "typescript";
+import { Node, SourceFile, SyntaxKind } from "typescript";
 import { ValidMutationRules } from "./ValidMutationRules";
 
 export class CodeInspector {
