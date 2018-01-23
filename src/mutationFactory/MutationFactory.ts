@@ -6,15 +6,16 @@ export class MutationFactory {
     public static mutatableTokens: Array<SyntaxKind> = [
         SyntaxKind.PlusToken, SyntaxKind.MinusToken, SyntaxKind.TrueKeyword, SyntaxKind.FalseKeyword,
         SyntaxKind.PlusPlusToken, SyntaxKind.MinusMinusToken, SyntaxKind.BarBarToken, SyntaxKind.GreaterThanToken,
-        SyntaxKind.PercentToken
+        SyntaxKind.PercentToken, SyntaxKind.AsteriskToken
     ];
 
     public static syntaxMutationMap: IsyntaxMutationMap = {
-        [SyntaxKind.GreaterThanToken]: [" < ", " <= ", ">=", " != ", " = ", " - ", " + ", " > ", " * ", " / "],
+        [SyntaxKind.GreaterThanToken]: [" < ", " <= ", ">=", " !== ", " - ", " + ", " * ", " / "],
         [SyntaxKind.PlusToken]: [" - ", " / ", " * "],
         [SyntaxKind.MinusToken]: [" + ",  " / ", " * "],
-        [SyntaxKind.AsteriskToken]: [" / ", " < ", " <= ", ">=", " != ", " - ", " + ", " > "],
-        [SyntaxKind.PercentToken]: [" < ", " <= ", ">=", " != ", " - ", " + ", " > ", " * ", " / "],
+        [SyntaxKind.AsteriskToken]: [" / ", " < ", " <= ", ">=", " !== ", " - ", " + ", " > "],
+        [SyntaxKind.PercentToken]: [" < ", " <= ", ">=", " !== ", " - ", " + ", " > ", " * ", " / "],
+        [SyntaxKind.PlusPlusToken]: ["--"],
         [SyntaxKind.MinusMinusToken]: ["++"],
         [SyntaxKind.BarBarToken]: [" && "],
         [SyntaxKind.TrueKeyword]: [" false"],
