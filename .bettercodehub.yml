@@ -1,9 +1,9 @@
-languages:
-- typescript
-exclude:
-- /testProject/*
-- /testUtilities/*
 component_depth: 2
-test:
-  include:
-    - *\.spec\.ts
+exclude: 
+  - /testProject/*
+  - /testUtilities/*
+languages: 
+  - typescript
+test: 
+  include: 
+    - \*\.spec\.ts
