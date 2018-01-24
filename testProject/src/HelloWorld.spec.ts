@@ -36,4 +36,10 @@ describe("Test Project addition function", () => {
         expect(actual).to.equal(expected);
     });
 
+    it("should return hello: 1", () => {
+        const expected = "helloworld";
+        const actual = hello.helloStringLiteral();
+        expect(actual).to.equal("hello: " + "1");
+    });
+
 });

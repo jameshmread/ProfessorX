@@ -18,4 +18,8 @@ export class HelloWorld {
     public helloStrings (h: string, w: string) {
         return h + w;
     }
+
+    public helloStringLiteral () {
+        return "hello: " + "1";
+    }
 }
