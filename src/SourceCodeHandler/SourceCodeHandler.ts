@@ -1,5 +1,6 @@
 import { SourceFile } from "typescript";
 import { SourceObject } from "../../DTOs/SourceObject";
+import { IMutatableNode } from "../../interfaces/IMutatableNode";
 
 export class SourceCodeHandler {
 
@@ -21,10 +22,11 @@ export class SourceCodeHandler {
         this.sourceObj.modifiedSourceCode = this.sourceObj.origionalSourceObject.getText();
     }
 
-    public modifyCode (start: number, end: number, replacement: string) {
-        this.sourceObj.modifiedSourceCode =
-        this.sourceObj.modifiedSourceCode.substring(0, start)
+    public modifyCode (currentNode: IMutatableNode, replacement: string) {
+        this.sourceObj.modifiedSourceCode = this.sourceObj.modifiedSourceCode
+        .substring(0, currentNode.positions.pos)
         + replacement
-        + this.sourceObj.modifiedSourceCode.substring(end + 1, this.sourceObj.modifiedSourceCode.length);
+        + this.sourceObj.modifiedSourceCode
+        .substring(currentNode.positions.end + 1, this.sourceObj.modifiedSourceCode.length);
     }
 }
