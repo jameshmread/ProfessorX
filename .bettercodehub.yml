@@ -4,6 +4,3 @@ exclude:
   - /testUtilities/*
 languages: 
   - typescript
-test: 
-  include: 
-    - \*\.spec\.ts
