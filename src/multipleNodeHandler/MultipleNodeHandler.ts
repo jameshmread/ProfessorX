@@ -36,11 +36,8 @@ export class MultipleNodeHandler {
                   this.sourceCodeHandler = new SourceCodeHandler(new SourceObject(fh.getSourceObject()));
 
                   this.sourceCodeHandler.resetModified(); // resets modified code after a mutation
-                  this.sourceCodeHandler.modifyCode(
-                        currentNode.positions["pos"],
-                        currentNode.positions["end"],
-                        mutationOptions[j]
-                  ); // performs the modification at a specific position
+                  this.sourceCodeHandler.modifyCode(currentNode, mutationOptions[j]);
+                  // performs the modification at a specific position
 
                   // writes this change to a NEW src file
                   const srcFile = this.fileHandler.writeTempSourceModifiedFile(
