@@ -34,7 +34,7 @@ export class ProfessorX {
     private createAllFileDescriptors (): Array<IFileDescriptor> {
         const fileDescriptors = new Array<IFileDescriptor>();
         for (let i = 0; i < ConfigManager.filesToMutate.length; i++) {
-            const fo = new FileObject(ConfigManager.filePath, ConfigManager.filesToMutate[i]);
+            const fo = new FileObject(ConfigManager.filesToMutate[i]);
             const fh = new FileHandler(fo);
             const so = new SourceObject(fh.getSourceObject());
             const ci = new CodeInspector(so.origionalSourceObject);
