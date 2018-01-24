@@ -1,3 +1,5 @@
+import { IMutationAttemptFailure } from "../interfaces/IMutationAttemptFailure";
+
 export class OutputStore {
       public readonly SRC_FILE_PATH: string;
       public readonly SRC_FILE: string;
@@ -9,6 +11,8 @@ export class OutputStore {
       public numberOfFailedTests: number;
       public numberOfPassedTests: number;
       public mutantKilled;
+
+      public mutationAttemptFailure: IMutationAttemptFailure;
 
       public constructor (
             srcPath: string,
