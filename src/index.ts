@@ -17,6 +17,7 @@ export class ProfessorX {
         console.log("Creating File Objects");
         this.nodeHandler = new NodeHandler();
         console.log("Finding Nodes... \n");
+        this.nodeHandler.createAllFileDescriptors();
         this.nodeHandler.traverseFilesForNodes();
         console.log("Found ", this.nodeHandler.fileNameNodes.length, " mutatable nodes. ");
         console.log("In ", ConfigManager.filesToMutate.length, " Files \n");

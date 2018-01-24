@@ -33,7 +33,7 @@ export class NodeHandler {
         });
     }
 
-    private createAllFileDescriptors (): Array<IFileDescriptor> {
+    public createAllFileDescriptors (): Array<IFileDescriptor> {
         for (let i = 0; i < ConfigManager.filesToMutate.length; i++) {
             const fo = new FileObject(ConfigManager.filesToMutate[i]);
             const fh = new FileHandler(fo);
