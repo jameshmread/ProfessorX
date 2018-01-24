@@ -3,15 +3,15 @@ process.on("message", (input) => {
       worker.execute();
 });
 
-import { MultipleNodeHandler } from "./multipleNodeHandler/MultipleNodeHandler";
+import { MultipleNodeMutator } from "./multipleNodeMutator/MultipleNodeMutator";
 
 export class Worker {
       public static workerResults = [];
 
-      public multiNodeHandler: MultipleNodeHandler;
+      public multiNodeHandler: MultipleNodeMutator;
 
       constructor (public nodesToMutate) {
-            this.multiNodeHandler = new MultipleNodeHandler();
+            this.multiNodeHandler = new MultipleNodeMutator();
       }
 
       public async execute () {

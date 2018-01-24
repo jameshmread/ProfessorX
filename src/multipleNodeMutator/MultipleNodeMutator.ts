@@ -14,7 +14,7 @@ import { FileHandler } from "../FileHandler/FileHandler";
 import { MochaTestRunner } from "../mocha-testRunner/Mocha-TestRunner";
 import { Worker } from "../Worker";
 
-export class MultipleNodeHandler {
+export class MultipleNodeMutator {
       private outputStoreManager: OutputStoreManager;
       private mochaRunner: MochaTestRunner;
       private sourceCodeHandler: SourceCodeHandler;
