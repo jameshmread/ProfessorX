@@ -20,6 +20,8 @@ export class MultipleNodeHandler {
       private sourceCodeHandler: SourceCodeHandler;
       private fileHandler: FileHandler;
       private currentNode: IMutatableNode;
+      private srcFile: string;
+      private testFile: string;
       private errorString: string;
 
       constructor () {
@@ -42,9 +44,8 @@ export class MultipleNodeHandler {
       private async doSingleMutation (mutationOption: string) {
             this.outputStoreManager.setCurrentOutputStore(
                   new OutputStore(ConfigManager.filePath, this.currentNode.parentFileName)
-            ); // file path can be calculated
+            );
             this.setFileInformation();
-
             if (!this.createSourceCodeHandler()) {
                   this.outputStoreManager.getCurrentOutputStore().mutationAttemptFailure =
                   new MAttemptFail(
@@ -56,19 +57,12 @@ export class MultipleNodeHandler {
                   return;
             }
             this.setSourceCodeInformation(mutationOption);
-            // writes this change to a NEW src file
-            const srcFile = this.fileHandler.writeTempSourceModifiedFile(
-                  this.sourceCodeHandler.getModifiedSourceCode());
-            // creates a new test file with a reference to the NEW source file
-            const testFile = this.fileHandler.createTempTestModifiedFile();
-
-            this.outputStoreManager.configureStoreData(testFile, this.currentNode, this.sourceCodeHandler);
+            this.createMutatedFiles();
+            this.outputStoreManager.configureStoreData(this.testFile, this.currentNode, this.sourceCodeHandler);
             this.mochaRunner = new MochaTestRunner(ConfigManager.runnerConfig);
-            await this.mochaRunner.runTests(this.outputStoreManager, testFile);
-            // dont like how im deleting and re creating the test file for every node
+            await this.mochaRunner.runTests(this.outputStoreManager, this.testFile);
             this.outputStoreManager.addStoreToList();
-            Cleaner.deleteTestFile(testFile);
-            Cleaner.deleteSourceFile(srcFile);
+            this.cleanFiles();
       }
 
       private setFileInformation () {
@@ -91,5 +85,16 @@ export class MultipleNodeHandler {
       private setSourceCodeInformation (mutationOptions: string) {
             this.sourceCodeHandler.resetModified();
             this.sourceCodeHandler.modifyCode(this.currentNode, mutationOptions);
+      }
+
+      private createMutatedFiles () {
+            this.srcFile = this.fileHandler.writeTempSourceModifiedFile(
+                  this.sourceCodeHandler.getModifiedSourceCode());
+            this.testFile = this.fileHandler.createTempTestModifiedFile();
+      }
+
+      private cleanFiles () {
+            Cleaner.deleteTestFile(this.testFile);
+            Cleaner.deleteSourceFile(this.srcFile);
       }
 }
