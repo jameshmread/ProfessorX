@@ -7,6 +7,8 @@ import { ConfigManager } from "../configManager/ConfigManager";
 describe("Testing FileHandler", () => {
     const configManager = new ConfigManager();
     ConfigManager.filePath = "./testProject/src/";
+    ConfigManager.managerConfig.filePath = "./testProject/src/";
+
 
     const fh = new FileHandler(new FileObject("HelloWorld.ts"));
 
