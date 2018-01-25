@@ -48,6 +48,10 @@ export class OutputStoreManager {
         this.currentOutputStore = outputStore;
     }
 
+    public getCurrentOutputStore (): OutputStore {
+        return this.currentOutputStore;
+    }
+
     public addStoreToList (): void {
         OutputStoreManager.outputStoreList.push(this.currentOutputStore);
     }

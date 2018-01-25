@@ -3,17 +3,15 @@ process.on("message", (input) => {
       worker.execute();
 });
 
-import { MultipleNodeHandler } from "./multipleNodeHandler/MultipleNodeHandler";
+import { MultipleNodeMutator } from "./multipleNodeMutator/MultipleNodeMutator";
 
 export class Worker {
       public static workerResults = [];
 
-      public multiNodeHandler: MultipleNodeHandler;
-      public nodes;
+      public multiNodeHandler: MultipleNodeMutator;
 
-      constructor (nodesToMutate) {
-            this.nodes = nodesToMutate;
-            this.multiNodeHandler = new MultipleNodeHandler();
+      constructor (public nodesToMutate) {
+            this.multiNodeHandler = new MultipleNodeMutator();
       }
 
       public async execute () {
@@ -23,8 +21,9 @@ export class Worker {
       }
 
       private async mutateAllNodes () {
-            for (const currentNode of this.nodes) {
-                await this.multiNodeHandler.mutateSingleNode(currentNode);
+            for (const currentNode of this.nodesToMutate) {
+                  this.multiNodeHandler.setCurrentNode(currentNode);
+                  await this.multiNodeHandler.mutateSingleNode();
             }
       }
 }

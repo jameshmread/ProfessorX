@@ -6,9 +6,7 @@ import { CodeInspector } from "../CodeInspector/CodeInspector";
 import { SourceObject } from "../../DTOs/SourceObject";
 import { ConfigManager } from "../configManager/ConfigManager";
 import { FileObject } from "../../DTOs/FileObject";
-import { FileHandler } from "../FileHandler/FileHandler";
 import { MutationFactory } from "../mutationFactory/MutationFactory";
-import { IFileDescriptor } from "../../interfaces/IFileDescriptor";
 
 describe("Testing NodeHandler ", () => {
 
@@ -17,7 +15,6 @@ describe("Testing NodeHandler ", () => {
         filesToMutate: ["TestFile.ts"]
     };
     const fo = new FileObject(
-        ConfigManager.filePath,
         ConfigManager.managerConfig.filesToMutate[0]
     );
     const code = `
@@ -30,7 +27,7 @@ describe("Testing NodeHandler ", () => {
 
     let nodeHandler: NodeHandler;
     beforeEach(() => {
-        nodeHandler = new NodeHandler(null);
+        nodeHandler = new NodeHandler();
     });
 
     it("should return a list of the + nodes in a file", () => {

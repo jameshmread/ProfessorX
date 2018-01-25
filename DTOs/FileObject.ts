@@ -1,4 +1,5 @@
 import { SourceFile } from "typescript";
+import { ConfigManager } from "../src/configManager/ConfigManager";
 
 export class FileObject {
 
@@ -16,9 +17,9 @@ export class FileObject {
       public testFileContents: string;
       public testFileName: string;
 
-      constructor (path: string, filename: string) {
-            this.path = path;
+      constructor (filename: string) {
+            this.path = ConfigManager.filePath;
             this.filename = filename;
-            this.fullPath = path + filename;
+            this.fullPath = this.path + filename;
       }
 }

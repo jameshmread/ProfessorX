@@ -30,7 +30,7 @@ export class FileHandler {
     }
 
     public getSourceObject (): ts.SourceFile {
-        return (this.file.sourceObject) ? this.file.sourceObject :
+            return (this.file.sourceObject) ? this.file.sourceObject :
             ts.createSourceFile(this.file.filename, this.getSourceCode (), ts.ScriptTarget.ES2015, true);
     }
 

@@ -2,12 +2,15 @@ import * as ts from "typescript";
 import { expect } from "chai";
 import { SourceCodeHandler } from "./SourceCodeHandler";
 import { SourceObject } from "../../DTOs/SourceObject";
+import { MutatableNode } from "../../DTOs/MutatableNode";
+import { IMutatableNode } from "../../interfaces/IMutatableNode";
+import { SyntaxKind } from "typescript";
 
 describe("Testing SourceCodeHandler", () => {
     let code: string;
     let sourceObj: SourceObject;
     let sch: SourceCodeHandler;
-
+    let currentNode: IMutatableNode;
     beforeEach(() => {
         code = `
             let x: number = 3 + 9;
@@ -19,7 +22,8 @@ describe("Testing SourceCodeHandler", () => {
 
     it("Modyfing last plus sign to minus sign should work", () => {
         const index = sch.getOriginalSourceCode().indexOf("+");
-        sch.modifyCode(index, index, "-");
+        currentNode = new MutatableNode(null, {pos: index, end: index}, null);
+        sch.modifyCode(currentNode, "-");
         const actual = sch.getModifiedSourceCode();
         const expected = sch.getOriginalSourceCode().replace("+", "-");
         expect(actual).to.equal(expected);
@@ -27,7 +31,8 @@ describe("Testing SourceCodeHandler", () => {
 
     it("Modyfing true to false should work", () => {
         const index = sch.getOriginalSourceCode().indexOf("true");
-        sch.modifyCode(index, index + 3, "false");
+        currentNode = new MutatableNode(null, {pos: index, end: index + 3}, null);
+        sch.modifyCode(currentNode, "false");
         const actual = sch.getModifiedSourceCode();
         const expected = sch.getOriginalSourceCode().replace("true", "false");
         expect(actual).to.equal(expected);

@@ -30,7 +30,6 @@ export class Supervisor {
             this.nodes = this.splitNodes(nodes);
       }
 
-    // splits nodes evenly among logical cpu cores
       public splitNodes (inputNodes: Array<IMutatableNode>): Array<Array<IMutatableNode>> {
             const splitNodes = new Array<Array<IMutatableNode>>();
             for (let i = 0; i < inputNodes.length; i++) {
