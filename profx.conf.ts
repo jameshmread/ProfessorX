@@ -3,7 +3,6 @@ export class Config {
         filePath: "./testProject/src/",
         mutateAllFiles: false,
         filesToMutate: [
-            "HelloWorld.ts",
             "FileTwo.ts",
             "SkipMe.ts"
         ],
