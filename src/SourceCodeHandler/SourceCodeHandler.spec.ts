@@ -22,19 +22,19 @@ describe("Testing SourceCodeHandler", () => {
 
     it("Modyfing last plus sign to minus sign should work", () => {
         const index = sch.getOriginalSourceCode().indexOf("+");
-        currentNode = new MutatableNode(null, {pos: index, end: index}, null);
+        currentNode = new MutatableNode(null, {pos: index, end: index + 1}, null);
         sch.modifyCode(currentNode, "-");
         const actual = sch.getModifiedSourceCode();
-        const expected = sch.getOriginalSourceCode().replace("+", "-");
+        const expected = sch.getOriginalSourceCode().replace("+", " -");
         expect(actual).to.equal(expected);
     });
 
     it("Modyfing true to false should work", () => {
         const index = sch.getOriginalSourceCode().indexOf("true");
-        currentNode = new MutatableNode(null, {pos: index, end: index + 3}, null);
+        currentNode = new MutatableNode(null, {pos: index, end: index + 4}, null);
         sch.modifyCode(currentNode, "false");
         const actual = sch.getModifiedSourceCode();
-        const expected = sch.getOriginalSourceCode().replace("true", "false");
+        const expected = sch.getOriginalSourceCode().replace("true", " false");
         expect(actual).to.equal(expected);
     });
 
