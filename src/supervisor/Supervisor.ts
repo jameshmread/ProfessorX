@@ -80,6 +80,8 @@ export class Supervisor {
                    new Date(endTimestamp - this.startTimestamp).getTime()
             );
             console.log("Mutations Complete in: ", timeTaken);
+            console.log("Number of mutations produced: ", this.threadResults.length);
+
             const endResult = new EndResult(
                   ConfigManager.testRunner,
                   ConfigManager.runnerConfig,
