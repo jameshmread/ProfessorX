@@ -1,17 +1,96 @@
 export class LargeFile {
-    public add100Numbers () {
-        const a = 1;
-        const b = 1;
-        return a + b + a + b + a + b + a + b + a + b +
-        a + b + a + b + a + b + a + b + a + b +
-        a + b + a + b + a + b + a + b + a + b +
-        a + b + a + b + a + b + a + b + a + b +
-        a + b + a + b + a + b + a + b + a + b +
-        a + b + a + b + a + b + a + b + a + b +
-        a + b + a + b + a + b + a + b + a + b +
-        a + b + a + b + a + b + a + b + a + b +
-        a + b + a + b + a + b + a + b + a + b +
-        a + b + a + b + a + b + a + b + a + b;
+    public add200Numbers (a, b) {
+        return a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + b;
+    }
+
+    public minus200Numbers (a, b) {
+        return a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b -
+        a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b -
+        a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b -
+        a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b -
+        a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b -
+        a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b -
+        a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b -
+        a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b -
+        a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b -
+        a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b - a - b - b;
+    }
+
+    public minus200NumbersTimesPlus200Numbers (a, b, i, j) {
+        const minus = i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - j;
+        const plus = a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + b;
+        return minus * plus;
+    }
+
+    public nodes800 (a, b, i, j) {
+        const minus = i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - j;
+        const plus = a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + b;
+        const doublePlus = plus + i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j -
+        i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - i - j - j +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b +
+        a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + a + b + b;
+        return minus * plus / doublePlus;
     }
 
     public moreComplexExpression () {
@@ -69,7 +148,7 @@ export class LargeFile {
         }
         const arrayLength = a + b;
         const array = new Array<number>();
-        for (let i = a; i < b * 1000; i++) {
+        for (let i = a; i < 1000; i++) {
             array.push(i * 2);
         }
         return array[b];
