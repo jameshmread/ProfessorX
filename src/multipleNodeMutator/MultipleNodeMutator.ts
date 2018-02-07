@@ -54,15 +54,15 @@ export class MultipleNodeMutator {
                         mutationOption,
                         this.currentNode
                   );
-                  return;
+            } else {
+                  this.setSourceCodeInformation(mutationOption);
+                  this.createMutatedFiles();
+                  this.mochaRunner = new MochaTestRunner(ConfigManager.runnerConfig);
+                  await this.mochaRunner.runTests(this.outputStoreManager, this.testFile);
+                  this.cleanFiles();
             }
-            this.setSourceCodeInformation(mutationOption);
-            this.createMutatedFiles();
             this.outputStoreManager.configureStoreData(this.testFile, this.currentNode, this.sourceCodeHandler);
-            this.mochaRunner = new MochaTestRunner(ConfigManager.runnerConfig);
-            await this.mochaRunner.runTests(this.outputStoreManager, this.testFile);
             this.outputStoreManager.addStoreToList();
-            this.cleanFiles();
       }
 
       private setFileInformation () {
