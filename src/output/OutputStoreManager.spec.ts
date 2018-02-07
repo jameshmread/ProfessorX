@@ -70,7 +70,7 @@ describe("Output Store Manager", () => {
         expect(OutputStoreManager.calculateRunTime(300)).to.eql({d: 0, h: 0, m: 0, s: 0, ms: 300});
     });
 
-    it("should set runtime to 0,0,0,1,1 when given 1001", () => {
-        expect(OutputStoreManager.calculateRunTime(1001)).to.eql({d: 0, h: 0, m: 0, s: 1, ms: 1});
+    it("should set runtime to 1,1,0,0,0 when given 90000000 (25 hours)", () => {
+        expect(OutputStoreManager.calculateRunTime(90000000)).to.eql({d: 1, h: 1, m: 0, s: 0, ms: 0});
     });
 });
