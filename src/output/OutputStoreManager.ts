@@ -10,6 +10,7 @@ import { OutputStore } from "../../DTOs/OutputStore";
 import { SourceCodeHandler } from "../SourceCodeHandler/SourceCodeHandler";
 import { EndResult } from "../../DTOs/EndResult";
 import { Stream } from "stream";
+import { MathFunctions } from "../maths/MathFunctions";
 
 export class OutputStoreManager {
 
@@ -29,24 +30,14 @@ export class OutputStoreManager {
         transformStream.pipe(outputStream);
 
         transformStream.write(header);
-        OutputStoreManager.divideResults(collatedResults.RESULTS_ARRAY).forEach((result) => {
+        MathFunctions.divideItemsAmongArrays(results,
+            Math.floor(results.length / 20)
+        ).forEach((result) => {
             transformStream.write(result);
         });
 
         transformStream.end();
         outputStream.on("finish", () => {console.log("Results Written to Disk"); });
-    }
-
-    public static divideResults (resultsArray: Array<OutputStore>) {
-        const divisionLength = Math.floor(resultsArray.length / 20);
-        const dividedResults = new Array<Array<OutputStore>>();
-        for (let i = 0; i < resultsArray.length; i++) {
-            if (dividedResults[i] === void 0 && i < divisionLength) {
-                dividedResults[i % divisionLength] = [];
-            }
-            dividedResults[i % divisionLength].push(resultsArray[i]);
-        }
-        return dividedResults;
     }
 
     public static calculateRunTime (runTime: number): IDurationFormat {

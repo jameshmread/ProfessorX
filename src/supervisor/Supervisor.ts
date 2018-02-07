@@ -8,6 +8,7 @@ import { EndResult } from "../../DTOs/EndResult";
 import { OutputStoreManager } from "../output/OutputStoreManager";
 import { ConfigManager } from "../configManager/ConfigManager";
 import { Cleaner } from "../cleanup/Cleaner";
+import { MathFunctions } from "../maths/MathFunctions";
 
 process.on("SIGINT", () => {
       console.log("SIGINT Caught. Program ending. \n");
@@ -27,18 +28,7 @@ export class Supervisor {
             this.logicalCores = os.cpus().length;
             this.startTimestamp = new Date().getTime();
             console.log("Splitting nodes among workers \n");
-            this.nodes = this.splitNodes(nodes);
-      }
-
-      public splitNodes (inputNodes: Array<IMutatableNode>): Array<Array<IMutatableNode>> {
-            const splitNodes = new Array<Array<IMutatableNode>>();
-            for (let i = 0; i < inputNodes.length; i++) {
-                  if (splitNodes[i] === void 0 && i < this.logicalCores) {
-                        splitNodes[i % this.logicalCores] = [];
-                  }
-                  splitNodes[i % this.logicalCores].push(inputNodes[i]);
-            }
-            return splitNodes;
+            this.nodes = MathFunctions.divideItemsAmongArrays(nodes, this.logicalCores);
       }
 
       public spawnWorkers () {
