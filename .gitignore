@@ -1,11 +1,13 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 testProject/node_modules
+testProject-Stress/node_modules
 mochawesome-report/
 npm-debug.log
 /outputStoreData.json
 /data.json
 testProject/src/*.m.ts
+testProject-Stress
 
 # compiled output
 /dist

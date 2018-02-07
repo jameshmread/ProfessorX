@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as ts from "typescript";
+import * as JSONStream from "JSONStream";
 
 import { ITestResult } from "../../interfaces/ITestResult";
 import { IDurationFormat } from "../../interfaces/IDurationFormat";
@@ -7,6 +8,9 @@ import { IMutatableNode } from "../../interfaces/IMutatableNode";
 import { OutputStore } from "../../DTOs/OutputStore";
 
 import { SourceCodeHandler } from "../SourceCodeHandler/SourceCodeHandler";
+import { EndResult } from "../../DTOs/EndResult";
+import { Stream } from "stream";
+import { MathFunctions } from "../maths/MathFunctions";
 
 export class OutputStoreManager {
 
@@ -14,13 +18,26 @@ export class OutputStoreManager {
     private currentOutputStore: OutputStore;
 
     public constructor (
-    ) {}
+    ) {
+    }
 
-    public static writeOutputStoreToJson (collatedResults) {
-        fs.writeFileSync(
-            "./outputStoreData.json",
-            JSON.stringify(collatedResults, null, 2
-        ));
+    public static writeOutputStoreToJson (collatedResults: EndResult) {
+        const header = { runner: collatedResults.RUNNER, config: collatedResults.RUNNER_CONFIG };
+        const results = collatedResults.RESULTS_ARRAY;
+        const transformStream = JSONStream.stringify();
+        const outputStream = fs.createWriteStream("./outputStoreData.json");
+
+        transformStream.pipe(outputStream);
+
+        transformStream.write(header);
+        MathFunctions.divideItemsAmongArrays(results,
+            Math.floor(results.length / 20)
+        ).forEach((result) => {
+            transformStream.write(result);
+        });
+
+        transformStream.end();
+        outputStream.on("finish", () => {console.log("Results Written to Disk"); });
     }
 
     public static calculateRunTime (runTime: number): IDurationFormat {
