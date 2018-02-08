@@ -3,8 +3,7 @@
 testProject/node_modules
 mochawesome-report/
 npm-debug.log
-/outputStoreData.json
-/data.json
+MutationResults.json
 testProject/src/*.m.ts
 testProject-Stress
 
