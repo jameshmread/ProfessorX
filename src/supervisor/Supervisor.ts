@@ -5,7 +5,7 @@ import * as os from "os";
 import { IMutatableNode } from "../../interfaces/IMutatableNode";
 import { EndResult } from "../../DTOs/EndResult";
 
-import { OutputStoreManager } from "../output/OutputStoreManager";
+import { MutationResultManager } from "../mutationResultManager/MutationResultManager";
 import { ConfigManager } from "../configManager/ConfigManager";
 import { Cleaner } from "../cleanup/Cleaner";
 import { MathFunctions } from "../maths/MathFunctions";
@@ -78,7 +78,7 @@ export class Supervisor {
                   timeTaken,
                   this.threadResults
             );
-            OutputStoreManager.writeResults(endResult);
+            MutationResultManager.writeResults(endResult);
             Cleaner.cleanRemainingFiles();
         }
 }
