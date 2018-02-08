@@ -77,7 +77,7 @@ export class Supervisor {
                   ConfigManager.runnerConfig,
                   this.threadResults
             );
-            OutputStoreManager.writeOutputStoreToJson(endResult);
+            OutputStoreManager.writeResults(endResult);
             OutputStoreManager.writeDataToJson(timeTaken);
             Cleaner.cleanRemainingFiles();
         }
