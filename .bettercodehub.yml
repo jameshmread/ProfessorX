@@ -2,5 +2,6 @@ component_depth: 1
 exclude: 
   - /testProject/*
   - /testUtilities/*
+  - src/FileHandler/FileHandler.ts
 languages: 
   - typescript
