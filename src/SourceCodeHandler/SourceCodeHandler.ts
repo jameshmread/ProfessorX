@@ -24,9 +24,9 @@ export class SourceCodeHandler {
 
     public modifyCode (currentNode: IMutatableNode, replacement: string) {
         this.sourceObj.modifiedSourceCode = this.sourceObj.modifiedSourceCode
-        .substring(0, currentNode.positions.pos)
+        .substring(0, currentNode.positions.pos) + " "
         + replacement
         + this.sourceObj.modifiedSourceCode
-        .substring(currentNode.positions.end + 1, this.sourceObj.modifiedSourceCode.length);
+        .substring(currentNode.positions.end, this.sourceObj.modifiedSourceCode.length);
     }
 }

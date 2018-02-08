@@ -10,16 +10,16 @@ export class MutationFactory {
     ];
 
     public static syntaxMutationMap: IsyntaxMutationMap = {
-        [SyntaxKind.GreaterThanToken]: [" < ", " <= ", ">=", " !== ", " - ", " + ", " * ", " / "],
-        [SyntaxKind.PlusToken]: [" - ", " / ", " * "],
-        [SyntaxKind.MinusToken]: [" + ",  " / ", " * "],
-        [SyntaxKind.AsteriskToken]: [" / ", " < ", " <= ", ">=", " !== ", " - ", " + ", " > "],
-        [SyntaxKind.PercentToken]: [" < ", " <= ", ">=", " !== ", " - ", " + ", " > ", " * ", " / "],
+        [SyntaxKind.GreaterThanToken]: ["<", "<=", ">=", "!==", "-", "+", "*", "/"],
+        [SyntaxKind.PlusToken]: ["-", "/", "*"],
+        [SyntaxKind.MinusToken]: ["+", "/", "*"],
+        [SyntaxKind.AsteriskToken]: ["/ ", "<", "<=", ">=", "!==", "-", "+", ">"],
+        [SyntaxKind.PercentToken]: ["<", "<=", ">=", "!==", "-", "+", ">", "*", "/"],
         [SyntaxKind.PlusPlusToken]: ["--"],
         [SyntaxKind.MinusMinusToken]: ["++"],
-        [SyntaxKind.BarBarToken]: [" && "],
-        [SyntaxKind.TrueKeyword]: [" false"],
-        [SyntaxKind.FalseKeyword]: [" true"]
+        [SyntaxKind.BarBarToken]: ["&&"],
+        [SyntaxKind.TrueKeyword]: ["false"],
+        [SyntaxKind.FalseKeyword]: ["true"]
     };
 
     public static getSingleMutation (syntaxKind: SyntaxKind): string {

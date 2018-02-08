@@ -6,6 +6,7 @@ npm-debug.log
 /outputStoreData.json
 /data.json
 testProject/src/*.m.ts
+testProject-Stress
 
 # compiled output
 /dist
