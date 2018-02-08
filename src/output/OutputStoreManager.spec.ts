@@ -65,12 +65,4 @@ describe("Output Store Manager", () => {
     it("should return false (survived) with failed tests = 0", () => {
         expect(osm.wasMutantKilled(0)).to.equal(false);
     });
-
-    it("should set runtime to a date format of 0,0,0,0,300 when given 300", () => {
-        expect(OutputStoreManager.calculateRunTime(300)).to.eql({d: 0, h: 0, m: 0, s: 0, ms: 300});
-    });
-
-    it("should set runtime to 1,1,0,0,0 when given 90000000 (25 hours)", () => {
-        expect(OutputStoreManager.calculateRunTime(90000000)).to.eql({d: 1, h: 1, m: 0, s: 0, ms: 0});
-    });
 });

@@ -21,7 +21,7 @@ export class OutputStoreManager {
     ) {
     }
 
-    public static writeOutputStoreToJson (collatedResults: EndResult) {
+    public static writeResults (collatedResults: EndResult) {
         const header = { runner: collatedResults.RUNNER, config: collatedResults.RUNNER_CONFIG };
         const results = collatedResults.RESULTS_ARRAY;
         const transformStream = JSONStream.stringify();
@@ -38,23 +38,6 @@ export class OutputStoreManager {
 
         transformStream.end();
         outputStream.on("finish", () => {console.log("Results Written to Disk"); });
-    }
-
-    public static calculateRunTime (runTime: number): IDurationFormat {
-        /*
-        convert millis to date time adapted from
-        https://gist.github.com/remino/1563878
-        */
-        let ms = runTime;
-        ms = ms % 1000;
-        let s = Math.floor(runTime / 1000);
-        let m = Math.floor(s / 60);
-        s = s % 60;
-        let h = Math.floor(m / 60);
-        m = m % 60;
-        const d = Math.floor(h / 24);
-        h = h % 24;
-        return { d, h, m, s, ms };
     }
 
     public static writeDataToJson (data: IDurationFormat) {
