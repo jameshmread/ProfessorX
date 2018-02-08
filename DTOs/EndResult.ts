@@ -10,6 +10,7 @@ export class EndResult {
     constructor (
         runner: string,
         runnerConf: Object,
+        duration: IDurationFormat,
         results: Array<OutputStore>
     ){
         this.RUNNER = runner;

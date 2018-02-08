@@ -66,7 +66,7 @@ export class Supervisor {
 
       private finishRun () {
             const endTimestamp = new Date().getTime();
-            const timeTaken = OutputStoreManager.calculateRunTime(
+            const timeTaken = MathFunctions.calculateRunTime(
                    new Date(endTimestamp - this.startTimestamp).getTime()
             );
             console.log("Mutations Complete in: ", timeTaken);
@@ -75,6 +75,7 @@ export class Supervisor {
             const endResult = new EndResult(
                   ConfigManager.testRunner,
                   ConfigManager.runnerConfig,
+                  timeTaken,
                   this.threadResults
             );
             OutputStoreManager.writeResults(endResult);
