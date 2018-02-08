@@ -79,7 +79,6 @@ export class Supervisor {
                   this.threadResults
             );
             OutputStoreManager.writeResults(endResult);
-            OutputStoreManager.writeDataToJson(timeTaken);
             Cleaner.cleanRemainingFiles();
         }
 }

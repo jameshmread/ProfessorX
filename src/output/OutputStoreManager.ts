@@ -22,8 +22,12 @@ export class OutputStoreManager {
     }
 
     public static writeResults (collatedResults: EndResult) {
-        const header = { runner: collatedResults.RUNNER, config: collatedResults.RUNNER_CONFIG };
-        const results = collatedResults.RESULTS_ARRAY;
+        const header = {
+            runner: collatedResults.runner,
+            config: collatedResults.runnerConf,
+            duration: collatedResults.duration
+        };
+        const results = collatedResults.results;
         const transformStream = JSONStream.stringify();
         const outputStream = fs.createWriteStream("./outputStoreData.json");
 
@@ -38,10 +42,6 @@ export class OutputStoreManager {
 
         transformStream.end();
         outputStream.on("finish", () => {console.log("Results Written to Disk"); });
-    }
-
-    public static writeDataToJson (data: IDurationFormat) {
-        fs.writeFileSync("./data.json", JSON.stringify(data, null, 2));
     }
 
     public setCurrentOutputStore (outputStore: OutputStore): void {
