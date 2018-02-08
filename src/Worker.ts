@@ -8,10 +8,10 @@ import { MultipleNodeMutator } from "./multipleNodeMutator/MultipleNodeMutator";
 export class Worker {
       public static workerResults = [];
 
-      public multiNodeHandler: MultipleNodeMutator;
+      public multiNodeMutator: MultipleNodeMutator;
 
       constructor (public nodesToMutate) {
-            this.multiNodeHandler = new MultipleNodeMutator();
+            this.multiNodeMutator = new MultipleNodeMutator();
       }
 
       public async execute () {
@@ -22,8 +22,8 @@ export class Worker {
 
       private async mutateAllNodes () {
             for (const currentNode of this.nodesToMutate) {
-                  this.multiNodeHandler.setCurrentNode(currentNode);
-                  await this.multiNodeHandler.mutateSingleNode();
+                  this.multiNodeMutator.setCurrentNode(currentNode);
+                  await this.multiNodeMutator.mutateSingleNode();
             }
       }
 }
