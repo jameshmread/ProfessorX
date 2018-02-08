@@ -1,6 +1,4 @@
-import * as fs from "fs";
 import * as ts from "typescript";
-import * as JSONStream from "JSONStream";
 
 import { ITestResult } from "../../interfaces/ITestResult";
 import { IMutatableNode } from "../../interfaces/IMutatableNode";
@@ -17,29 +15,6 @@ export class MutationResultManager {
 
     public constructor (
     ) {
-    }
-
-    public static writeResults (collatedResults: EndResult) {
-        const header = {
-            runner: collatedResults.runner,
-            config: collatedResults.runnerConf,
-            duration: collatedResults.duration
-        };
-        const results = collatedResults.results;
-        const transformStream = JSONStream.stringify();
-        const outputStream = fs.createWriteStream("./MutationResults.json");
-
-        transformStream.pipe(outputStream);
-
-        transformStream.write(header);
-        MathFunctions.divideItemsAmongArrays(results,
-            Math.floor(results.length / 20)
-        ).forEach((result) => {
-            transformStream.write(result);
-        });
-
-        transformStream.end();
-        outputStream.on("finish", () => {console.log("Results Written to Disk"); });
     }
 
     public setCurrentMutationResult (mResult: MutationResult): void {

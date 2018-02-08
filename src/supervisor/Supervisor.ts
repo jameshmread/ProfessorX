@@ -9,6 +9,7 @@ import { MutationResultManager } from "../mutationResultManager/MutationResultMa
 import { ConfigManager } from "../configManager/ConfigManager";
 import { Cleaner } from "../cleanup/Cleaner";
 import { MathFunctions } from "../maths/MathFunctions";
+import { OutputToJSON } from "../outputResults/OutputToJSON";
 
 process.on("SIGINT", () => {
       console.log("SIGINT Caught. Program ending. \n");
@@ -78,7 +79,7 @@ export class Supervisor {
                   timeTaken,
                   this.threadResults
             );
-            MutationResultManager.writeResults(endResult);
+            OutputToJSON.writeResults(endResult);
             Cleaner.cleanRemainingFiles();
         }
 }
