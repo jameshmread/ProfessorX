@@ -1,4 +1,5 @@
-import { OutputStore } from "./OutputStore";
+import { MutationResult } from "./MutationResult";
+import { IDurationFormat } from "../interfaces/IDurationFormat";
 
 export class EndResult {
 
@@ -6,6 +7,6 @@ export class EndResult {
         public readonly runner: string,
         public readonly runnerConf: Object,
         public readonly duration: IDurationFormat,
-        public readonly results: Array<OutputStore>
+        public readonly results: Array<MutationResult>
     ){}
 }

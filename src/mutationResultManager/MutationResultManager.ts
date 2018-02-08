@@ -3,19 +3,17 @@ import * as ts from "typescript";
 import * as JSONStream from "JSONStream";
 
 import { ITestResult } from "../../interfaces/ITestResult";
-import { IDurationFormat } from "../../interfaces/IDurationFormat";
 import { IMutatableNode } from "../../interfaces/IMutatableNode";
-import { OutputStore } from "../../DTOs/OutputStore";
+import { MutationResult } from "../../DTOs/MutationResult";
 
 import { SourceCodeHandler } from "../SourceCodeHandler/SourceCodeHandler";
 import { EndResult } from "../../DTOs/EndResult";
-import { Stream } from "stream";
 import { MathFunctions } from "../maths/MathFunctions";
 
-export class OutputStoreManager {
+export class MutationResultManager {
 
-    public static outputStoreList = new Array<OutputStore>();
-    private currentOutputStore: OutputStore;
+    public static mutationResults = new Array<MutationResult>();
+    private currentMutationResult: MutationResult;
 
     public constructor (
     ) {
@@ -29,7 +27,7 @@ export class OutputStoreManager {
         };
         const results = collatedResults.results;
         const transformStream = JSONStream.stringify();
-        const outputStream = fs.createWriteStream("./outputStoreData.json");
+        const outputStream = fs.createWriteStream("./MutationResults.json");
 
         transformStream.pipe(outputStream);
 
@@ -44,25 +42,24 @@ export class OutputStoreManager {
         outputStream.on("finish", () => {console.log("Results Written to Disk"); });
     }
 
-    public setCurrentOutputStore (outputStore: OutputStore): void {
-        this.currentOutputStore = outputStore;
+    public setCurrentMutationResult (mResult: MutationResult): void {
+        this.currentMutationResult = mResult;
     }
 
-    public getCurrentOutputStore (): OutputStore {
-        return this.currentOutputStore;
+    public getCurrentMutationResult (): MutationResult {
+        return this.currentMutationResult;
     }
 
-    public addStoreToList (): void {
-        OutputStoreManager.outputStoreList.push(this.currentOutputStore);
+    public addMutationResultToList (): void {
+        MutationResultManager.mutationResults.push(this.currentMutationResult);
     }
 
-    public configureStoreData (
+    public setMutationResultData (
         testFile: string,
         currentNode: IMutatableNode,
         sourceCodeHandler: SourceCodeHandler
     ) {
         this.setTestFile(testFile);
-        // consider setting test file once per file since it is just duplication
         this.setLineNumber(
             ts.getLineAndCharacterOfPosition(
                 sourceCodeHandler.getOriginalSourceObject(),
@@ -73,37 +70,36 @@ export class OutputStoreManager {
     }
 
     public setTestFile (filename: string): void {
-        this.currentOutputStore.testFilePath = filename;
+        this.currentMutationResult.testFilePath = filename;
     }
 
     public setLineNumber (lineNumber: number): void {
-        this.currentOutputStore.lineNumber = lineNumber;
+        this.currentMutationResult.lineNumber = lineNumber;
     }
 
     public setNumberOfTests (testResult: ITestResult): void {
-        this.currentOutputStore.numberOfPassedTests = parseInt(testResult.passed, 0);
-        this.currentOutputStore.numberOfFailedTests = parseInt(testResult.failed, 0);
-        this.currentOutputStore.mutantKilled =
-        this.wasMutantKilled(this.currentOutputStore.numberOfFailedTests);
+        this.currentMutationResult.numberOfPassedTests = parseInt(testResult.passed, 0);
+        this.currentMutationResult.numberOfFailedTests = parseInt(testResult.failed, 0);
+        this.currentMutationResult.mutantKilled =
+        this.wasMutantKilled(this.currentMutationResult.numberOfFailedTests);
     }
 
     public setOrigionalSourceCode (code: string): void {
         const codeLines = this.splitCodeByLine(code);
-        this.currentOutputStore.origionalCode =
-        codeLines[this.currentOutputStore.lineNumber].trim();
+        this.currentMutationResult.origionalCode =
+        codeLines[this.currentMutationResult.lineNumber].trim();
     }
 
     public setModifiedSourceCode (code: string): void {
         const codeLines = this.splitCodeByLine(code);
-        this.currentOutputStore.mutatedCode =
-        codeLines[this.currentOutputStore.lineNumber].trim();
+        this.currentMutationResult.mutatedCode =
+        codeLines[this.currentMutationResult.lineNumber].trim();
     }
 
     // was the mutant killed? true is killed (good)
     public wasMutantKilled (failedTests: number): boolean {
         return failedTests > 0;
     }
-
 
     private splitCodeByLine (code: string): Array<string> {
         return code.split("\n");
