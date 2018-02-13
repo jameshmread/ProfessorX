@@ -24,4 +24,12 @@ describe("Math functions", () => {
             const inputArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
             expect(MathFunctions.divideItemsAmongArrays(inputArray, 1)[0].length).to.equal(10);
       });
+
+      it("should set runtime to a date format of 0,0,0,0,300 when given 300", () => {
+            expect(MathFunctions.calculateRunTime(300)).to.eql({ d: 0, h: 0, m: 0, s: 0, ms: 300 });
+      });
+
+      it("should set runtime to 1,1,0,0,0 when given 90000000 (25 hours)", () => {
+            expect(MathFunctions.calculateRunTime(90000000)).to.eql({ d: 1, h: 1, m: 0, s: 0, ms: 0 });
+      });
 });

@@ -1,12 +1,12 @@
 import { IMutatableNode } from "../../interfaces/IMutatableNode";
 
-import { OutputStore } from "../../DTOs/OutputStore";
+import { MutationResult } from "../../DTOs/MutationResult";
 import { SourceObject } from "../../DTOs/SourceObject";
 import { FileObject } from "../../DTOs/FileObject";
 import { MAttemptFail } from "../../DTOs/MAttemptFail";
 
 import { MutationFactory } from "../mutationFactory/MutationFactory";
-import { OutputStoreManager } from "../output/OutputStoreManager";
+import { MutationResultManager } from "../mutationResultManager/MutationResultManager";
 import { ConfigManager } from "../configManager/ConfigManager";
 import { SourceCodeHandler } from "../SourceCodeHandler/SourceCodeHandler";
 import { Cleaner } from "../cleanup/Cleaner";
@@ -15,7 +15,7 @@ import { MochaTestRunner } from "../mocha-testRunner/Mocha-TestRunner";
 import { Worker } from "../Worker";
 
 export class MultipleNodeMutator {
-      private outputStoreManager: OutputStoreManager;
+      private outputStoreManager: MutationResultManager;
       private mochaRunner: MochaTestRunner;
       private sourceCodeHandler: SourceCodeHandler;
       private fileHandler: FileHandler;
@@ -26,7 +26,7 @@ export class MultipleNodeMutator {
 
       constructor () {
             const configManager = new ConfigManager();
-            this.outputStoreManager = new OutputStoreManager();
+            this.outputStoreManager = new MutationResultManager();
       }
 
       public setCurrentNode (node: IMutatableNode) {
@@ -38,16 +38,16 @@ export class MultipleNodeMutator {
             for (let i = 0; i < mutationOptions.length; i++) {
                   await this.doSingleMutation(mutationOptions[i]);
             }
-            Worker.workerResults.push(OutputStoreManager.outputStoreList);
+            Worker.workerResults.push(MutationResultManager.mutationResults);
       }
 
       private async doSingleMutation (mutationOption: string) {
-            this.outputStoreManager.setCurrentOutputStore(
-                  new OutputStore(ConfigManager.filePath, this.currentNode.parentFileName)
+            this.outputStoreManager.setCurrentMutationResult(
+                  new MutationResult(ConfigManager.filePath, this.currentNode.parentFileName)
             );
             this.setFileInformation();
             if (!this.createSourceCodeHandler()) {
-                  this.outputStoreManager.getCurrentOutputStore().mutationAttemptFailure =
+                  this.outputStoreManager.getCurrentMutationResult().mutationAttemptFailure =
                   new MAttemptFail(
                         this.errorString,
                         this.currentNode.syntaxType.toString() + " => " +
@@ -61,8 +61,8 @@ export class MultipleNodeMutator {
                   await this.mochaRunner.runTests(this.outputStoreManager, this.testFile);
                   this.cleanFiles();
             }
-            this.outputStoreManager.configureStoreData(this.testFile, this.currentNode, this.sourceCodeHandler);
-            this.outputStoreManager.addStoreToList();
+            this.outputStoreManager.setMutationResultData(this.testFile, this.currentNode, this.sourceCodeHandler);
+            this.outputStoreManager.addMutationResultToList();
       }
 
       private setFileInformation () {

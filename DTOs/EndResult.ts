@@ -1,19 +1,12 @@
-import { OutputStore } from "./OutputStore";
+import { MutationResult } from "./MutationResult";
+import { IDurationFormat } from "../interfaces/IDurationFormat";
 
 export class EndResult {
 
-    public readonly RUNNER: string;
-    public readonly RUNNER_CONFIG: Object;
-
-    public readonly RESULTS_ARRAY: Array<OutputStore>;
-
     constructor (
-        runner: string,
-        runnerConf: Object,
-        results: Array<OutputStore>
-    ){
-        this.RUNNER = runner;
-        this.RUNNER_CONFIG = runnerConf;
-        this.RESULTS_ARRAY = results;
-    }
+        public readonly runner: string,
+        public readonly runnerConf: Object,
+        public readonly duration: IDurationFormat,
+        public readonly results: Array<MutationResult>
+    ){}
 }

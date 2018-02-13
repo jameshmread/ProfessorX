@@ -5,10 +5,11 @@ import * as os from "os";
 import { IMutatableNode } from "../../interfaces/IMutatableNode";
 import { EndResult } from "../../DTOs/EndResult";
 
-import { OutputStoreManager } from "../output/OutputStoreManager";
+import { MutationResultManager } from "../mutationResultManager/MutationResultManager";
 import { ConfigManager } from "../configManager/ConfigManager";
 import { Cleaner } from "../cleanup/Cleaner";
 import { MathFunctions } from "../maths/MathFunctions";
+import { OutputToJSON } from "../outputResults/OutputToJSON";
 
 process.on("SIGINT", () => {
       console.log("SIGINT Caught. Program ending. \n");
@@ -66,7 +67,7 @@ export class Supervisor {
 
       private finishRun () {
             const endTimestamp = new Date().getTime();
-            const timeTaken = OutputStoreManager.calculateRunTime(
+            const timeTaken = MathFunctions.calculateRunTime(
                    new Date(endTimestamp - this.startTimestamp).getTime()
             );
             console.log("Mutations Complete in: ", timeTaken);
@@ -75,10 +76,10 @@ export class Supervisor {
             const endResult = new EndResult(
                   ConfigManager.testRunner,
                   ConfigManager.runnerConfig,
+                  timeTaken,
                   this.threadResults
             );
-            OutputStoreManager.writeOutputStoreToJson(endResult);
-            OutputStoreManager.writeDataToJson(timeTaken);
+            OutputToJSON.writeResults(endResult);
             Cleaner.cleanRemainingFiles();
         }
 }
