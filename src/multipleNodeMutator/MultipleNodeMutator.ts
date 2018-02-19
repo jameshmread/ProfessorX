@@ -8,16 +8,16 @@ import { MAttemptFail } from "../../DTOs/MAttemptFail";
 import { MutationFactory } from "../mutationFactory/MutationFactory";
 import { MutationResultManager } from "../mutationResultManager/MutationResultManager";
 import { ConfigManager } from "../configManager/ConfigManager";
-import { SourceCodeHandler } from "../SourceCodeHandler/SourceCodeHandler";
+import { SourceCodeModifier } from "../sourceCodeModifier/SourceCodeModifier";
 import { Cleaner } from "../cleanup/Cleaner";
 import { FileHandler } from "../FileHandler/FileHandler";
 import { MochaTestRunner } from "../mocha-testRunner/Mocha-TestRunner";
 import { Worker } from "../Worker";
 
 export class MultipleNodeMutator {
-      private outputStoreManager: MutationResultManager;
+      private mutationResultManager: MutationResultManager;
       private mochaRunner: MochaTestRunner;
-      private sourceCodeHandler: SourceCodeHandler;
+      private sourceCodeModifier: SourceCodeModifier;
       private fileHandler: FileHandler;
       private currentNode: IMutatableNode;
       private srcFile: string;
@@ -26,7 +26,7 @@ export class MultipleNodeMutator {
 
       constructor () {
             const configManager = new ConfigManager();
-            this.outputStoreManager = new MutationResultManager();
+            this.mutationResultManager = new MutationResultManager();
       }
 
       public setCurrentNode (node: IMutatableNode) {
@@ -42,12 +42,12 @@ export class MultipleNodeMutator {
       }
 
       private async doSingleMutation (mutationOption: string) {
-            this.outputStoreManager.setCurrentMutationResult(
+            this.mutationResultManager.setCurrentMutationResult(
                   new MutationResult(ConfigManager.filePath, this.currentNode.parentFileName)
             );
             this.setFileInformation();
-            if (!this.createSourceCodeHandler()) {
-                  this.outputStoreManager.getCurrentMutationResult().mutationAttemptFailure =
+            if (!this.createSourceCodeModifier()) {
+                  this.mutationResultManager.getCurrentMutationResult().mutationAttemptFailure =
                   new MAttemptFail(
                         this.errorString,
                         this.currentNode.syntaxType.toString() + " => " +
@@ -58,11 +58,11 @@ export class MultipleNodeMutator {
                   this.setSourceCodeInformation(mutationOption);
                   this.createMutatedFiles();
                   this.mochaRunner = new MochaTestRunner(ConfigManager.runnerConfig);
-                  await this.mochaRunner.runTests(this.outputStoreManager, this.testFile);
+                  await this.mochaRunner.runTests(this.mutationResultManager, this.testFile);
                   this.cleanFiles();
             }
-            this.outputStoreManager.setMutationResultData(this.testFile, this.currentNode, this.sourceCodeHandler);
-            this.outputStoreManager.addMutationResultToList();
+            this.mutationResultManager.setMutationResultData(this.testFile, this.currentNode, this.sourceCodeModifier);
+            this.mutationResultManager.addMutationResultToList();
       }
 
       private setFileInformation () {
@@ -71,9 +71,10 @@ export class MultipleNodeMutator {
             this.fileHandler = new FileHandler(fileObject);
       }
 
-      private createSourceCodeHandler (): boolean {
+      private createSourceCodeModifier (): boolean {
             try {
-                  this.sourceCodeHandler = new SourceCodeHandler(new SourceObject(this.fileHandler.getSourceObject()));
+                  this.sourceCodeModifier =
+                  new SourceCodeModifier(new SourceObject(this.fileHandler.getSourceObject()));
                   return true;
             }catch (error) {
                   this.errorString = "Could not create source code handler: " + error;
@@ -83,13 +84,13 @@ export class MultipleNodeMutator {
       }
 
       private setSourceCodeInformation (mutationOptions: string) {
-            this.sourceCodeHandler.resetModified();
-            this.sourceCodeHandler.modifyCode(this.currentNode, mutationOptions);
+            this.sourceCodeModifier.resetModified();
+            this.sourceCodeModifier.modifyCode(this.currentNode, mutationOptions);
       }
 
       private createMutatedFiles () {
             this.srcFile = this.fileHandler.writeTempSourceModifiedFile(
-                  this.sourceCodeHandler.getModifiedSourceCode());
+                  this.sourceCodeModifier.getModifiedSourceCode());
             this.testFile = this.fileHandler.createTempTestModifiedFile();
       }
 
