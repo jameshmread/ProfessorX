@@ -15,14 +15,13 @@ export class ProfessorX {
 
     public async main () {
         console.log("Creating File Objects");
-        this.nodeHandler = new NodeHandler();
+        NodeHandler.createAllFileDescriptors();
         console.log("Finding Nodes... \n");
-        this.nodeHandler.createAllFileDescriptors();
-        this.nodeHandler.traverseFilesForNodes();
-        console.log("Found ", this.nodeHandler.fileNameNodes.length, " mutatable nodes. ");
+        NodeHandler.traverseFilesForNodes();
+        console.log("Found ", NodeHandler.fileNameNodes.length, " mutatable nodes. ");
         console.log("In ", ConfigManager.filesToMutate.length, " Files \n");
-        console.log("Filename nodes ", this.nodeHandler.fileNameNodes);
-        this.supervisor = new Supervisor(this.nodeHandler.fileNameNodes);
+        console.log("Filename nodes ", NodeHandler.fileNameNodes);
+        this.supervisor = new Supervisor(NodeHandler.fileNameNodes);
         this.supervisor.spawnWorkers();
     }
 }

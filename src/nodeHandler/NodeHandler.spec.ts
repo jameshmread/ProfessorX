@@ -28,19 +28,20 @@ describe("Testing NodeHandler ", () => {
     let nodeHandler: NodeHandler;
     beforeEach(() => {
         nodeHandler = new NodeHandler();
+        NodeHandler.fileNameNodes = [];
     });
 
     it("should return a list of the + nodes in a file", () => {
         MutationFactory.mutatableTokens = [SyntaxKind.PlusToken];
-        expect(nodeHandler.fileNameNodes.length).to.equal(0);
-        nodeHandler.getAllNodesInFile(ci, 0);
-        expect(nodeHandler.fileNameNodes.length).to.equal(1);
+        expect(NodeHandler.fileNameNodes.length).to.equal(0);
+        NodeHandler.getAllNodesInFile(ci, 0);
+        expect(NodeHandler.fileNameNodes.length).to.equal(1);
     });
 
     it("should return a list of the + and boolean nodes in a file", () => {
         MutationFactory.mutatableTokens = [SyntaxKind.PlusToken, SyntaxKind.TrueKeyword];
-        expect(nodeHandler.fileNameNodes.length).to.equal(0);
-        nodeHandler.getAllNodesInFile(ci, 0);
-        expect(nodeHandler.fileNameNodes.length).to.equal(2);
+        expect(NodeHandler.fileNameNodes.length).to.equal(0);
+        NodeHandler.getAllNodesInFile(ci, 0);
+        expect(NodeHandler.fileNameNodes.length).to.equal(2);
     });
 });

@@ -11,17 +11,17 @@ import { FileHandler } from "../FileHandler/FileHandler";
 
 export class NodeHandler {
 
-    public fileNameNodes: Array<IMutatableNode> = [];
-    public fileDescriptors: Array<IFileDescriptor> = [];
+    public static fileNameNodes: Array<IMutatableNode> = [];
+    public static fileDescriptors: Array<IFileDescriptor> = [];
 
-    public traverseFilesForNodes () {
+    public static traverseFilesForNodes () {
         for (let i = 0; i < ConfigManager.filesToMutate.length; i++) {
             this.getAllNodesInFile(this.fileDescriptors[i].codeInspector, i);
         }
         return this.fileNameNodes;
     }
 
-    public getAllNodesInFile (codeInspector: CodeInspector, fileNameIndex: number): void {
+    public static getAllNodesInFile (codeInspector: CodeInspector, fileNameIndex: number): void {
         MutationFactory.mutatableTokens.forEach((syntaxItem) => {
             codeInspector.findObjectsOfSyntaxKind(syntaxItem).forEach((token) => {
                 this.fileNameNodes.push({
@@ -33,7 +33,7 @@ export class NodeHandler {
         });
     }
 
-    public createAllFileDescriptors (): Array<IFileDescriptor> {
+    public static createAllFileDescriptors (): Array<IFileDescriptor> {
         for (let i = 0; i < ConfigManager.filesToMutate.length; i++) {
             const fo = new FileObject(ConfigManager.filesToMutate[i]);
             const fh = new FileHandler(fo);
