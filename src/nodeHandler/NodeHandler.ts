@@ -16,15 +16,15 @@ export class NodeHandler {
 
     public static traverseFilesForNodes () {
         for (let i = 0; i < ConfigManager.filesToMutate.length; i++) {
-            this.getAllNodesInFile(this.fileDescriptors[i].codeInspector, i);
+            NodeHandler.getAllNodesInFile(NodeHandler.fileDescriptors[i].codeInspector, i);
         }
-        return this.fileNameNodes;
+        return NodeHandler.fileNameNodes;
     }
 
     public static getAllNodesInFile (codeInspector: CodeInspector, fileNameIndex: number): void {
         MutationFactory.mutatableTokens.forEach((syntaxItem) => {
             codeInspector.findObjectsOfSyntaxKind(syntaxItem).forEach((token) => {
-                this.fileNameNodes.push({
+                NodeHandler.fileNameNodes.push({
                     syntaxType: syntaxItem,
                     positions: token,
                     parentFileName: ConfigManager.filesToMutate[fileNameIndex]
@@ -39,11 +39,16 @@ export class NodeHandler {
             const fh = new FileHandler(fo);
             const so = new SourceObject(fh.getSourceObject());
             const ci = new CodeInspector(so.origionalSourceObject);
-            this.fileDescriptors.push({
+            NodeHandler.fileDescriptors.push({
                     fileName: ConfigManager.filesToMutate[i],
                     fileObject: fo, fileHandler: fh, sourceObject: so, codeInspector: ci
             });
         }
-        return this.fileDescriptors;
+        return NodeHandler.fileDescriptors;
+    }
+
+    public static getDescriptorByFileName (fileName: string): IFileDescriptor {
+        console.log(NodeHandler.fileDescriptors);
+        return NodeHandler.fileDescriptors.find((descriptor) => descriptor.fileName === fileName);
     }
 }
