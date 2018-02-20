@@ -6,7 +6,7 @@ export class MutationFactory {
     public static mutatableTokens: Array<SyntaxKind> = [
         SyntaxKind.PlusToken, SyntaxKind.MinusToken, SyntaxKind.TrueKeyword, SyntaxKind.FalseKeyword,
         SyntaxKind.PlusPlusToken, SyntaxKind.MinusMinusToken, SyntaxKind.BarBarToken, SyntaxKind.GreaterThanToken,
-        SyntaxKind.PercentToken, SyntaxKind.AsteriskToken
+        SyntaxKind.PercentToken, SyntaxKind.AsteriskToken, SyntaxKind.Block
     ];
 
     public static syntaxMutationMap: IsyntaxMutationMap = {
@@ -19,7 +19,8 @@ export class MutationFactory {
         [SyntaxKind.MinusMinusToken]: ["++"],
         [SyntaxKind.BarBarToken]: ["&&"],
         [SyntaxKind.TrueKeyword]: ["false"],
-        [SyntaxKind.FalseKeyword]: ["true"]
+        [SyntaxKind.FalseKeyword]: ["true"],
+        [SyntaxKind.Block]: ["{}"]
     };
 
     public static getSingleMutation (syntaxKind: SyntaxKind): string {
