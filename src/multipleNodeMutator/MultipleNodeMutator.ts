@@ -61,7 +61,8 @@ export class MultipleNodeMutator {
                   await this.mochaRunner.runTests(this.mutationResultManager, this.testFile);
                   this.cleanFiles();
             }
-            this.mutationResultManager.setMutationResultData(this.testFile, this.currentNode, this.sourceCodeModifier);
+            this.mutationResultManager.setCurrentSourceCodeModifierAndSourceObj(this.sourceCodeModifier);
+            this.mutationResultManager.setMutationResultData(this.testFile, this.currentNode);
             this.mutationResultManager.addMutationResultToList();
       }
 
@@ -77,7 +78,7 @@ export class MultipleNodeMutator {
                   new SourceCodeModifier(new SourceObject(this.fileHandler.getSourceObject()));
                   return true;
             }catch (error) {
-                  this.errorString = "Could not create source code handler: " + error;
+                  this.errorString = "Could not create source code modifier: " + error;
                   console.log(this.errorString);
                   return false;
             }
