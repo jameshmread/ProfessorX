@@ -1,8 +1,8 @@
 import { createSourceFile, ScriptTarget, SourceFile } from "typescript";
 
 export class SourceObjCreator {
-      public sourceObj: SourceFile;
+      public sourceFile: SourceFile;
       constructor (code: string) {
-            this.sourceObj = createSourceFile("", code, ScriptTarget.ES5, true);
+            this.sourceFile = createSourceFile("", code, ScriptTarget.ES5, true);
       }
 }
