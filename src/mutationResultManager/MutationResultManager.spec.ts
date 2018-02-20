@@ -15,7 +15,6 @@ describe("Mutation Result Manager", () => {
             return a + b;
         }
     }`;
-    const firstLine = "export class HelloWorld {";
     const functionArray = ["public addNumbers (a: number, b: number) {",
     "return a + b;",
     "}"];
@@ -105,17 +104,6 @@ describe("Mutation Result Manager", () => {
         const methodNames = mResultManager.getParentMethodBoundsOfMutatedLine(120);
         expect(methodNames).to.eql({pos: 110, end: 198});
     });
-    // it("should set modified code to the 0th line when given line 0", () => {
-    //     mResultManager.setLineNumber(0);
-    //     mResultManager.setModifiedSourceCode(origionalCode);
-    //     expect(mutationResult.mutatedCode).to.equal(firstLine);
-    // });
-
-    // it("should set modified code to the last line when line 4", () => {
-    //     mResultManager.setLineNumber(4);
-    //     mResultManager.setModifiedSourceCode(origionalCode);
-    //     expect(mutationResult.mutatedCode).to.equal("}");
-    // });
 
     it("should return true (killed) with failed tests > 0", () => {
         expect(mResultManager.wasMutantKilled(1)).to.equal(true);
