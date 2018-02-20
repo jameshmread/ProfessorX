@@ -3,6 +3,9 @@ import { expect } from "chai";
 import { ITestResult } from "../../interfaces/ITestResult";
 import { MutationResultManager } from "./MutationResultManager";
 import { MutationResult } from "../../DTOs/MutationResult";
+import { SourceCodeModifier } from "../sourceCodeModifier/SourceCodeModifier";
+import { SourceObjCreator } from "../../testUtilities/SourceObjCreator";
+import { SourceObject } from "../../DTOs/SourceObject";
 
 describe("Mutation Result Manager", () => {
     let mutationResult: MutationResult;
@@ -13,11 +16,18 @@ describe("Mutation Result Manager", () => {
         }
     }`;
     const firstLine = "export class HelloWorld {";
+    const functionArray = ["public addNumbers (a: number, b: number) {",
+    "return a + b;",
+    "}"];
     let testResult: ITestResult;
-    mutationResult = new MutationResult("./TestPath", "SourceFileName.ts");
 
     beforeEach(() => {
         mResultManager = new MutationResultManager();
+        mResultManager.setCurrentSourceCodeModifierAndSourceObj(
+            new SourceCodeModifier(
+                new SourceObject(new SourceObjCreator(origionalCode).sourceFile))
+            );
+        mutationResult = new MutationResult("./TestPath", "SourceFileName.ts");
         mResultManager.setCurrentMutationResult(mutationResult);
         testResult = {passed: "0", failed: "2", totalRan: "0", duration: "20"};
     });
@@ -32,31 +42,80 @@ describe("Mutation Result Manager", () => {
         expect(mutationResult.numberOfFailedTests).to.equal(2);
     });
 
-    it("should set origional code to the 0th line when given line 0", () => {
+    it("should set origional code to the function when given line 0", () => {
         mResultManager.setLineNumber(0);
-        mResultManager.setOrigionalSourceCode(origionalCode);
-        expect(mutationResult.origionalCode).to.equal(firstLine);
+        mResultManager.setSourceCodeLines({origional: origionalCode, mutated: origionalCode}, {pos: 26, end: 110});
+        expect(mutationResult.origionalCode).to.eql(functionArray);
     });
 
-
-    it("should set origional code to the last line when line 4", () => {
+    it("should set origional code to the function line when line 4", () => {
         mResultManager.setLineNumber(4);
-        mResultManager.setOrigionalSourceCode(origionalCode);
-        expect(mutationResult.origionalCode.toString()).to.equal("}");
+        mResultManager.setSourceCodeLines({origional: origionalCode, mutated: origionalCode}, {pos: 26, end: 110});
+        expect(mutationResult.origionalCode).to.eql(functionArray);
     });
 
-    it("should set modified code to the 0th line when given line 0", () => {
-        mResultManager.setLineNumber(0);
-        mResultManager.setModifiedSourceCode(origionalCode);
-        expect(mutationResult.mutatedCode).to.equal(firstLine);
+    it("should get a list of one method when the code contains one", () => {
+        const methodNames = mResultManager.getAllMethodNames();
+        expect(methodNames.length).to.eql(1);
     });
 
+    it("should get a list of two methods when the code contains two", () => {
+        const twoMethodCode = `export class HelloWorld {
+            public addNumbers (a: number, b: number) {}
+            public addNumbersss (a: number, b: number) {}
+        }`;
+        mResultManager.setCurrentSourceCodeModifierAndSourceObj(
+            new SourceCodeModifier(
+                new SourceObject(new SourceObjCreator(twoMethodCode).sourceFile))
+            );
+        const methodNames = mResultManager.getAllMethodNames();
+        expect(methodNames.length).to.eql(2);
+        });
 
-    it("should set modified code to the last line when line 4", () => {
-        mResultManager.setLineNumber(4);
-        mResultManager.setModifiedSourceCode(origionalCode);
-        expect(mutationResult.mutatedCode).to.equal("}");
+    it("should return one when the mutation is inside the function and there is one function", () => {
+        const singleFunction = `export class hey {
+        public addNumbers (a: number, b: number) {
+            const x = "mutation";
+        }
+        }`;
+        mResultManager.setCurrentSourceCodeModifierAndSourceObj(
+            new SourceCodeModifier(
+                new SourceObject(new SourceObjCreator(singleFunction).sourceFile))
+        );
+        const methodNames = mResultManager.getParentMethodBoundsOfMutatedLine(63);
+        expect(methodNames).to.eql({pos: 20, end: 113});
     });
+
+    it("should return correct parent bounds when mutation is inside a function with 3 functions", () => {
+        const singleFunction = `export class hey {
+        public func1 (a: number, b: number) {
+            const x = "mutation";
+        }
+        public func2 (a: number, b: number) {
+            const x = "mutation";
+        }
+        public func3 (a: number, b: number) {
+            const x = "mutation";
+        }
+        }`;
+        mResultManager.setCurrentSourceCodeModifierAndSourceObj(
+            new SourceCodeModifier(
+                new SourceObject(new SourceObjCreator(singleFunction).sourceFile))
+        );
+        const methodNames = mResultManager.getParentMethodBoundsOfMutatedLine(120);
+        expect(methodNames).to.eql({pos: 110, end: 198});
+    });
+    // it("should set modified code to the 0th line when given line 0", () => {
+    //     mResultManager.setLineNumber(0);
+    //     mResultManager.setModifiedSourceCode(origionalCode);
+    //     expect(mutationResult.mutatedCode).to.equal(firstLine);
+    // });
+
+    // it("should set modified code to the last line when line 4", () => {
+    //     mResultManager.setLineNumber(4);
+    //     mResultManager.setModifiedSourceCode(origionalCode);
+    //     expect(mutationResult.mutatedCode).to.equal("}");
+    // });
 
     it("should return true (killed) with failed tests > 0", () => {
         expect(mResultManager.wasMutantKilled(1)).to.equal(true);
