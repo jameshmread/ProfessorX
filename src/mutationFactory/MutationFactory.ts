@@ -1,15 +1,17 @@
 import { SyntaxKind } from "typescript";
 import { IsyntaxMutationMap } from "../../interfaces/IsyntaxMutationMap";
+import { MutationClass } from "../../enums/MutationClass";
 
 export class MutationFactory {
 
-    public static mutatableTokens: Array<SyntaxKind> = [
+    public static readonly mutatableTokens: Array<SyntaxKind> = [
         SyntaxKind.PlusToken, SyntaxKind.MinusToken, SyntaxKind.TrueKeyword, SyntaxKind.FalseKeyword,
         SyntaxKind.PlusPlusToken, SyntaxKind.MinusMinusToken, SyntaxKind.BarBarToken, SyntaxKind.GreaterThanToken,
-        SyntaxKind.PercentToken, SyntaxKind.AsteriskToken, SyntaxKind.Block
+        SyntaxKind.PercentToken, SyntaxKind.AsteriskToken, SyntaxKind.Block, SyntaxKind.PrivateKeyword,
+        SyntaxKind.ProtectedKeyword, SyntaxKind.ReturnStatement
     ];
 
-    public static syntaxMutationMap: IsyntaxMutationMap = {
+    public static readonly syntaxMutationMap: IsyntaxMutationMap = {
         [SyntaxKind.GreaterThanToken]: ["<", "<=", ">=", "!==", "-", "+", "*", "/"],
         [SyntaxKind.PlusToken]: ["-", "/", "*"],
         [SyntaxKind.MinusToken]: ["+", "/", "*"],
@@ -20,7 +22,24 @@ export class MutationFactory {
         [SyntaxKind.BarBarToken]: ["&&"],
         [SyntaxKind.TrueKeyword]: ["false"],
         [SyntaxKind.FalseKeyword]: ["true"],
-        [SyntaxKind.Block]: ["{}"]
+        [SyntaxKind.Block]: ["{}"],
+        [SyntaxKind.PrivateKeyword]: ["protected"],
+        [SyntaxKind.ProtectedKeyword]: ["private"],
+        [SyntaxKind.ReturnStatement]: ["return null"]
+    };
+
+    public static readonly complexMutationTree = {
+        [SyntaxKind.ForStatement]: {
+            [SyntaxKind.VariableDeclarationList]: {
+                  [SyntaxKind.VariableDeclaration]: {
+                      [SyntaxKind.NumericLiteral]:
+                        [
+                            MutationClass.ForStatement_BoundsChange,
+                            MutationClass.NumericLiteral_MultiplyByN1]
+                  }
+            },
+            [SyntaxKind.Block]: [MutationClass.ReturnEmptyBlock]
+      }
     };
 
     public static getSingleMutation (syntaxKind: SyntaxKind): string {
