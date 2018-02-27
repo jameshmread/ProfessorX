@@ -34,7 +34,7 @@ export class MultipleNodeMutator {
       }
 
       public async mutateSingleNode () {
-            const mutationOptions = MutationFactory.getMultipleMutations(this.currentNode.syntaxType);
+            const mutationOptions = MutationFactory.getAllMutations(this.currentNode);
             for (let i = 0; i < mutationOptions.length; i++) {
                   await this.doSingleMutation(mutationOptions[i]);
             }
