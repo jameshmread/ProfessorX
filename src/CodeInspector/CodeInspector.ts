@@ -20,7 +20,6 @@ export class CodeInspector {
     private static findTokenObjectsOfKind (object: Node, kind: SyntaxKind)
     : Array<Node> {
         if (object.kind === kind && CodeInspector.isNodeMutatable(object)) {
-            console.log(object.kind, object.getText());
             CodeInspector.retrievedObjects.push(object);
         }
         object.forEachChild((element) => {
