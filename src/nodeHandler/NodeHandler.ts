@@ -26,8 +26,9 @@ export class NodeHandler {
             codeInspector.findObjectsOfSyntaxKind(syntaxItem).forEach((token) => {
                 NodeHandler.fileNameNodes.push({
                     syntaxType: syntaxItem,
-                    positions: token,
-                    parentFileName: ConfigManager.filesToMutate[fileNameIndex]
+                    positions: {pos: token.pos, end: token.end},
+                    parentFileName: ConfigManager.filesToMutate[fileNameIndex],
+                    plainText: token.getText()
                 });
             });
         });
