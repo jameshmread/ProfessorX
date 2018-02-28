@@ -1,3 +1,5 @@
+import { IDurationFormat } from "../../interfaces/IDurationFormat";
+
 export class MathFunctions {
 
     public static divideItemsAmongArrays (input: Array<any>, divisionLength: number): Array<Array<any>> {

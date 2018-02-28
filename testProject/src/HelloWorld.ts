@@ -22,4 +22,8 @@ export class HelloWorld {
     public helloStringLiteral () {
         return "hello: " + "1";
     }
+
+    public percentage (b: number, c: number) {
+        return (b / c) * 100;
+    }
 }

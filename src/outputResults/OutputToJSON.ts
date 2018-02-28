@@ -19,7 +19,7 @@ export class OutputToJSON {
 
             transformStream.write(header);
             MathFunctions.divideItemsAmongArrays(results,
-                Math.floor(results.length / 20)
+                Math.floor(results.length / (results.length / 4))
             ).forEach((result) => {
                 transformStream.write(result);
             });

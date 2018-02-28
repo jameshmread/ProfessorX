@@ -24,7 +24,7 @@ describe("Numeric Literal", () => {
         expect(numLit.isNodeValidForMutation("")).to.equal(false);
     });
 
-    it("should return false when given an empty string input", () => {
+    it("should return false when given a random string input", () => {
         expect(numLit.isNodeValidForMutation("f222n2")).to.equal(false);
     });
 
