@@ -42,4 +42,9 @@ describe("Test Project addition function", () => {
         expect(actual).to.equal("hello: " + "1");
     });
 
+    it("should return percentage of b / c", () => {
+        const expected = 10;
+        const actual = hello.percentage(10, 100);
+        expect(actual).to.equal(expected);
+    });
 });
