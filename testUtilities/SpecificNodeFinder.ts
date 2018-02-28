@@ -1,7 +1,7 @@
 import { SyntaxKind, Node } from "typescript";
 
 export class SpecificNodeFinder {
-      public retrievedObjects = [];
+      public retrievedObjects: Array<Node> = [];
 
       public findObjectsOfSyntaxKind (kind: SyntaxKind, sourceObject) {
             return this.findTokenObjectsOfKind(sourceObject, kind);

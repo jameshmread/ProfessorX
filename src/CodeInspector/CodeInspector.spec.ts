@@ -12,12 +12,16 @@ describe("Testing CodeInspector", () => {
     let nodeFinder: SpecificNodeFinder;
     beforeEach(() => {
         code = `
-            let x: number = 3 + 9;
-            const helloWorld = 'hello' + 'world';
-            const y: number = 11;
-            const z = x+y;
+        export class HelloWorldd {
+            public sayHello (): void {
+                let x: number = 3 + 9;
+                const helloWorld = 'hello' + 'world';
+                const y: number = 11;
+                const z = x+y;
+            }
+        }
         `;
-        sourceObj = new SourceObjCreator(code).sourceObj;
+        sourceObj = new SourceObjCreator(code).sourceFile;
         ci = new CodeInspector(sourceObj);
         nodeFinder = new SpecificNodeFinder();
     });
@@ -35,5 +39,10 @@ describe("Testing CodeInspector", () => {
     it("2 plus signs are detected for mutation when 2 valid ones are placed", () => {
         const actual = ci.findObjectsOfSyntaxKind(SyntaxKind.PlusToken);
         expect(actual.length).to.equal(2);
+    });
+
+    it("should return length 1 when there is one function declaration", () => {
+        const actual = ci.findObjectsOfSyntaxKind(SyntaxKind.MethodDeclaration);
+        expect(actual.length).to.equal(1);
     });
 });

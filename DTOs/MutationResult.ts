@@ -6,8 +6,8 @@ export class MutationResult {
 
       public testFilePath: string;
       public lineNumber: number;
-      public origionalCode: string;
-      public mutatedCode: string;
+      public origionalCode: Array<string> = [];
+      public mutatedCode: Array<string> = [];
       public numberOfFailedTests: number;
       public numberOfPassedTests: number;
       public mutantKilled: boolean;

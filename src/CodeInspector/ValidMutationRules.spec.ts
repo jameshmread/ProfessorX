@@ -26,7 +26,7 @@ describe("Testing ValidMutationRules", () => {
 
       it("should set the nodes kind to 37, parent to 194, neighbour to 8 with 3+2", () => {
             const code = "3 + 2;";
-            const sourceObj = new SourceObjCreator(code).sourceObj;
+            const sourceObj = new SourceObjCreator(code).sourceFile;
             const allPlusNodes = nodeFinder.findObjectsOfSyntaxKind(SyntaxKind.PlusToken, sourceObj);
             const plusNode: Node = allPlusNodes[0];
             mutationRules.setNodeFamily(plusNode);
@@ -36,7 +36,7 @@ describe("Testing ValidMutationRules", () => {
 
       it("should return false when given a string addition expression", () => {
             const code = "'hello' + 'hey';";
-            const sourceObj = new SourceObjCreator(code).sourceObj;
+            const sourceObj = new SourceObjCreator(code).sourceFile;
             const nodes = nodeFinder.findObjectsOfSyntaxKind(SyntaxKind.PlusToken, sourceObj);
             const node: Node = nodes[0];
             mutationRules.setNodeFamily(node);
@@ -46,7 +46,7 @@ describe("Testing ValidMutationRules", () => {
 
       it("should return true when given numeric literals with the operator >", () => {
             const code = "3 > 4;";
-            const sourceObj = new SourceObjCreator(code).sourceObj;
+            const sourceObj = new SourceObjCreator(code).sourceFile;
             const nodes = nodeFinder.findObjectsOfSyntaxKind(SyntaxKind.GreaterThanToken, sourceObj);
             const node: Node = nodes[0];
             mutationRules.setNodeFamily(node);
@@ -56,7 +56,7 @@ describe("Testing ValidMutationRules", () => {
 
       it("should return false when given no literals with the operator >", () => {
             const code = "public method: Array<hello>{}";
-            const sourceObj = new SourceObjCreator(code).sourceObj;
+            const sourceObj = new SourceObjCreator(code).sourceFile;
             const nodes = nodeFinder.findObjectsOfSyntaxKind(SyntaxKind.GreaterThanToken, sourceObj);
             const node: Node = nodes[0];
             mutationRules.setNodeFamily(node);
@@ -66,7 +66,7 @@ describe("Testing ValidMutationRules", () => {
 
       it("should return true when given a kind not in the tree", () => {
             const code = "'stringLiteral'";
-            const sourceObj = new SourceObjCreator(code).sourceObj;
+            const sourceObj = new SourceObjCreator(code).sourceFile;
             const nodes = nodeFinder.findObjectsOfSyntaxKind(SyntaxKind.StringLiteral, sourceObj);
             const node: Node = nodes[0];
             mutationRules.setNodeFamily(node);
@@ -76,7 +76,7 @@ describe("Testing ValidMutationRules", () => {
 
       it("should return true when given a kind which is an OR rule", () => {
             const code = "3 < 4;";
-            const sourceObj = new SourceObjCreator(code).sourceObj;
+            const sourceObj = new SourceObjCreator(code).sourceFile;
             const nodes = nodeFinder.findObjectsOfSyntaxKind(SyntaxKind.LessThanToken, sourceObj);
             const node: Node = nodes[0];
             mutationRules.setNodeFamily(node);

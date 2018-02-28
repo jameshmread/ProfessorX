@@ -1,6 +1,6 @@
 import * as ts from "typescript";
 import { expect } from "chai";
-import { SourceCodeHandler } from "./SourceCodeHandler";
+import { SourceCodeModifier } from "./SourceCodeModifier";
 import { SourceObject } from "../../DTOs/SourceObject";
 import { MutatableNode } from "../../DTOs/MutatableNode";
 import { IMutatableNode } from "../../interfaces/IMutatableNode";
@@ -9,7 +9,7 @@ import { SyntaxKind } from "typescript";
 describe("Testing SourceCodeHandler", () => {
     let code: string;
     let sourceObj: SourceObject;
-    let sch: SourceCodeHandler;
+    let codeModifier: SourceCodeModifier;
     let currentNode: IMutatableNode;
     beforeEach(() => {
         code = `
@@ -17,24 +17,24 @@ describe("Testing SourceCodeHandler", () => {
             const y: boolean = true;
         `;
         sourceObj = new SourceObject(ts.createSourceFile("", code, ts.ScriptTarget.ES5, true));
-        sch = new SourceCodeHandler(sourceObj);
+        codeModifier = new SourceCodeModifier(sourceObj);
     });
 
     it("Modyfing last plus sign to minus sign should work", () => {
-        const index = sch.getOriginalSourceCode().indexOf("+");
+        const index = codeModifier.getOriginalSourceCode().indexOf("+");
         currentNode = new MutatableNode(null, {pos: index, end: index + 1}, null);
-        sch.modifyCode(currentNode, "-");
-        const actual = sch.getModifiedSourceCode();
-        const expected = sch.getOriginalSourceCode().replace("+", " -");
+        codeModifier.modifyCode(currentNode, "-");
+        const actual = codeModifier.getModifiedSourceCode();
+        const expected = codeModifier.getOriginalSourceCode().replace("+", " -");
         expect(actual).to.equal(expected);
     });
 
     it("Modyfing true to false should work", () => {
-        const index = sch.getOriginalSourceCode().indexOf("true");
+        const index = codeModifier.getOriginalSourceCode().indexOf("true");
         currentNode = new MutatableNode(null, {pos: index, end: index + 4}, null);
-        sch.modifyCode(currentNode, "false");
-        const actual = sch.getModifiedSourceCode();
-        const expected = sch.getOriginalSourceCode().replace("true", " false");
+        codeModifier.modifyCode(currentNode, "false");
+        const actual = codeModifier.getModifiedSourceCode();
+        const expected = codeModifier.getOriginalSourceCode().replace("true", " false");
         expect(actual).to.equal(expected);
     });
 

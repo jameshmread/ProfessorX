@@ -2,7 +2,7 @@ import { SourceFile } from "typescript";
 import { SourceObject } from "../../DTOs/SourceObject";
 import { IMutatableNode } from "../../interfaces/IMutatableNode";
 
-export class SourceCodeHandler {
+export class SourceCodeModifier {
 
     constructor (private readonly sourceObj: SourceObject) {}
 

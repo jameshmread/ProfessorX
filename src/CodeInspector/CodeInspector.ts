@@ -2,7 +2,7 @@ import { Node, SourceFile, SyntaxKind } from "typescript";
 import { ValidMutationRules } from "./ValidMutationRules";
 
 export class CodeInspector {
-    private static retrievedObjects: Array<{pos: number, end: number}> = [];
+    private static retrievedObjects: Array<Node> = [];
     constructor (private sourceObject: SourceFile) {}
 
     public static isNodeMutatable (node: Node): boolean {
@@ -11,17 +11,16 @@ export class CodeInspector {
         return mutationRules.traverseRuleTree(ValidMutationRules.RULE_TREE, 0);
     }
 
-    public findObjectsOfSyntaxKind (kind: SyntaxKind) {
+    public findObjectsOfSyntaxKind (kind: SyntaxKind): Array<Node> {
         CodeInspector.retrievedObjects = [];
         CodeInspector.findTokenObjectsOfKind(this.sourceObject, kind);
         return CodeInspector.retrievedObjects;
     }
 
-
     private static findTokenObjectsOfKind (object: Node, kind: SyntaxKind)
-    : Array<{pos: number, end: number}> {
+    : Array<Node> {
         if (object.kind === kind && CodeInspector.isNodeMutatable(object)) {
-            CodeInspector.retrievedObjects.push({pos: object.pos, end: object.end});
+            CodeInspector.retrievedObjects.push(object);
         }
         object.forEachChild((element) => {
             this.findTokenObjectsOfKind(element, kind);
