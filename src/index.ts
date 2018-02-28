@@ -21,6 +21,10 @@ export class ProfessorX {
         console.log("Found ", NodeHandler.fileNameNodes.length, " mutatable nodes. ");
         console.log("In ", ConfigManager.filesToMutate.length, " Files \n");
         console.log("Filename nodes ", NodeHandler.fileNameNodes);
+        if (NodeHandler.fileNameNodes.length === 0) {
+            console.log("No nodes found to mutate, check Professor X config settings.");
+            process.exit(1);
+        }
         this.supervisor = new Supervisor(NodeHandler.fileNameNodes);
         this.supervisor.spawnWorkers();
     }
