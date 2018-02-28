@@ -3,6 +3,7 @@ import { IsyntaxMutationMap } from "../../interfaces/IsyntaxMutationMap";
 import { MutationClass } from "../../enums/MutationClass";
 import { NumericLiteral } from "./complexMutations/NumericLiteral";
 import { IMutatableNode } from "../../interfaces/IMutatableNode";
+import { ParenthesesModifier } from "./complexMutations/ParenthesesModifier";
 
 export class MutationFactory {
 
@@ -10,7 +11,8 @@ export class MutationFactory {
         SyntaxKind.PlusToken, SyntaxKind.MinusToken, SyntaxKind.TrueKeyword, SyntaxKind.FalseKeyword,
         SyntaxKind.PlusPlusToken, SyntaxKind.MinusMinusToken, SyntaxKind.BarBarToken, SyntaxKind.GreaterThanToken,
         SyntaxKind.PercentToken, SyntaxKind.AsteriskToken, SyntaxKind.Block, SyntaxKind.PrivateKeyword,
-        SyntaxKind.ProtectedKeyword, SyntaxKind.ReturnStatement, SyntaxKind.NumericLiteral
+        SyntaxKind.ProtectedKeyword, SyntaxKind.ReturnStatement, SyntaxKind.NumericLiteral,
+        SyntaxKind.ParenthesizedExpression
     ];
 
     public static readonly syntaxMutationMap: IsyntaxMutationMap = {
@@ -47,6 +49,8 @@ export class MutationFactory {
 
     private static getComplexMutations (node: IMutatableNode): Array<string> {
         const numbLitteral = new NumericLiteral(node.plainText);
-        return numbLitteral.getComplexMutation();
+        const parentheses = new ParenthesesModifier(node.plainText);
+        return numbLitteral.getComplexMutation()
+        .concat(parentheses.getComplexMutation());
     }
 }
