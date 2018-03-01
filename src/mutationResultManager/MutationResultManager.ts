@@ -39,11 +39,6 @@ export class MutationResultManager {
         currentNode: IMutatableNode
     ) {
         this.setTestFile(testFile);
-        this.setLineNumber(
-            ts.getLineAndCharacterOfPosition(
-                this.sourceCodeModifier.getOriginalSourceObject(),
-                currentNode.positions.pos).line
-        );
         const methodBounds = this.getParentMethodBoundsOfMutatedLine(currentNode.positions.pos);
 
         this.setSourceCodeLines(
@@ -54,10 +49,6 @@ export class MutationResultManager {
 
     public setTestFile (filename: string): void {
         this.currentMutationResult.testFilePath = filename;
-    }
-
-    public setLineNumber (lineNumber: number): void {
-        this.currentMutationResult.lineNumber = lineNumber;
     }
 
     public setNumberOfTests (testResult: ITestResult): void {
@@ -73,15 +64,8 @@ export class MutationResultManager {
     ): void {
         const methodStartLine = ts.getLineAndCharacterOfPosition(this.currentSourceCodeObject, bounds.pos).line;
         const methodEndLine = ts.getLineAndCharacterOfPosition(this.currentSourceCodeObject, bounds.end).line;
-
-        const origionalCodeLines = this.splitCodeByLine(code.origional);
-        const mutatedCodeLines = this.splitCodeByLine(code.mutated);
-        for (let line = methodStartLine; line < methodEndLine + 1; line++) {
-            this.currentMutationResult.origionalCode.push(origionalCodeLines[line].trim());
-            if (mutatedCodeLines[line] !== void 0) {
-                this.currentMutationResult.mutatedCode.push(mutatedCodeLines[line].trim());
-            }
-        }
+        this.setOrigionalCode(code.origional, {start: methodStartLine, end: methodEndLine});
+        this.setMutatedCode(code.mutated, {start: methodStartLine, end: methodEndLine});
     }
 
     // was the mutant killed? true is killed (good)
@@ -100,6 +84,25 @@ export class MutationResultManager {
         .map((obj) => obj = {pos: 2 + obj.pos, end: obj.end} );
     }
 
+    private setOrigionalCode (code: string, method: {start: number, end: number}) {
+        const splitCode = this.splitCodeByLine(code);
+        for (let line = method.start; line < method.end + 1; line++) {
+            this.currentMutationResult.origionalCode.push({
+                lineText: splitCode[line],
+                lineNumber: ++ method.start
+            });
+        }
+    }
+
+    private setMutatedCode (code: string, method: {start: number, end: number}) {
+        const splitCode = this.splitCodeByLine(code);
+        for (let line = method.start; line < method.end + 1; line++) {
+            this.currentMutationResult.mutatedCode.push({
+                lineText: splitCode[line],
+                lineNumber: ++ method.start
+            });
+        }
+    }
 
     private splitCodeByLine (code: string): Array<string> {
         return code.split("\n");
