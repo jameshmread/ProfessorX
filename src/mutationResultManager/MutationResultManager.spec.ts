@@ -15,9 +15,13 @@ describe("Mutation Result Manager", () => {
             return a + b;
         }
     }`;
-    const functionArray = ["public addNumbers (a: number, b: number) {",
-    "return a + b;",
-    "}"];
+    const functionArray = [
+        {lineText: "        public addNumbers (a: number, b: number) {",
+        lineNumber: 1},
+        {lineText: "            return a + b;",
+        lineNumber: 2},
+        {lineText: "        }",
+        lineNumber: 3}];
     let testResult: ITestResult;
 
     beforeEach(() => {
@@ -39,18 +43,6 @@ describe("Mutation Result Manager", () => {
     it("ITestResult.failed of 2 should set passed tests to 2", () => {
         mResultManager.setNumberOfTests(testResult);
         expect(mutationResult.numberOfFailedTests).to.equal(2);
-    });
-
-    it("should set origional code to the function when given line 0", () => {
-        mResultManager.setLineNumber(0);
-        mResultManager.setSourceCodeLines({origional: origionalCode, mutated: origionalCode}, {pos: 26, end: 110});
-        expect(mutationResult.origionalCode).to.eql(functionArray);
-    });
-
-    it("should set origional code to the function line when line 4", () => {
-        mResultManager.setLineNumber(4);
-        mResultManager.setSourceCodeLines({origional: origionalCode, mutated: origionalCode}, {pos: 26, end: 110});
-        expect(mutationResult.origionalCode).to.eql(functionArray);
     });
 
     it("should get a list of one method when the code contains one", () => {
