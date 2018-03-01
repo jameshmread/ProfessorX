@@ -5,9 +5,8 @@ export class MutationResult {
       public readonly SRC_FILE: string;
 
       public testFilePath: string;
-      public lineNumber: number;
-      public origionalCode: Array<string> = [];
-      public mutatedCode: Array<string> = [];
+      public origionalCode: Array<{lineText: string, lineNumber: number}> = [];
+      public mutatedCode: Array<{lineText: string, lineNumber: number}> = [];
       public numberOfFailedTests: number;
       public numberOfPassedTests: number;
       public mutantKilled: boolean;
