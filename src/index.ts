@@ -1,32 +1,31 @@
 import { ConfigManager } from "./configManager/ConfigManager";
 import { Supervisor } from "./supervisor/supervisor";
 import { NodeHandler } from "./nodeHandler/NodeHandler";
+import { Logger } from "./logging/Logger";
 
 export class ProfessorX {
 
     public supervisor: Supervisor;
-    public nodeHandler: NodeHandler;
 
     public constructor () {
-        console.log("Setting up environment. \n");
-        const configManager = new ConfigManager();
-        ConfigManager.getFilesToMutate();
+       this.setupEnvironment();
     }
 
     public async main () {
-        console.log("Creating File Objects");
+        Logger.log("Creating File Objects");
         NodeHandler.createAllFileDescriptors();
-        console.log("Finding Nodes... \n");
+        Logger.log("Finding Nodes...");
         NodeHandler.traverseFilesForNodes();
-        console.log("Found ", NodeHandler.fileNameNodes.length, " mutatable nodes. ");
-        console.log("In ", ConfigManager.filesToMutate.length, " Files \n");
-        console.log("Filename nodes ", NodeHandler.fileNameNodes);
-        if (NodeHandler.fileNameNodes.length === 0) {
-            console.log("No nodes found to mutate, check Professor X config settings.");
-            process.exit(1);
-        }
+
         this.supervisor = new Supervisor(NodeHandler.fileNameNodes);
         this.supervisor.spawnWorkers();
+    }
+
+    private setupEnvironment () {
+        Logger.log("Setting Up Environment");
+        const configManager = new ConfigManager();
+        Logger.info("Read Configuration File", configManager);
+        ConfigManager.getFilesToMutate();
     }
 }
 const x = new ProfessorX();
