@@ -8,6 +8,7 @@ import { CodeInspector } from "../CodeInspector/CodeInspector";
 import { MutationFactory } from "../mutationFactory/MutationFactory";
 import { ConfigManager } from "../configManager/ConfigManager";
 import { FileHandler } from "../FileHandler/FileHandler";
+import { Logger } from "../logging/Logger";
 
 export class NodeHandler {
 
@@ -18,6 +19,12 @@ export class NodeHandler {
         for (let i = 0; i < ConfigManager.filesToMutate.length; i++) {
             NodeHandler.getAllNodesInFile(NodeHandler.fileDescriptors[i].codeInspector, i);
         }
+        if (this.fileNameNodes.length === 0) {
+            Logger.fatal("No nodes found to mutate, check Professor X config settings.", NodeHandler);
+            throw Error("No nodes found to mutate, check Professor X config settings.");
+        }
+        Logger.info("Found Nodes", NodeHandler.fileNameNodes.length);
+        Logger.info("Filename nodes", NodeHandler.fileNameNodes);
         return NodeHandler.fileNameNodes;
     }
 
@@ -46,10 +53,5 @@ export class NodeHandler {
             });
         }
         return NodeHandler.fileDescriptors;
-    }
-
-    public static getDescriptorByFileName (fileName: string): IFileDescriptor {
-        console.log(NodeHandler.fileDescriptors);
-        return NodeHandler.fileDescriptors.find((descriptor) => descriptor.fileName === fileName);
     }
 }
