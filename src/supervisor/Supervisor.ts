@@ -10,10 +10,12 @@ import { ConfigManager } from "../configManager/ConfigManager";
 import { Cleaner } from "../cleanup/Cleaner";
 import { MathFunctions } from "../maths/MathFunctions";
 import { OutputToJSON } from "../outputResults/OutputToJSON";
+import { Logger } from "../logging/Logger";
 
 process.on("SIGINT", () => {
-      console.log("SIGINT Caught. Program ending. \n");
-      console.log("Deleting Files \n");
+      Logger.warn("User Pressed Ctrl + C: SIGINT Caught. Program ending.");
+      Logger.log("Deleting Generated Files");
+      Logger.fatal("User ended program");
       Cleaner.cleanRemainingFiles();
 });
 
@@ -28,37 +30,38 @@ export class Supervisor {
       constructor (nodes: Array<IMutatableNode>) {
             this.logicalCores = os.cpus().length;
             this.startTimestamp = new Date().getTime();
-            console.log("Splitting nodes among workers \n");
+            Logger.log("Splitting nodes among workers");
             this.nodes = MathFunctions.divideItemsAmongArrays(nodes, this.logicalCores);
       }
 
       public spawnWorkers () {
             for (let i = 0; i < this.logicalCores; i++) {
                   this.workers.push(worker.fork("./src/Worker.ts", [], {}));
-                  console.log("Creating Worker: ", i);
+                  Logger.info("Creating Worker: ", i);
                   this.createWorkerMessagers(this.workers[i]);
                   this.workers[i].send(JSON.stringify(this.nodes[i]));
             }
       }
 
-      private  createWorkerMessagers (individualWorker: ChildProcess) {
+      private createWorkerMessagers (individualWorker: ChildProcess) {
             individualWorker.on("error", (err) => {
-                  console.log("Worker Error: ", err);
+                  Logger.fatal("Worker Error: ", err);
             });
             individualWorker.on("exit", (exit) => {
-                  console.log("Worker Exit: ", exit);
+                  Logger.info("Worker Exit: ", exit);
             });
             individualWorker.on("message", (data) => {
                   this.collateResults(data);
-                  console.log("\n Worker: ", individualWorker.pid, "Compelete \n");
+                  Logger.info("Worker Complete", individualWorker.pid);
                   individualWorker.kill();
+                  Logger.info("Worker Killed", individualWorker.pid);
             });
       }
 
       private collateResults (data) {
             this.threadResults.push(data);
             if (this.threadResults.length >= this.logicalCores) {
-                  console.log("All workers complete");
+                  Logger.log("All workers complete");
                   this.threadResults = [].concat.apply([], this.threadResults);
                   this.finishRun();
                   return;
@@ -70,8 +73,8 @@ export class Supervisor {
             const timeTaken = MathFunctions.calculateRunTime(
                    new Date(endTimestamp - this.startTimestamp).getTime()
             );
-            console.log("Mutations Complete in: ", timeTaken);
-            console.log("Number of mutations produced: ", this.threadResults.length);
+            Logger.info("Mutations Complete in: ", timeTaken);
+            Logger.info("Number of mutations produced: ", this.threadResults.length);
 
             const endResult = new EndResult(
                   ConfigManager.testRunner,
@@ -79,6 +82,7 @@ export class Supervisor {
                   timeTaken,
                   this.threadResults
             );
+            Logger.dumpLogToConsole();
             OutputToJSON.writeResults(endResult);
             Cleaner.cleanRemainingFiles();
         }

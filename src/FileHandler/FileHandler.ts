@@ -2,6 +2,8 @@ import * as ts from "typescript";
 import * as fs from "fs";
 
 import { FileObject } from "../../DTOs/FileObject";
+import { Logger } from "../logging/Logger";
+import { FileExtensions } from "../../enums/FileExtensions";
 
 export class FileHandler {
 
@@ -10,14 +12,18 @@ export class FileHandler {
     constructor (file: FileObject) {
         this.file = file;
         if (!fs.existsSync(this.file.fullPath)) {
+            Logger.fatal("File Path requested doesn't exist", this.file);
             throw new Error(`File '${this.file.fullPath}' doesn't exist`);
         }
-        if (!(this.file.filename.substring(this.file.filename.length - 3) === ".ts")) {
+        if (!(this.file.filename.substring(this.file.filename.length - 3) === FileExtensions.source)) {
+            Logger.fatal("Incorrect file extension filtered out", this.file);
             throw new Error("Typescript files must end with .ts");
         }
         this.file.testFileName = this.file.path +
-        this.file.filename.substring(0, this.file.filename.length - 2) + "spec.ts";
+        this.file.filename.substring(0, this.file.filename.length - 3) + FileExtensions.test;
         if (!fs.existsSync(this.file.testFileName)) {
+            Logger.fatal(`No test file found matching this source file.
+            Spelling of source and test must match exactly and test must end in .spec.ts`, this.file);
             throw new Error("No existing test file that matches this file");
         }
     }

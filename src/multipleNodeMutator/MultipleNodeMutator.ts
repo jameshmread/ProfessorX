@@ -13,6 +13,7 @@ import { Cleaner } from "../cleanup/Cleaner";
 import { FileHandler } from "../FileHandler/FileHandler";
 import { MochaTestRunner } from "../mocha-testRunner/Mocha-TestRunner";
 import { Worker } from "../Worker";
+import { Logger } from "../logging/Logger";
 
 export class MultipleNodeMutator {
       private mutationResultManager: MutationResultManager;
@@ -79,7 +80,8 @@ export class MultipleNodeMutator {
                   return true;
             }catch (error) {
                   this.errorString = "Could not create source code modifier: " + error;
-                  console.log(this.errorString);
+                  Logger.warn("Multiple Node Mutator could not create source code modifier ", this.errorString);
+                  Logger.warn("Current info", this);
                   return false;
             }
       }

@@ -1,4 +1,5 @@
 import { Config } from "../../profx.conf";
+import { Logger } from "../logging/Logger";
 
 export class ConfigManager {
     public static managerConfig;
@@ -17,6 +18,7 @@ export class ConfigManager {
         ConfigManager.testRunner = Config.CONFIG.testRunner;
         ConfigManager.runnerConfig = Config.CONFIG.runnerConfig;
         this.configValid();
+        Logger.info("Files Found", ConfigManager.filesToMutate);
     }
 
     public static getAllProjectFiles (): Array<string> {
@@ -40,6 +42,7 @@ export class ConfigManager {
     public configValid () {
         Object.keys(ConfigManager.managerConfig).forEach((el) => {
             if (ConfigManager.managerConfig[el] === void 0) {
+                Logger.fatal("Professor X config not valid. Not all keys are defined", this);
                 throw new Error(
                     "Professor X config not valid. Not all keys are defined"
                 );
