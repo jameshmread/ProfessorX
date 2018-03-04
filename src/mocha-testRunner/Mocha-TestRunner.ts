@@ -1,7 +1,8 @@
 import * as Mocha from "mocha";
 
 import { ITestResult } from "../../interfaces/ITestResult";
-import { OutputStoreManager } from "../output/OutputStoreManager";
+import { MutationResultManager } from "../mutationResultManager/MutationResultManager";
+import { Logger } from "../logging/Logger";
 
 export class MochaTestRunner {
 
@@ -11,13 +12,12 @@ export class MochaTestRunner {
         this.mocha = new Mocha(config);
     }
 
-    public runTests (outputStoreManager: OutputStoreManager, testFile: string) {
+    public runTests (mResultManager: MutationResultManager, testFile: string) {
         this.mocha.addFile(testFile);
         let runner = null;
         return new Promise((resolve, reject) => {
         runner = this.mocha.run(() => {
-                // not 100% happy with this but it works, so for now it can stay
-                outputStoreManager.setNumberOfTests(this.createTestResult(runner.stats));
+                mResultManager.setNumberOfTests(this.createTestResult(runner.stats));
                 resolve();
             });
         });
@@ -25,6 +25,7 @@ export class MochaTestRunner {
 
     public createTestResult (stats): ITestResult {
         if (stats === void 0){
+            Logger.fatal("Mocha Test result returned undefined", this);
             throw new Error("Test result is undefined");
         }
         const result =
