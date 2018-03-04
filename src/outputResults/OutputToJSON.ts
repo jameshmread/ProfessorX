@@ -3,6 +3,7 @@ import * as fs from "fs";
 
 import { EndResult } from "../../DTOs/EndResult";
 import { MathFunctions } from "../maths/MathFunctions";
+import { Logger } from "../logging/Logger";
 
 export class OutputToJSON {
       public static writeResults (collatedResults: EndResult) {
@@ -13,8 +14,9 @@ export class OutputToJSON {
             };
             const results = collatedResults.results;
             const transformStream = JSONStream.stringify();
-            const outputStream = fs.createWriteStream("./MutationResults.json");
-
+            const outputFilePath = "./MutationResults.json";
+            Logger.log("Results File Path", outputFilePath);
+            const outputStream = fs.createWriteStream(outputFilePath);
             transformStream.pipe(outputStream);
 
             transformStream.write(header);
@@ -22,9 +24,10 @@ export class OutputToJSON {
                 Math.floor(results.length / (results.length / 4))
             ).forEach((result) => {
                 transformStream.write(result);
+                Logger.info("Length of Division", result.length);
             });
 
             transformStream.end();
-            outputStream.on("finish", () => {console.log("Results Written to Disk"); });
+            outputStream.on("finish", () => {Logger.log("Results Written to Disk"); });
         }
 }

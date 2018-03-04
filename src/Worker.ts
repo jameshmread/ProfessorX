@@ -3,6 +3,11 @@ process.on("message", (input) => {
       worker.execute();
 });
 
+process.on("exit", () => {
+      process.send(Worker.workerResults);
+      process.exit(0);
+});
+
 import { MultipleNodeMutator } from "./multipleNodeMutator/MultipleNodeMutator";
 
 export class Worker {

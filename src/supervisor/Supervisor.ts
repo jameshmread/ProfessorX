@@ -54,7 +54,7 @@ export class Supervisor {
                   this.collateResults(data);
                   Logger.info("Worker Complete", individualWorker.pid);
                   individualWorker.kill();
-                  Logger.info("Killing Worker", individualWorker.pid);
+                  Logger.info("Worker Killed", individualWorker.pid);
             });
       }
 

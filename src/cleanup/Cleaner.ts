@@ -2,18 +2,23 @@ import * as fs from "fs";
 
 import { FileObject } from "../../DTOs/FileObject";
 import { ConfigManager } from "../configManager/ConfigManager";
+import { Logger } from "../logging/Logger";
 
 export class Cleaner {
 
     public static deleteSourceFile (fileToDelete: string) {
-        fs.unlink(fileToDelete, (err) => err );
+        fs.unlink(fileToDelete, (err) =>
+            Logger.warn("Could not delete source file", {filePath: fileToDelete, error: err})
+        );
     }
 
     public static deleteTestFile (filePath: string) {
         if (!Cleaner.isMutatedFile(filePath)) {
-            throw new Error(`${filePath} is not a mutated test file. Aborting...`);
+            Logger.warn(`${filePath} is not a mutated test file. Tried to delete a non mutated file.`);
         }
-        fs.unlink(filePath, (err) => err);
+        fs.unlink(filePath, (err) =>
+        Logger.warn("Could not delete test file", {path: filePath, error: err})
+    );
     }
 
     public static cleanRemainingFiles () {
