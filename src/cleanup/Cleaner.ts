@@ -7,18 +7,22 @@ import { Logger } from "../logging/Logger";
 export class Cleaner {
 
     public static deleteSourceFile (fileToDelete: string) {
-        fs.unlink(fileToDelete, (err) =>
-            Logger.warn("Could not delete source file", {filePath: fileToDelete, error: err})
-        );
+        fs.unlink(fileToDelete, (err) => {
+            if (err !== null) {
+                Logger.warn("Could not delete source file", {filePath: fileToDelete, error: err});
+            }
+        });
     }
 
     public static deleteTestFile (filePath: string) {
         if (!Cleaner.isMutatedFile(filePath)) {
             Logger.warn(`${filePath} is not a mutated test file. Tried to delete a non mutated file.`);
         }
-        fs.unlink(filePath, (err) =>
-        Logger.warn("Could not delete test file", {path: filePath, error: err})
-    );
+        fs.unlink(filePath, (err) => {
+        if (err !== null) {
+            Logger.warn("Could not delete test file", {path: filePath, error: err});
+        }
+        });
     }
 
     public static cleanRemainingFiles () {
