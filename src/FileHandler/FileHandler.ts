@@ -15,7 +15,7 @@ export class FileHandler {
             Logger.fatal("File Path requested doesn't exist", this.file);
             throw new Error(`File '${this.file.fullPath}' doesn't exist`);
         }
-        if (!(this.file.filename.substring(this.file.filename.length - 3) === ".ts")) {
+        if (!(this.file.filename.substring(this.file.filename.length - 3) === FileExtensions.source)) {
             Logger.fatal("Incorrect file extension filtered out", this.file);
             throw new Error("Typescript files must end with .ts");
         }
