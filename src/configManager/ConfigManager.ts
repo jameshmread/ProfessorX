@@ -22,25 +22,6 @@ export class ConfigManager {
         this.configValid();
         Logger.info("Files Found", ConfigManager.filesToMutate);
     }
-
-    public static getAllProjectFiles (filePath: string): Array<string> {
-        const currentDir = this.readfileDirectory(filePath);
-        currentDir.forEach((file) => {
-            if (this.isTypescriptFile(file)) {
-                this.filesToMutate.push(file);
-            } else {
-                this.getAllProjectFiles(resolve(filePath, file));
-            }
-        });
-        return this.filterOutTestFiles(this.filesToMutate);
-    }
-
-    public static getPartialProjectFiles (): Array<string> {
-        return ConfigManager.managerConfig.filesToMutate.filter((item) => {
-            return ConfigManager.managerConfig.filesToSkip.indexOf(item) < 0;
-        });
-    }
-
     public static getFilesToMutate () {
         if (ConfigManager.managerConfig.mutateAllFiles) {
             ConfigManager.filesToMutate = ConfigManager.getAllProjectFiles(ConfigManager.filePath);
@@ -57,6 +38,24 @@ export class ConfigManager {
                     "Professor X config not valid. Not all keys are defined"
                 );
             }
+        });
+    }
+
+    private static getAllProjectFiles (filePath: string): Array<string> {
+        const currentDir = this.readfileDirectory(filePath);
+        currentDir.forEach((file) => {
+            if (this.isTypescriptFile(file)) {
+                this.filesToMutate.push(file);
+            } else {
+                this.getAllProjectFiles(resolve(filePath, file));
+            }
+        });
+        return this.filterOutTestFiles(this.filesToMutate);
+    }
+
+    private static getPartialProjectFiles (): Array<string> {
+        return ConfigManager.managerConfig.filesToMutate.filter((item) => {
+            return ConfigManager.managerConfig.filesToSkip.indexOf(item) < 0;
         });
     }
 
