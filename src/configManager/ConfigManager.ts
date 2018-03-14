@@ -1,11 +1,13 @@
 import { Config } from "../../profx.conf";
 import { Logger } from "../logging/Logger";
+import * as fs from "fs";
+import { resolve } from "path";
 
 export class ConfigManager {
     public static managerConfig;
 
     public static filePath: string;
-    public static filesToMutate: Array<string>;
+    public static filesToMutate: Array<string> = [];
     public static testRunner: string;
     public static runnerConfig: Object;
 
@@ -21,8 +23,16 @@ export class ConfigManager {
         Logger.info("Files Found", ConfigManager.filesToMutate);
     }
 
-    public static getAllProjectFiles (): Array<string> {
-        return ConfigManager.managerConfig.filesToMutate;
+    public static getAllProjectFiles (filePath: string): Array<string> {
+        const currentDir = this.readfileDirectory(filePath);
+        currentDir.forEach((file) => {
+            if (this.isTypescriptFile(file)) {
+                this.filesToMutate.push(file);
+            } else {
+                this.getAllProjectFiles(resolve(filePath, file));
+            }
+        });
+        return this.filterOutTestFiles(this.filesToMutate);
     }
 
     public static getPartialProjectFiles (): Array<string> {
@@ -33,7 +43,7 @@ export class ConfigManager {
 
     public static getFilesToMutate () {
         if (ConfigManager.managerConfig.mutateAllFiles) {
-            ConfigManager.filesToMutate = ConfigManager.getAllProjectFiles();
+            ConfigManager.filesToMutate = ConfigManager.getAllProjectFiles(ConfigManager.filePath);
         } else {
             ConfigManager.filesToMutate = ConfigManager.getPartialProjectFiles();
         }
@@ -47,6 +57,20 @@ export class ConfigManager {
                     "Professor X config not valid. Not all keys are defined"
                 );
             }
+        });
+    }
+
+    private static readfileDirectory (file: string): Array<string> {
+        return fs.readdirSync(file);
+    }
+
+    private static isTypescriptFile (fileName: string): boolean {
+        return fileName.substring(fileName.length - 3, fileName.length) === ".ts";
+    }
+
+    private static filterOutTestFiles (files: Array<string>): Array<string> {
+        return files.filter((file) => {
+            return !file.endsWith(".spec.ts");
         });
     }
 }
