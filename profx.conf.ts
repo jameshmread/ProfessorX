@@ -1,12 +1,8 @@
 export class Config {
     public static readonly CONFIG = {
         filePath: "./testProject/src/",
-        mutateAllFiles: false,
-        filesToMutate: [
-            "HelloWorld.ts",
-            "FileTwo.ts",
-            "SkipMe.ts"
-        ],
+        mutateAllFiles: true,
+        filesToMutate: [],
         filesToSkip: ["SkipMe.ts"],
         testRunner: "mocha",
         runnerConfig: {
