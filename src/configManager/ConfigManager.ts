@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import { resolve } from "path";
+import { resolve, basename } from "path";
 
 import { Logger } from "../logging/Logger";
 import { IConfigFile } from "../../interfaces/IConfigFile";
@@ -32,19 +32,20 @@ export class ConfigManager {
         this.configValid();
     }
 
-    public static removeSrcFilesWhichDontHaveTests (sourceFiles: Array<string>) {
-        let testFilesWithoutExtension = [];
+    public static removeSrcFilesWhichDontHaveTests (sourceFiles: Array<string>): Array<string> {
+        let testFilesWithoutExtension: Array<string> = [];
         testFilesWithoutExtension = this.testFiles.map((file) => {
-            return file.replace(this.testFileExtension, "");
+            return basename(file.replace(this.testFileExtension, ""));
         });
-        return testFilesWithoutExtension.filter((file) => {
-            return sourceFiles.indexOf(file) >= 0;
+        return sourceFiles.filter((file) => {
+            return testFilesWithoutExtension.indexOf(basename(file)) >= 0;
         });
     }
 
     public getFilesToMutate () {
         this.setProjectTestFiles();
-        // this.projectFilesRetrieved = [];
+        this.projectFilesRetrieved = [];
+        // reset files retrieved because test files fills that array first, causing duplicates
         if (ConfigManager.mutateAllFiles) {
             ConfigManager.filesToMutate =
                 ConfigManager.removeSrcFilesWhichDontHaveTests(
@@ -52,6 +53,7 @@ export class ConfigManager {
                         this.getAllProjectFiles(ConfigManager.filePath))
                 );
         } else {
+            // CURRENTLY DOES NOT RESOLVE FILE PATHS
         ConfigManager.filesToMutate =
             ConfigManager.removeSrcFilesWhichDontHaveTests(
                 ConfigManager.filterOutTestFiles(
@@ -69,11 +71,6 @@ export class ConfigManager {
                 );
             }
         });
-    }
-
-    private static preserveFilePath () {
-        // TODO need to push the directory levels AFTER origional
-        // config dir into files to mutate
     }
 
     private static filterFilesToMutateBySkipped (): Array<string> {
@@ -111,7 +108,7 @@ export class ConfigManager {
         const currentDir = ConfigManager.readfileDirectory(filePath);
         currentDir.forEach((file) => {
             if (ConfigManager.isTypescriptFile(file)) {
-                this.projectFilesRetrieved.push(file);
+                this.projectFilesRetrieved.push(resolve(filePath, file));
             } else {
                 this.getAllProjectFiles(filePath + "/" + file);
             }
