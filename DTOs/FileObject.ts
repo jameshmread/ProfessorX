@@ -1,4 +1,6 @@
+import { basename } from "path";
 import { SourceFile } from "typescript";
+
 import { ConfigManager } from "../src/configManager/ConfigManager";
 
 export class FileObject {
@@ -10,7 +12,6 @@ export class FileObject {
       public coreNumber = 0;
 
       public fullPath: string;
-      public path: string;
       public filename: string;
       public sourceCode: string;
       public sourceObject: SourceFile;
@@ -18,9 +19,10 @@ export class FileObject {
       public testFilePath: string;
       public testFileName: string;
 
-      constructor (filename: string) {
-            this.path = ConfigManager.filePath;
-            this.filename = filename;
-            this.fullPath = this.path + filename;
+      constructor (resolvedFilePath: string, resolvedTestFilePath: string) {
+            this.fullPath = resolvedFilePath;
+            this.filename = basename(resolvedFilePath);
+            this.testFilePath = resolvedTestFilePath;
+            this.testFileName = basename(resolvedTestFilePath);
       }
 }
