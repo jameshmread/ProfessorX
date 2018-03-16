@@ -14,6 +14,7 @@ import { FileHandler } from "../FileHandler/FileHandler";
 import { MochaTestRunner } from "../mocha-testRunner/Mocha-TestRunner";
 import { Worker } from "../Worker";
 import { Logger } from "../logging/Logger";
+import { ProfessorX } from "..";
 
 export class MultipleNodeMutator {
       private mutationResultManager: MutationResultManager;
@@ -26,7 +27,7 @@ export class MultipleNodeMutator {
       private errorString: string;
 
       constructor () {
-            const configManager = new ConfigManager();
+            const configManager = new ConfigManager(ProfessorX.configuration);
             this.mutationResultManager = new MutationResultManager();
       }
 
@@ -51,7 +52,7 @@ export class MultipleNodeMutator {
                   this.mutationResultManager.getCurrentMutationResult().mutationAttemptFailure =
                   new MAttemptFail(
                         this.errorString,
-                        this.currentNode.syntaxType.toString() + " => " +
+                        this.currentNode.syntaxType.toString() + " --> " +
                         mutationOption,
                         this.currentNode
                   );
