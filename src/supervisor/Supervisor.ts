@@ -13,7 +13,7 @@ import { OutputToJSON } from "../outputResults/OutputToJSON";
 import { Logger } from "../logging/Logger";
 
 process.on("SIGINT", () => {
-      Logger.warn("User Pressed Ctrl + C: SIGINT Caught. Program ending.");
+      Logger.fatal("User Pressed Ctrl + C: SIGINT Caught. Program ending.");
       Logger.log("Deleting Generated Files");
       Logger.fatal("User ended program");
       Cleaner.cleanRemainingFiles();
