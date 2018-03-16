@@ -14,7 +14,7 @@ import { FileHandler } from "../FileHandler/FileHandler";
 import { MochaTestRunner } from "../mocha-testRunner/Mocha-TestRunner";
 import { Worker } from "../Worker";
 import { Logger } from "../logging/Logger";
-import { ProfessorX } from "..";
+import { Config } from "../../profx.conf";
 
 export class MultipleNodeMutator {
       private mutationResultManager: MutationResultManager;
@@ -27,7 +27,9 @@ export class MultipleNodeMutator {
       private errorString: string;
 
       constructor () {
-            const configManager = new ConfigManager(ProfessorX.configuration);
+            const configManager = new ConfigManager(Config.CONFIG_STRYKER);
+            // CANNOT import from ProffessorX main class as this recursivley restarts the program
+            // will need to wait till commandline instansiation is implemented
             this.mutationResultManager = new MutationResultManager();
       }
 
@@ -45,7 +47,7 @@ export class MultipleNodeMutator {
 
       private async doSingleMutation (mutationOption: string) {
             this.mutationResultManager.setCurrentMutationResult(
-                  new MutationResult(ConfigManager.filePath, this.currentNode.parentFileName)
+                  new MutationResult(ConfigManager.filePath, this.currentNode.parentFilePath)
             );
             this.setFileInformation();
             if (!this.createSourceCodeModifier()) {
@@ -67,9 +69,9 @@ export class MultipleNodeMutator {
             this.mutationResultManager.setMutationResultData(this.testFile, this.currentNode);
             this.mutationResultManager.addMutationResultToList();
       }
-
       private setFileInformation () {
-            const fileObject = new FileObject(this.currentNode.parentFileName);
+            const fileObject = new FileObject(this.currentNode.parentFilePath,
+                  this.currentNode.associatedTestFilePath);
             fileObject.coreNumber = process.pid;
             this.fileHandler = new FileHandler(fileObject);
       }
