@@ -7,16 +7,13 @@ import { SourceObject } from "../../DTOs/SourceObject";
 import { ConfigManager } from "../configManager/ConfigManager";
 import { FileObject } from "../../DTOs/FileObject";
 import { MutationFactory } from "../mutationFactory/MutationFactory";
+import { StubConfigFile } from "../../testUtilities/StubConfigFile";
 
 describe("Testing NodeHandler ", () => {
 
-    const configManager = new ConfigManager();
-    ConfigManager.managerConfig = {
-        filesToMutate: ["TestFile.ts"]
-    };
-    const fo = new FileObject(
-        ConfigManager.managerConfig.filesToMutate[0]
-    );
+    const configManager = new ConfigManager(StubConfigFile.configFile);
+
+    const fo = new FileObject("TestFile.ts");
     const code = `
             let x: number = 3 + 9;
             const y: boolean = true;
