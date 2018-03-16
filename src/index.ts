@@ -8,11 +8,10 @@ import { IConfigFile } from "../interfaces/IConfigFile";
 
 export class ProfessorX {
 
-    public static configuration: IConfigFile;
+    public static configuration: IConfigFile = Config.CONFIG;
 
     public supervisor: Supervisor;
     public constructor () {
-        ProfessorX.configuration = Config.CONFIG_STRYKER;
         this.setupEnvironment();
     }
 
@@ -21,7 +20,6 @@ export class ProfessorX {
         NodeHandler.createAllFileDescriptors();
         Logger.log("Finding Nodes...");
         NodeHandler.traverseFilesForNodes();
-
         this.supervisor = new Supervisor(NodeHandler.fileNameNodes);
         this.supervisor.spawnWorkers();
     }
@@ -31,10 +29,6 @@ export class ProfessorX {
         const configManager = new ConfigManager(ProfessorX.configuration);
         Logger.info("Read Configuration File", configManager);
         configManager.getFilesToMutate();
-        console.log("sourceFiles", ConfigManager.filesToMutate);
-        console.log("testfiles", ConfigManager.testFiles);
-        console.log("extension", ConfigManager.testFileExtension);
-        // process.exit(0);
     }
 }
 const x = new ProfessorX();
