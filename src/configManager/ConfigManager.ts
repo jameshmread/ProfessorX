@@ -1,38 +1,58 @@
-import { Config } from "../../profx.conf";
-import { Logger } from "../logging/Logger";
 import * as fs from "fs";
 import { resolve } from "path";
 
+import { Logger } from "../logging/Logger";
+import { IConfigFile } from "../../interfaces/IConfigFile";
+
 export class ConfigManager {
-    public static managerConfig;
 
     public static filePath: string;
+    public static testFilePath: string;
+    public static testFileExtension: string;
+
     public static filesToMutate: Array<string> = [];
+    public static testFiles: Array<string> = [];
     public static testRunner: string;
     public static runnerConfig: Object;
 
     private static mutateAllFiles: boolean;
     private static filesToSkip: Array<string>;
+    private projectFilesRetrieved: Array<string>;
 
-    constructor () {
-        ConfigManager.managerConfig = Config.CONFIG;
-        ConfigManager.filePath = Config.CONFIG.filePath;
-        ConfigManager.testRunner = Config.CONFIG.testRunner;
-        ConfigManager.runnerConfig = Config.CONFIG.runnerConfig;
+    constructor (private configurationFile: IConfigFile) {
+        this.projectFilesRetrieved = [];
+        ConfigManager.mutateAllFiles = configurationFile.mutateAllFiles;
+        ConfigManager.filePath = configurationFile.filePath;
+        ConfigManager.filesToSkip = configurationFile.filesToSkip;
+        ConfigManager.filesToMutate = configurationFile.filesToMutate;
+        ConfigManager.testFilePath = configurationFile.testFilePath;
+        ConfigManager.testFileExtension = configurationFile.testFileExtension;
+        ConfigManager.testRunner = configurationFile.testRunner;
+        ConfigManager.runnerConfig = configurationFile.runnerConfig;
         this.configValid();
         Logger.info("Files Found", ConfigManager.filesToMutate);
     }
-    public static getFilesToMutate () {
-        if (ConfigManager.managerConfig.mutateAllFiles) {
-            ConfigManager.filesToMutate = ConfigManager.getAllProjectFiles(ConfigManager.filePath);
-        } else {
-            ConfigManager.filesToMutate = ConfigManager.getPartialProjectFiles();
+
+    public getFilesToMutate () {
+        // this.setProjectTestFiles();
+        // this.projectFilesRetrieved = [];
+        // DO i need to look for test files?? YES
+        // compare these against source, then remove source files which do not have
+        // test files (remember to log this)
+        if (ConfigManager.mutateAllFiles) {
+            ConfigManager.filesToMutate =
+            ConfigManager.filterOutTestFiles(
+                this.getAllProjectFiles(ConfigManager.filePath));
+            } else {
+            ConfigManager.filesToMutate =
+            ConfigManager.filterOutTestFiles(
+            ConfigManager.filterFilesToMutateBySkipped());
         }
     }
 
     public configValid () {
-        Object.keys(ConfigManager.managerConfig).forEach((el) => {
-            if (ConfigManager.managerConfig[el] === void 0) {
+        Object.keys(ConfigManager).forEach((el) => {
+            if (ConfigManager[el] === void 0) {
                 Logger.fatal("Professor X config not valid. Not all keys are defined", this);
                 throw new Error(
                     "Professor X config not valid. Not all keys are defined"
@@ -41,21 +61,13 @@ export class ConfigManager {
         });
     }
 
-    private static getAllProjectFiles (filePath: string): Array<string> {
-        const currentDir = this.readfileDirectory(filePath);
-        currentDir.forEach((file) => {
-            if (this.isTypescriptFile(file)) {
-                this.filesToMutate.push(file);
-            } else {
-                this.getAllProjectFiles(resolve(filePath, file));
-            }
-        });
-        return this.filterOutTestFiles(this.filesToMutate);
+    private static preserveFilePath () {
+        // TODO need to push the directory levels AFTER origional config dir into files to mutate
     }
 
-    private static getPartialProjectFiles (): Array<string> {
-        return ConfigManager.managerConfig.filesToMutate.filter((item) => {
-            return ConfigManager.managerConfig.filesToSkip.indexOf(item) < 0;
+    private static filterFilesToMutateBySkipped (): Array<string> {
+        return this.filesToMutate.filter((item) => {
+            return this.filesToSkip.indexOf(item) < 0;
         });
     }
 
@@ -69,7 +81,30 @@ export class ConfigManager {
 
     private static filterOutTestFiles (files: Array<string>): Array<string> {
         return files.filter((file) => {
-            return !file.endsWith(".spec.ts");
+            return !file.endsWith(this.testFileExtension + ".ts");
         });
+    }
+
+    private static filterOutSrcFiles (files: Array<string>): Array<string> {
+        return files.filter((file) => {
+            return file.endsWith(this.testFileExtension + ".ts");
+        });
+    }
+
+    private setProjectTestFiles () {
+        ConfigManager.testFiles = ConfigManager.filterOutSrcFiles(
+            this.getAllProjectFiles(ConfigManager.testFilePath));
+    }
+
+    private getAllProjectFiles (filePath: string): Array<string> {
+        const currentDir = ConfigManager.readfileDirectory(filePath);
+        currentDir.forEach((file) => {
+            if (ConfigManager.isTypescriptFile(file)) {
+                this.projectFilesRetrieved.push(file);
+            } else {
+                this.getAllProjectFiles(filePath + "/" + file);
+            }
+        });
+        return this.projectFilesRetrieved;
     }
 }

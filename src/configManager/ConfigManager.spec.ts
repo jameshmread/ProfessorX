@@ -2,15 +2,21 @@ import { expect } from "chai";
 import * as Mocha from "mocha";
 
 import { ConfigManager } from "./ConfigManager";
+import { IConfigFile } from "../../interfaces/IConfigFile";
 
 describe("Config manager", () => {
     let config: ConfigManager;
+    const configFile: IConfigFile = {
+        filesToMutate: [],
+        mutateAllFiles: true,
+        filesToSkip: [],
+        runnerConfig: {}, filePath: "./testProject/src/",
+        testFileExtension: ".spec", testFilePath: "./testProject/src/",
+        testRunner: "mocha"
+    };
     beforeEach(() => {
-        config = new ConfigManager();
-    });
-
-    it("config should not be null", () => {
-        expect(ConfigManager.managerConfig).to.not.equal(void 0);
+        config = new ConfigManager(configFile);
+        ConfigManager.filesToMutate = [];
     });
 
     it("should not throw error for a standard config", () => {
@@ -20,35 +26,32 @@ describe("Config manager", () => {
     });
 
     it("should throw error if no configuration is given", () => {
-        ConfigManager.managerConfig = null;
         expect(() => {
-            config.configValid();
+            const nullConfig = new ConfigManager(null);
+            nullConfig.configValid();
         }).to.throw(Error);
     });
 
     it("should return the filesToMutate when mutate files is true, ignoring filesToSkip", () => {
-        ConfigManager.managerConfig = {
-            mutateAllFiles: true,
-            filesToMutate: ["one", "two", "three", "skipMe"],
-            filesToSkip: ["skipMe", "one", "newFile"]
-        };
-        ConfigManager.getFilesToMutate();
-        const actual = ConfigManager.managerConfig.filesToMutate;
-        const expected = ["one", "two", "three", "skipMe"];
-        expect(ConfigManager.managerConfig.mutateAllFiles).to.equal(true);
+        config.getFilesToMutate();
+        const actual = ConfigManager.filesToMutate;
+        const expected = ["FileTwo.ts", "HelloWorld.ts"];
         expect(actual).to.eql(expected);
     });
 
-    it("should return the filesToMutate - files to skip when files to mutate is false", () => {
-        ConfigManager.managerConfig = {
+    it("should return the filesToMutate - files to skip when mutate all files is false", () => {
+        const tempConfig = {
             mutateAllFiles: false,
-            filesToMutate: ["one", "two", "three", "skipMe"],
-            filesToSkip: ["skipMe", "one", "newFile"]
+            filesToMutate: ["FileTwo.ts", "HelloWorld.ts"],
+            filesToSkip: ["FileTwo.ts"],
+            runnerConfig: {}, filePath: "./testProject/src/",
+            testFileExtension: ".spec", testFilePath: "./testProject/src/",
+            testRunner: "mocha"
         };
-        ConfigManager.getFilesToMutate();
+        const cm = new ConfigManager(tempConfig);
+        cm.getFilesToMutate();
         const actual = ConfigManager.filesToMutate;
-        const expected = ["two", "three"];
-        expect(ConfigManager.managerConfig.mutateAllFiles).to.equal(false);
+        const expected = ["HelloWorld.ts"];
         expect(actual).to.eql(expected);
     });
 });
