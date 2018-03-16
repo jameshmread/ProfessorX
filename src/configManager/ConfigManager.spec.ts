@@ -39,6 +39,27 @@ describe("Config manager", () => {
         expect(actual).to.eql(expected);
     });
 
+    it("should return only the src file when there it has a test file", () => {
+        ConfigManager.testFiles = ["Hey.spec.ts"];
+        const actual = ConfigManager.removeSrcFilesWhichDontHaveTests(["Hey.ts", "NoTestForMe.ts"]);
+        const expected = ["Hey.ts"];
+        expect(actual).to.eql(expected);
+    });
+
+    it("should return no files when there are no test files for any src files", () => {
+        ConfigManager.testFiles = ["Hey.spec.ts"];
+        const actual = ConfigManager.removeSrcFilesWhichDontHaveTests(["NoTestForMe.ts"]);
+        const expected = [];
+        expect(actual).to.eql(expected);
+    });
+
+    it("should return the one and only file when it has a test file", () => {
+        ConfigManager.testFiles = ["Hey.spec.ts"];
+        const actual = ConfigManager.removeSrcFilesWhichDontHaveTests(["Hey.ts"]);
+        const expected = ["Hey.ts"];
+        expect(actual).to.eql(expected);
+    });
+
     it("should return the filesToMutate - files to skip when mutate all files is false", () => {
         const tempConfig = {
             mutateAllFiles: false,

@@ -30,23 +30,33 @@ export class ConfigManager {
         ConfigManager.testRunner = configurationFile.testRunner;
         ConfigManager.runnerConfig = configurationFile.runnerConfig;
         this.configValid();
-        Logger.info("Files Found", ConfigManager.filesToMutate);
+    }
+
+    public static removeSrcFilesWhichDontHaveTests (sourceFiles: Array<string>) {
+        let testFilesWithoutExtension = [];
+        testFilesWithoutExtension = this.testFiles.map((file) => {
+            return file.replace(this.testFileExtension, "");
+        });
+        return testFilesWithoutExtension.filter((file) => {
+            return sourceFiles.indexOf(file) >= 0;
+        });
     }
 
     public getFilesToMutate () {
-        // this.setProjectTestFiles();
+        this.setProjectTestFiles();
         // this.projectFilesRetrieved = [];
-        // DO i need to look for test files?? YES
-        // compare these against source, then remove source files which do not have
-        // test files (remember to log this)
         if (ConfigManager.mutateAllFiles) {
             ConfigManager.filesToMutate =
-            ConfigManager.filterOutTestFiles(
-                this.getAllProjectFiles(ConfigManager.filePath));
-            } else {
-            ConfigManager.filesToMutate =
-            ConfigManager.filterOutTestFiles(
-            ConfigManager.filterFilesToMutateBySkipped());
+                ConfigManager.removeSrcFilesWhichDontHaveTests(
+                    ConfigManager.filterOutTestFiles(
+                        this.getAllProjectFiles(ConfigManager.filePath))
+                );
+        } else {
+        ConfigManager.filesToMutate =
+            ConfigManager.removeSrcFilesWhichDontHaveTests(
+                ConfigManager.filterOutTestFiles(
+                    ConfigManager.filterFilesToMutateBySkipped())
+        );
         }
     }
 
@@ -62,7 +72,8 @@ export class ConfigManager {
     }
 
     private static preserveFilePath () {
-        // TODO need to push the directory levels AFTER origional config dir into files to mutate
+        // TODO need to push the directory levels AFTER origional
+        // config dir into files to mutate
     }
 
     private static filterFilesToMutateBySkipped (): Array<string> {
