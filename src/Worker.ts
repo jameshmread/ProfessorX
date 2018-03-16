@@ -9,7 +9,6 @@ process.on("exit", () => {
 });
 
 import { MultipleNodeMutator } from "./multipleNodeMutator/MultipleNodeMutator";
-import { Logger } from "./logging/Logger";
 
 export class Worker {
       public static workerResults = [];
@@ -24,7 +23,6 @@ export class Worker {
             await this.mutateAllNodes();
             Worker.workerResults = [].concat.apply([], Worker.workerResults);
             process.send(Worker.workerResults);
-            Logger.dumpLogToConsole();
       }
 
       private async mutateAllNodes () {
