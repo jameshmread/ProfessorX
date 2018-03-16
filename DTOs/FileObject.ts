@@ -4,7 +4,7 @@ import { ConfigManager } from "../src/configManager/ConfigManager";
 export class FileObject {
 
       public static readonly M_SOURCE_FILE_SUFFIX = ".m.ts";
-      public static readonly M_TEST_FILE_SUFFIX = ".spec" + FileObject.M_SOURCE_FILE_SUFFIX;
+      public static readonly M_TEST_FILE_SUFFIX = ConfigManager.testFileExtension + FileObject.M_SOURCE_FILE_SUFFIX;
       public static counter = 0;
 
       public coreNumber = 0;
@@ -15,6 +15,7 @@ export class FileObject {
       public sourceCode: string;
       public sourceObject: SourceFile;
       public testFileContents: string;
+      public testFilePath: string;
       public testFileName: string;
 
       constructor (filename: string) {
