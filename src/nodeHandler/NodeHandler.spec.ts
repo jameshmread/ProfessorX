@@ -13,7 +13,7 @@ describe("Testing NodeHandler ", () => {
 
     const configManager = new ConfigManager(StubConfigFile.configFile);
 
-    const fo = new FileObject("TestFile.ts");
+    const fo = new FileObject("TestFile.ts", "TestTestFile.spec.ts");
     const code = `
             let x: number = 3 + 9;
             const y: boolean = true;
