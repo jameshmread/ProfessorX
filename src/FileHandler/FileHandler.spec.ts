@@ -3,13 +3,10 @@ import { expect } from "chai";
 import { FileHandler } from "./FileHandler";
 import { FileObject } from "../../DTOs/FileObject";
 import { ConfigManager } from "../configManager/ConfigManager";
+import { StubConfigFile } from "../../testUtilities/StubConfigFile";
 
 describe("Testing FileHandler", () => {
-    const configManager = new ConfigManager();
-    ConfigManager.filePath = "./testProject/src/";
-    ConfigManager.managerConfig.filePath = "./testProject/src/";
-
-
+    const configManager = new ConfigManager(StubConfigFile.configFile);
     const fh = new FileHandler(new FileObject("HelloWorld.ts"));
 
     it("creating a new instance should throw an error if the file doesn't end with .ts", () => {
