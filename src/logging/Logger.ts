@@ -72,6 +72,7 @@ export class Logger {
     public static fatal (message: string, object? : any): void {
         this.logContent.fatal.push(
             {logType: LogTypes.fatal, timestamp: new Date().getTime(), messageText: message, obj: object});
+        console.log(JSON.stringify(this.logContent.fatal));
     }
 
     public static dumpLogToConsole () {
