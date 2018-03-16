@@ -15,22 +15,18 @@ export class FileHandler {
         this.file = file;
         if (!fs.existsSync(this.file.fullPath)) {
             Logger.fatal("File Path requested doesn't exist", this.file);
-            Logger.dumpLogToConsole();
             throw new Error(`File '${this.file.fullPath}' doesn't exist`);
         }
         if (!(this.file.filename.substring(this.file.filename.length - 3) === FileExtensions.source)) {
             Logger.fatal("Incorrect file extension filtered out", this.file);
             throw new Error("Typescript files must end with .ts");
         }
-        this.file.testFileName = ConfigManager.testFilePath +
-        this.file.filename.substring(0, this.file.filename.length - 3)
-        + ConfigManager.testFileExtension + FileExtensions.source;
+        this.file.testFileName = this.file.testFilePath;
 
         if (!fs.existsSync(this.file.testFileName)) {
             Logger.fatal(`No test file found matching this source file.
             Spelling of source and test must match exactly and test must end in .ts`,
             {fileName: this.file, testFileName: this.file.testFileName});
-            Logger.dumpLogToConsole();
             throw new Error("No existing test file that matches this file");
         }
     }
@@ -56,7 +52,7 @@ export class FileHandler {
 
     public createTempTestModifiedFile (): string {
         const updatedContents = this.mutateTestFileReference(this.getTestFileContents());
-        const tempFilename = ConfigManager.testFilePath + this.file.filename
+        const tempFilename = this.file.testFilePath
         + FileObject.counter++ + "C" + this.file.coreNumber + FileObject.M_TEST_FILE_SUFFIX;
         fs.writeFileSync(tempFilename, updatedContents);
         return tempFilename;
