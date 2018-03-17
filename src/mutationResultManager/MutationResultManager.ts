@@ -6,6 +6,7 @@ import { MutationResult } from "../../DTOs/MutationResult";
 
 import { SourceCodeModifier } from "../sourceCodeModifier/SourceCodeModifier";
 import { CodeInspector } from "../CodeInspector/CodeInspector";
+import { Logger } from "../logging/Logger";
 
 export class MutationResultManager {
 
@@ -62,10 +63,15 @@ export class MutationResultManager {
         code: {origional: string, mutated: string},
         bounds: {pos: number, end: number}
     ): void {
-        const methodStartLine = ts.getLineAndCharacterOfPosition(this.currentSourceCodeObject, bounds.pos).line;
-        const methodEndLine = ts.getLineAndCharacterOfPosition(this.currentSourceCodeObject, bounds.end).line;
-        this.setOrigionalCode(code.origional, {start: methodStartLine, end: methodEndLine});
-        this.setMutatedCode(code.mutated, {start: methodStartLine, end: methodEndLine});
+        try {
+            const methodStartLine = ts.getLineAndCharacterOfPosition(this.currentSourceCodeObject, bounds.pos).line;
+            const methodEndLine = ts.getLineAndCharacterOfPosition(this.currentSourceCodeObject, bounds.end).line;
+            this.setOrigionalCode(code.origional, {start: methodStartLine, end: methodEndLine});
+            this.setMutatedCode(code.mutated, {start: methodStartLine, end: methodEndLine});
+        } catch (error) {
+            Logger.fatal("Mutation result Manager could not set source code lines", error);
+            throw Error("Could not set source code lines" + error);
+        }
     }
 
     // was the mutant killed? true is killed (good)

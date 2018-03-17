@@ -1,14 +1,18 @@
+import { Config } from "../profx.conf";
+
 import { ConfigManager } from "./configManager/ConfigManager";
 import { Supervisor } from "./supervisor/supervisor";
 import { NodeHandler } from "./nodeHandler/NodeHandler";
 import { Logger } from "./logging/Logger";
+import { IConfigFile } from "../interfaces/IConfigFile";
 
 export class ProfessorX {
 
-    public supervisor: Supervisor;
+    public static configuration: IConfigFile = Config.CONFIG;
 
+    public supervisor: Supervisor;
     public constructor () {
-       this.setupEnvironment();
+        this.setupEnvironment();
     }
 
     public async main () {
@@ -16,16 +20,15 @@ export class ProfessorX {
         NodeHandler.createAllFileDescriptors();
         Logger.log("Finding Nodes...");
         NodeHandler.traverseFilesForNodes();
-
         this.supervisor = new Supervisor(NodeHandler.fileNameNodes);
         this.supervisor.spawnWorkers();
     }
 
     private setupEnvironment () {
         Logger.log("Setting Up Environment");
-        const configManager = new ConfigManager();
+        const configManager = new ConfigManager(ProfessorX.configuration);
         Logger.info("Read Configuration File", configManager);
-        ConfigManager.getFilesToMutate();
+        configManager.getFilesToMutate();
     }
 }
 const x = new ProfessorX();

@@ -24,7 +24,6 @@ export class NodeHandler {
             throw Error("No nodes found to mutate, check Professor X config settings.");
         }
         Logger.info("Found Nodes", NodeHandler.fileNameNodes.length);
-        Logger.info("Filename nodes", NodeHandler.fileNameNodes);
         return NodeHandler.fileNameNodes;
     }
 
@@ -34,8 +33,11 @@ export class NodeHandler {
                 NodeHandler.fileNameNodes.push({
                     syntaxType: syntaxItem,
                     positions: {pos: token.pos, end: token.end},
-                    parentFileName: ConfigManager.filesToMutate[fileNameIndex],
-                    plainText: token.getText()
+                    parentFilePath: ConfigManager.filesToMutate[fileNameIndex],
+                    plainText: token.getText(),
+                    associatedTestFilePath: ConfigManager.testFiles[fileNameIndex]
+                    // for now i can't see a problem doing this, however the test files may be in a different order
+                    // to the source files in some occasions.
                 });
             });
         });
@@ -43,7 +45,7 @@ export class NodeHandler {
 
     public static createAllFileDescriptors (): Array<IFileDescriptor> {
         for (let i = 0; i < ConfigManager.filesToMutate.length; i++) {
-            const fo = new FileObject(ConfigManager.filesToMutate[i]);
+            const fo = new FileObject(ConfigManager.filesToMutate[i], ConfigManager.testFiles[i]);
             const fh = new FileHandler(fo);
             const so = new SourceObject(fh.getSourceObject());
             const ci = new CodeInspector(so.origionalSourceObject);
