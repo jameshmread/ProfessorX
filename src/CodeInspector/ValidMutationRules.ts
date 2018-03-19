@@ -39,11 +39,19 @@ export class ValidMutationRules {
       }
 
       public setNodeFamily (node: Node) {
-            this.nodeFamily = [
-                  node.kind,
-                  node.parent.kind,
-                  node.parent.getChildAt(0).kind,
-                  node.parent.getChildAt(2).kind
-            ];
+            if (node.getChildAt(2) === null) {
+                  this.nodeFamily = [
+                        node.kind,
+                        node.parent.kind,
+                        node.parent.getChildAt(0).kind
+                  ];
+            } else {
+                  this.nodeFamily = [
+                        node.kind,
+                        node.parent.kind,
+                        node.parent.getChildAt(0).kind,
+                        node.parent.getChildAt(2).kind
+                  ];
+            }
       }
 }
