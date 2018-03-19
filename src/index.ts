@@ -5,13 +5,16 @@ import { Supervisor } from "./supervisor/supervisor";
 import { NodeHandler } from "./nodeHandler/NodeHandler";
 import { Logger } from "./logging/Logger";
 import { IConfigFile } from "../interfaces/IConfigFile";
+import { resolve } from "path";
+
 
 export class ProfessorX {
 
-    public static configuration: IConfigFile = Config.CONFIG;
+    public static configuration: IConfigFile;
 
     public supervisor: Supervisor;
-    public constructor () {
+    public constructor (inputConfig: IConfigFile) {
+        ProfessorX.configuration = inputConfig;
         this.setupEnvironment();
     }
 
@@ -31,5 +34,5 @@ export class ProfessorX {
         configManager.getFilesToMutate();
     }
 }
-const x = new ProfessorX();
-x.main();
+const algorithm = new ProfessorX(Config.CONFIG);
+algorithm.main();
