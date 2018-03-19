@@ -70,7 +70,6 @@ export class MutationResultManager {
             this.setMutatedCode(code.mutated, {start: methodStartLine, end: methodEndLine});
         } catch (error) {
             Logger.fatal("Mutation result Manager could not set source code lines", error);
-            throw Error("Could not set source code lines" + error);
         }
     }
 
