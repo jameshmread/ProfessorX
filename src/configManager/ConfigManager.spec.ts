@@ -70,7 +70,7 @@ describe("Config manager", () => {
         expect(actual).to.eql(expected);
     });
 
-    xit("should return the filesToMutate - files to skip when mutate all files is false", () => {
+    it("should return the filesToMutate - files to skip when mutate all files is false", () => {
         const tempConfig = {
             mutateAllFiles: false,
             filesToMutate: ["FileTwo.ts", "HelloWorld.ts"],

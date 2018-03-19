@@ -16,10 +16,14 @@ export class MochaTestRunner {
         this.mocha.addFile(testFile);
         let runner = null;
         return new Promise((resolve, reject) => {
-        runner = this.mocha.run(() => {
-                mResultManager.setNumberOfTests(this.createTestResult(runner.stats));
-                resolve();
-            });
+        try{
+            runner = this.mocha.run(() => {
+                    mResultManager.setNumberOfTests(this.createTestResult(runner.stats));
+                    resolve();
+                });
+        } catch (error) {
+            Logger.fatal("Mocha Runner status:", runner);
+        }
         });
     }
 

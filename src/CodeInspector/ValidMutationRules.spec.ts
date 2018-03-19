@@ -17,6 +17,9 @@ describe("Testing ValidMutationRules", () => {
                   [SyntaxKind.BinaryExpression]: {
                         [SyntaxKind.BinaryExpression] : false
                   }
+            },
+            [SyntaxKind.ParenthesizedExpression]: {
+                  [SyntaxKind.PropertyAccessExpression]: false
             }
       };
       beforeEach(() => {
@@ -24,14 +27,15 @@ describe("Testing ValidMutationRules", () => {
             nodeFinder = new SpecificNodeFinder();
       });
 
-      it("should set the nodes kind to 37, parent to 194, neighbour to 8 with 3+2", () => {
+      it("should set the nodes kind to 37, parent to 194, neighbours to 8 with 3+2", () => {
             const code = "3 + 2;";
             const sourceObj = new SourceObjCreator(code).sourceFile;
             const allPlusNodes = nodeFinder.findObjectsOfSyntaxKind(SyntaxKind.PlusToken, sourceObj);
             const plusNode: Node = allPlusNodes[0];
             mutationRules.setNodeFamily(plusNode);
             expect(mutationRules.nodeFamily)
-            .to.eql([SyntaxKind.PlusToken, SyntaxKind.BinaryExpression, SyntaxKind.NumericLiteral]);
+            .to.eql([SyntaxKind.PlusToken, SyntaxKind.BinaryExpression, SyntaxKind.NumericLiteral,
+                  SyntaxKind.NumericLiteral]);
       });
 
       it("should return false when given a string addition expression", () => {
@@ -65,7 +69,7 @@ describe("Testing ValidMutationRules", () => {
       });
 
       it("should return true when given a kind not in the tree", () => {
-            const code = "'stringLiteral'";
+            const code = "const x = 'stringLiteral'";
             const sourceObj = new SourceObjCreator(code).sourceFile;
             const nodes = nodeFinder.findObjectsOfSyntaxKind(SyntaxKind.StringLiteral, sourceObj);
             const node: Node = nodes[0];
@@ -78,6 +82,26 @@ describe("Testing ValidMutationRules", () => {
             const code = "3 < 4;";
             const sourceObj = new SourceObjCreator(code).sourceFile;
             const nodes = nodeFinder.findObjectsOfSyntaxKind(SyntaxKind.LessThanToken, sourceObj);
+            const node: Node = nodes[0];
+            mutationRules.setNodeFamily(node);
+            const actual = mutationRules.traverseRuleTree(TEST_RULE_TREE, 0);
+            expect(actual).to.equal(true);
+      });
+
+      it("should return false when given a parenthesized expr attached to a property access expr", () => {
+            const code = "(3 < 4).toString();";
+            const sourceObj = new SourceObjCreator(code).sourceFile;
+            const nodes = nodeFinder.findObjectsOfSyntaxKind(SyntaxKind.ParenthesizedExpression, sourceObj);
+            const node: Node = nodes[0];
+            mutationRules.setNodeFamily(node);
+            const actual = mutationRules.traverseRuleTree(TEST_RULE_TREE, 0);
+            expect(actual).to.equal(false);
+      });
+
+      it("should return true when given a parenthesized expr NOT attached to a property access expr", () => {
+            const code = "const x = (3 < 4)";
+            const sourceObj = new SourceObjCreator(code).sourceFile;
+            const nodes = nodeFinder.findObjectsOfSyntaxKind(SyntaxKind.ParenthesizedExpression, sourceObj);
             const node: Node = nodes[0];
             mutationRules.setNodeFamily(node);
             const actual = mutationRules.traverseRuleTree(TEST_RULE_TREE, 0);

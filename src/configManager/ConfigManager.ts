@@ -23,8 +23,10 @@ export class ConfigManager {
         this.projectFilesRetrieved = [];
         ConfigManager.mutateAllFiles = configurationFile.mutateAllFiles;
         ConfigManager.filePath = configurationFile.filePath;
-        ConfigManager.filesToSkip = configurationFile.filesToSkip;
-        ConfigManager.filesToMutate = configurationFile.filesToMutate;
+        ConfigManager.filesToSkip =
+        configurationFile.filesToSkip.map((skipping) => resolve(configurationFile.filePath, skipping));
+        ConfigManager.filesToMutate =
+        configurationFile.filesToMutate.map((file) => resolve(configurationFile.filePath, file));
         ConfigManager.testFilePath = configurationFile.testFilePath;
         ConfigManager.testFileExtension = configurationFile.testFileExtension;
         ConfigManager.testRunner = configurationFile.testRunner;
@@ -53,7 +55,6 @@ export class ConfigManager {
                         this.getAllProjectFiles(ConfigManager.filePath))
                 );
         } else {
-            // CURRENTLY DOES NOT RESOLVE FILE PATHS
         ConfigManager.filesToMutate =
             ConfigManager.removeSrcFilesWhichDontHaveTests(
                 ConfigManager.filterOutTestFiles(
