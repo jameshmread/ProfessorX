@@ -2,6 +2,12 @@ import { Node, SyntaxKind, Type } from "typescript";
 
 export class ValidMutationRules {
 
+      /*
+      Rule tree format:
+            Target Node for mutation ->
+                  Parent Node Type ->
+                        Child Type (Target node neighbour): Boolean
+      */
       public static readonly RULE_TREE = {
             [SyntaxKind.PlusToken]: {
                   [SyntaxKind.BinaryExpression]: {
@@ -12,6 +18,9 @@ export class ValidMutationRules {
                   [SyntaxKind.BinaryExpression]: {
                         [SyntaxKind.BinaryExpression] : false
                   }
+            },
+            [SyntaxKind.ParenthesizedExpression]: {
+                  [SyntaxKind.PropertyAccessExpression]: false
             }
       };
       public nodeFamily: Array<SyntaxKind>;
@@ -33,7 +42,8 @@ export class ValidMutationRules {
             this.nodeFamily = [
                   node.kind,
                   node.parent.kind,
-                  node.parent.getChildAt(0).kind
+                  node.parent.getChildAt(0).kind,
+                  node.parent.getChildAt(2).kind
             ];
       }
 }
