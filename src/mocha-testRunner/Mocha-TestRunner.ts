@@ -18,27 +18,13 @@ export class MochaTestRunner {
         return new Promise((resolve, reject) => {
         try{
             runner = this.mocha.run(() => {
-                    mResultManager.setNumberOfTests(this.createTestResult(runner.stats));
-                    resolve();
-                });
+                if (runner.stats.failures < 1) {
+                    resolve("survived");
+                }});
         } catch (error) {
-            Logger.fatal("Mocha Runner status:", runner);
+            Logger.fatal("Mocha Runner Failed. Status:", runner);
+            reject();
         }
         });
-    }
-
-    public createTestResult (stats): ITestResult {
-        if (stats === void 0){
-            Logger.fatal("Mocha Test result returned undefined", this);
-            throw new Error("Test result is undefined");
-        }
-        const result =
-        {
-            passed: stats.passes,
-            failed: stats.failures,
-            totalRan: stats.tests,
-            duration: stats.duration
-        };
-        return result;
     }
 }
