@@ -14,9 +14,6 @@ export class MutationResultManager {
     private currentMutationResult: MutationResult;
     private sourceCodeModifier: SourceCodeModifier;
     private currentSourceCodeObject: ts.SourceFile;
-    public constructor (
-    ) {
-    }
 
     public setCurrentMutationResult (mResult: MutationResult): void {
         this.currentMutationResult = mResult;
@@ -52,13 +49,6 @@ export class MutationResultManager {
         this.currentMutationResult.testFilePath = filename;
     }
 
-    public setNumberOfTests (testResult: ITestResult): void {
-        this.currentMutationResult.numberOfPassedTests = parseInt(testResult.passed, 0);
-        this.currentMutationResult.numberOfFailedTests = parseInt(testResult.failed, 0);
-        this.currentMutationResult.mutantKilled =
-        this.wasMutantKilled(this.currentMutationResult.numberOfFailedTests);
-    }
-
     public setSourceCodeLines (
         code: {origional: string, mutated: string},
         bounds: {pos: number, end: number}
@@ -71,11 +61,6 @@ export class MutationResultManager {
         } catch (error) {
             Logger.fatal("Mutation result Manager could not set source code lines", error);
         }
-    }
-
-    // was the mutant killed? true is killed (good)
-    public wasMutantKilled (failedTests: number): boolean {
-        return failedTests > 0;
     }
 
     public getParentMethodBoundsOfMutatedLine (characterOfMutation: number) {
