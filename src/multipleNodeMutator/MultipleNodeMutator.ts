@@ -14,7 +14,8 @@ import { FileHandler } from "../FileHandler/FileHandler";
 import { MochaTestRunner } from "../mocha-testRunner/Mocha-TestRunner";
 import { Worker } from "../Worker";
 import { Logger } from "../logging/Logger";
-import { Config } from "../../profx.conf";
+import { Config } from "../../DEVCONFIG";
+
 
 export class MultipleNodeMutator {
       private mutationResultManager: MutationResultManager;
@@ -61,14 +62,20 @@ export class MultipleNodeMutator {
             } else {
                   this.setSourceCodeInformation(mutationOption);
                   this.createMutatedFiles();
+
                   this.mochaRunner = new MochaTestRunner(ConfigManager.runnerConfig);
-                  await this.mochaRunner.runTests(this.mutationResultManager, this.testFile);
+                  await this.mochaRunner.runTests(this.mutationResultManager, this.testFile)
+                  .then((resolve) =>
+                        {
+                              if (resolve === "survived" || this.errorString.length > 0) {
+                                    this.commitMutationToList();
+                                    this.mutationResultManager.setCurrentMutationResult(void 0);
+                              }
+                        });
                   this.cleanFiles();
             }
-            this.mutationResultManager.setCurrentSourceCodeModifierAndSourceObj(this.sourceCodeModifier);
-            this.mutationResultManager.setMutationResultData(this.testFile, this.currentNode);
-            this.mutationResultManager.addMutationResultToList();
       }
+
       private setFileInformation () {
             const fileObject = new FileObject(this.currentNode.parentFilePath,
                   this.currentNode.associatedTestFilePath);
@@ -77,6 +84,7 @@ export class MultipleNodeMutator {
       }
 
       private createSourceCodeModifier (): boolean {
+            this.errorString = "";
             try {
                   this.sourceCodeModifier =
                   new SourceCodeModifier(new SourceObject(this.fileHandler.getSourceObject()));
@@ -87,6 +95,13 @@ export class MultipleNodeMutator {
                   Logger.warn("Current info", this);
                   return false;
             }
+      }
+
+      private commitMutationToList () {
+            this.mutationResultManager.setCurrentSourceCodeModifierAndSourceObj(
+                  this.sourceCodeModifier);
+            this.mutationResultManager.setMutationResultData(this.testFile, this.currentNode);
+            this.mutationResultManager.addMutationResultToList();
       }
 
       private setSourceCodeInformation (mutationOptions: string) {
