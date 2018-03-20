@@ -1,17 +1,18 @@
+import { IMutationResult } from "../interfaces/IMutationResult";
 import { IMutationAttemptFailure } from "../interfaces/IMutationAttemptFailure";
 
-export class MutationResult {
+export class MutationResult implements IMutationResult{
       public readonly SRC_FILE_PATH: string;
       public readonly SRC_FILE: string;
 
       public testFilePath: string;
       public origionalCode: Array<{lineText: string, lineNumber: number}> = [];
       public mutatedCode: Array<{lineText: string, lineNumber: number}> = [];
-      public numberOfFailedTests: number;
-      public numberOfPassedTests: number;
-      public mutantKilled: boolean;
 
       public mutationAttemptFailure: IMutationAttemptFailure;
+
+      public targetNode: string;
+      public nodeModification: string;
 
       public constructor (
             srcPath: string,
