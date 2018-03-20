@@ -51,8 +51,7 @@ export class MutationResultManager {
 
     public setSourceCodeLines (
         code: {origional: string, mutated: string},
-        bounds: {pos: number, end: number}
-    ): void {
+        bounds: {pos: number, end: number}): void {
         try {
             const methodStartLine = ts.getLineAndCharacterOfPosition(this.currentSourceCodeObject, bounds.pos).line;
             const methodEndLine = ts.getLineAndCharacterOfPosition(this.currentSourceCodeObject, bounds.end).line;
