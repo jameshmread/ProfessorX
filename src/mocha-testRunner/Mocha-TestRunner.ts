@@ -20,7 +20,7 @@ export class MochaTestRunner {
             runner = this.mocha.run(() => {
                 if (runner.stats.failures < 1) {
                     resolve("survived");
-                }});
+                } else { resolve("killed"); }});
         } catch (error) {
             Logger.fatal("Mocha Runner Failed. Status:", runner);
             reject();
