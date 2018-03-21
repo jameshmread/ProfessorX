@@ -45,18 +45,19 @@ export class Supervisor {
             }
       }
 
-      public getIndividualFileResults (): Array<any> {
-
-            return this.threadResults.map((result) => {
+      public getIndividualFileResults () {
+            const indFileResults = this.threadResults.map((result) => {
                   return {
                         fileName: result.SRC_FILE,
                         totalSurvivingMutants: this.threadResults.filter((resultFilter) =>
                               resultFilter.SRC_FILE === result.SRC_FILE).length,
                         allGeneratedMutationsForFile: this.inputNodes.filter((inputNodes) => {
-                              return basename(inputNodes.parentFilePath) === basename(result.SRC_FILE);
+                              return inputNodes.parentFilePath === result.SRC_FILE_PATH;
                         }).length
                   };
             });
+            return indFileResults.filter((item, index, array) =>
+            index === array.findIndex((el) => el.fileName === item.fileName));
       }
 
       private createWorkerMessagers (individualWorker: ChildProcess) {
