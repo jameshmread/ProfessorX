@@ -10,7 +10,9 @@ export class OutputToJSON {
             const header = {
                 runner: collatedResults.runner,
                 config: collatedResults.runnerConf,
-                duration: collatedResults.duration
+                duration: collatedResults.duration,
+                fileList: collatedResults.fileList,
+                overallScores: collatedResults.overallScores
             };
             const results = collatedResults.results;
             const transformStream = JSONStream.stringify();
