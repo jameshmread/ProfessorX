@@ -35,16 +35,6 @@ describe("Mutation Result Manager", () => {
         testResult = {passed: "0", failed: "2", totalRan: "0", duration: "20"};
     });
 
-    it("ITestResult.passed of 0 should set passed tests to 0", () => {
-        mResultManager.setNumberOfTests(testResult);
-        expect(mutationResult.numberOfPassedTests).to.equal(0);
-    });
-
-    it("ITestResult.failed of 2 should set passed tests to 2", () => {
-        mResultManager.setNumberOfTests(testResult);
-        expect(mutationResult.numberOfFailedTests).to.equal(2);
-    });
-
     it("should get a list of one method when the code contains one", () => {
         const methodNames = mResultManager.getAllMethodNames();
         expect(methodNames.length).to.eql(1);
@@ -95,13 +85,5 @@ describe("Mutation Result Manager", () => {
         );
         const methodNames = mResultManager.getParentMethodBoundsOfMutatedLine(120);
         expect(methodNames).to.eql({pos: 110, end: 198});
-    });
-
-    it("should return true (killed) with failed tests > 0", () => {
-        expect(mResultManager.wasMutantKilled(1)).to.equal(true);
-    });
-
-    it("should return false (survived) with failed tests = 0", () => {
-        expect(mResultManager.wasMutantKilled(0)).to.equal(false);
     });
 });

@@ -14,9 +14,11 @@ import { FileHandler } from "../FileHandler/FileHandler";
 import { MochaTestRunner } from "../mocha-testRunner/Mocha-TestRunner";
 import { Worker } from "../Worker";
 import { Logger } from "../logging/Logger";
-import { Config } from "../../profx.conf";
+import { Config } from "../../DEVCONFIG";
+
 
 export class MultipleNodeMutator {
+
       private mutationResultManager: MutationResultManager;
       private mochaRunner: MochaTestRunner;
       private sourceCodeModifier: SourceCodeModifier;
@@ -54,29 +56,37 @@ export class MultipleNodeMutator {
                   this.mutationResultManager.getCurrentMutationResult().mutationAttemptFailure =
                   new MAttemptFail(
                         this.errorString,
-                        this.currentNode.syntaxType.toString() + " --> " +
+                        this.currentNode.syntaxType.toString() + "  -->  " +
                         mutationOption,
                         this.currentNode
                   );
             } else {
                   this.setSourceCodeInformation(mutationOption);
                   this.createMutatedFiles();
+
                   this.mochaRunner = new MochaTestRunner(ConfigManager.runnerConfig);
-                  await this.mochaRunner.runTests(this.mutationResultManager, this.testFile);
+                  await this.mochaRunner.runTests(this.mutationResultManager, this.testFile)
+                  .then((resolve) =>
+                        {
+                              if (resolve === "survived" || this.errorString.length > 0) {
+                                    this.commitSurvivingMutant();
+                                    this.mutationResultManager.setCurrentMutationResult(void 0);
+                              } else {
+                                    this.commitKilledMutant();
+                              }
+                        });
                   this.cleanFiles();
             }
-            this.mutationResultManager.setCurrentSourceCodeModifierAndSourceObj(this.sourceCodeModifier);
-            this.mutationResultManager.setMutationResultData(this.testFile, this.currentNode);
-            this.mutationResultManager.addMutationResultToList();
       }
-      private setFileInformation () {
-            const fileObject = new FileObject(this.currentNode.parentFilePath,
-                  this.currentNode.associatedTestFilePath);
+
+      private setFileInformation (): void {
+            const fileObject = new FileObject(this.currentNode.parentFilePath, this.currentNode.associatedTestFilePath);
             fileObject.coreNumber = process.pid;
             this.fileHandler = new FileHandler(fileObject);
       }
 
       private createSourceCodeModifier (): boolean {
+            this.errorString = "";
             try {
                   this.sourceCodeModifier =
                   new SourceCodeModifier(new SourceObject(this.fileHandler.getSourceObject()));
@@ -89,18 +99,31 @@ export class MultipleNodeMutator {
             }
       }
 
-      private setSourceCodeInformation (mutationOptions: string) {
+      private commitSurvivingMutant (): void {
+            this.mutationResultManager.setCurrentSourceCodeModifierAndSourceObj(
+                  this.sourceCodeModifier);
+            this.mutationResultManager.setMutationResultData(this.testFile, this.currentNode);
+            this.mutationResultManager.addMutationResultToList();
+      }
+
+      private commitKilledMutant (): void {
+            this.mutationResultManager.getCurrentMutationResult().mutatedCode = null;
+            this.mutationResultManager.getCurrentMutationResult().origionalCode = null;
+            this.mutationResultManager.addMutationResultToList();
+      }
+
+      private setSourceCodeInformation (mutationOptions: string): void {
             this.sourceCodeModifier.resetModified();
             this.sourceCodeModifier.modifyCode(this.currentNode, mutationOptions);
       }
 
-      private createMutatedFiles () {
+      private createMutatedFiles (): void {
             this.srcFile = this.fileHandler.writeTempSourceModifiedFile(
                   this.sourceCodeModifier.getModifiedSourceCode());
             this.testFile = this.fileHandler.createTempTestModifiedFile();
       }
 
-      private cleanFiles () {
+      private cleanFiles (): void {
             Cleaner.deleteTestFile(this.testFile);
             Cleaner.deleteSourceFile(this.srcFile);
       }

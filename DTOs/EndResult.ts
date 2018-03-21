@@ -7,6 +7,16 @@ export class EndResult {
         public readonly runner: string,
         public readonly runnerConf: Object,
         public readonly duration: IDurationFormat,
+        public readonly fileList: Array<{
+            fileName: string,
+            mutantsSurvived: number,
+            totalMutationsOnFile: number
+        }>,
+        public readonly overallScores: {
+            totalKilledMutants: number,
+            totalSurvivingMutants: number,
+            mutationScore: number
+        },
         public readonly results: Array<MutationResult>
     ){}
 }

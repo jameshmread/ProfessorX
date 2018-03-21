@@ -11,6 +11,8 @@ import { Cleaner } from "../cleanup/Cleaner";
 import { MathFunctions } from "../maths/MathFunctions";
 import { OutputToJSON } from "../outputResults/OutputToJSON";
 import { Logger } from "../logging/Logger";
+import { IMutationResult } from "../../interfaces/IMutationResult";
+import { basename } from "path";
 
 process.on("SIGINT", () => {
       Logger.fatal("User Pressed Ctrl + C: SIGINT Caught. Program ending.");
@@ -24,14 +26,14 @@ export class Supervisor {
       public startTimestamp: number;
       public logicalCores: number;
       public workers: Array<ChildProcess> = new Array<ChildProcess>();
-      public nodes: Array<Array<IMutatableNode>>;
-      public threadResults = [];
+      public splitNodes: Array<Array<IMutatableNode>>;
+      public threadResults: Array<IMutationResult> = [];
 
-      constructor (nodes: Array<IMutatableNode>) {
+      constructor (private inputNodes: Array<IMutatableNode>) {
             this.logicalCores = os.cpus().length;
             this.startTimestamp = new Date().getTime();
             Logger.log("Splitting nodes among workers");
-            this.nodes = MathFunctions.divideItemsAmongArrays(nodes, this.logicalCores);
+            this.splitNodes = MathFunctions.divideItemsAmongArrays(inputNodes, this.logicalCores);
       }
 
       public spawnWorkers () {
@@ -39,8 +41,23 @@ export class Supervisor {
                   this.workers.push(worker.fork("./src/Worker.ts", [], {}));
                   Logger.info("Creating Worker: ", i);
                   this.createWorkerMessagers(this.workers[i]);
-                  this.workers[i].send(JSON.stringify(this.nodes[i]));
+                  this.workers[i].send(JSON.stringify(this.splitNodes[i]));
             }
+      }
+
+      public getIndividualFileResults () {
+            const indFileResults = this.threadResults.map((result) => {
+                  return {
+                        fileName: result.SRC_FILE,
+                        mutantsSurvived: this.threadResults.filter((resultFilter) =>
+                              resultFilter.SRC_FILE === result.SRC_FILE && resultFilter.mutatedCode !== null).length,
+                        totalMutationsOnFile: this.threadResults.filter((allResults) => {
+                              return allResults.SRC_FILE === result.SRC_FILE;
+                        }).length
+                  };
+            });
+            return indFileResults.filter((item, index, array) =>
+            index === array.findIndex((el) => el.fileName === item.fileName));
       }
 
       private createWorkerMessagers (individualWorker: ChildProcess) {
@@ -80,10 +97,32 @@ export class Supervisor {
                   ConfigManager.testRunner,
                   ConfigManager.runnerConfig,
                   timeTaken,
+                  this.getIndividualFileResults(),
+                  this.getOverallMutationScore(),
                   this.threadResults
             );
             Logger.dumpLogToConsole();
+            console.log("number of input nodes", this.inputNodes.length);
+            console.log("");
+            console.log("end result", endResult.fileList);
             OutputToJSON.writeResults(endResult);
             Cleaner.cleanRemainingFiles();
-        }
+      }
+
+      private getOverallMutationScore () {
+            const mutationsPerformed = this.threadResults.length;
+            const survivingMutants = this.getIndividualFileResults()
+                  .map((item) => item.mutantsSurvived).reduce((accumulator, current) => accumulator += current);
+            const numberOfKilledOrErrored = mutationsPerformed - survivingMutants;
+            return {
+                  totalKilledMutants: numberOfKilledOrErrored,
+                  totalSurvivingMutants: survivingMutants,
+                  mutationScore: this.calculateMutationScore(
+                        numberOfKilledOrErrored, mutationsPerformed)
+            };
+      }
+
+      private calculateMutationScore (killed: number, total: number): number {
+            return Number((killed / total * 100).toFixed(2));
+      }
 }
