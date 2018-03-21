@@ -50,9 +50,9 @@ export class Supervisor {
                   return {
                         fileName: result.SRC_FILE,
                         mutantsSurvived: this.threadResults.filter((resultFilter) =>
-                              resultFilter.SRC_FILE === result.SRC_FILE).length,
-                        totalMutationsOnFile: this.inputNodes.filter((inputNodes) => {
-                              return inputNodes.parentFilePath === result.SRC_FILE_PATH;
+                              resultFilter.SRC_FILE === result.SRC_FILE && resultFilter.mutatedCode !== null).length,
+                        totalMutationsOnFile: this.threadResults.filter((allResults) => {
+                              return allResults.SRC_FILE === result.SRC_FILE;
                         }).length
                   };
             });
@@ -102,6 +102,7 @@ export class Supervisor {
                   this.threadResults
             );
             Logger.dumpLogToConsole();
+            console.log("number of input nodes", this.inputNodes.length);
             console.log("");
             console.log("end result", endResult.fileList);
             OutputToJSON.writeResults(endResult);
@@ -109,8 +110,9 @@ export class Supervisor {
       }
 
       private getOverallMutationScore () {
-            const mutationsPerformed = this.inputNodes.length;
-            const survivingMutants = this.threadResults.length;
+            const mutationsPerformed = this.threadResults.length;
+            const survivingMutants = this.getIndividualFileResults()
+                  .map((item) => item.mutantsSurvived).reduce((accumulator, current) => accumulator += current);
             const numberOfKilledOrErrored = mutationsPerformed - survivingMutants;
             return {
                   totalKilledMutants: numberOfKilledOrErrored,
