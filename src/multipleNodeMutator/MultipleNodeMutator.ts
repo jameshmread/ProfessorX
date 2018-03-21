@@ -18,6 +18,7 @@ import { Config } from "../../DEVCONFIG";
 
 
 export class MultipleNodeMutator {
+
       private mutationResultManager: MutationResultManager;
       private mochaRunner: MochaTestRunner;
       private sourceCodeModifier: SourceCodeModifier;
@@ -55,7 +56,7 @@ export class MultipleNodeMutator {
                   this.mutationResultManager.getCurrentMutationResult().mutationAttemptFailure =
                   new MAttemptFail(
                         this.errorString,
-                        this.currentNode.syntaxType.toString() + " --> " +
+                        this.currentNode.syntaxType.toString() + "  -->  " +
                         mutationOption,
                         this.currentNode
                   );
@@ -68,17 +69,18 @@ export class MultipleNodeMutator {
                   .then((resolve) =>
                         {
                               if (resolve === "survived" || this.errorString.length > 0) {
-                                    this.commitMutationToList();
+                                    this.commitSurvivingMutant();
                                     this.mutationResultManager.setCurrentMutationResult(void 0);
+                              } else {
+                                    this.commitKilledMutant();
                               }
                         });
                   this.cleanFiles();
             }
       }
 
-      private setFileInformation () {
-            const fileObject = new FileObject(this.currentNode.parentFilePath,
-                  this.currentNode.associatedTestFilePath);
+      private setFileInformation (): void {
+            const fileObject = new FileObject(this.currentNode.parentFilePath, this.currentNode.associatedTestFilePath);
             fileObject.coreNumber = process.pid;
             this.fileHandler = new FileHandler(fileObject);
       }
@@ -97,25 +99,31 @@ export class MultipleNodeMutator {
             }
       }
 
-      private commitMutationToList () {
+      private commitSurvivingMutant (): void {
             this.mutationResultManager.setCurrentSourceCodeModifierAndSourceObj(
                   this.sourceCodeModifier);
             this.mutationResultManager.setMutationResultData(this.testFile, this.currentNode);
             this.mutationResultManager.addMutationResultToList();
       }
 
-      private setSourceCodeInformation (mutationOptions: string) {
+      private commitKilledMutant (): void {
+            this.mutationResultManager.getCurrentMutationResult().mutatedCode = null;
+            this.mutationResultManager.getCurrentMutationResult().origionalCode = null;
+            this.mutationResultManager.addMutationResultToList();
+      }
+
+      private setSourceCodeInformation (mutationOptions: string): void {
             this.sourceCodeModifier.resetModified();
             this.sourceCodeModifier.modifyCode(this.currentNode, mutationOptions);
       }
 
-      private createMutatedFiles () {
+      private createMutatedFiles (): void {
             this.srcFile = this.fileHandler.writeTempSourceModifiedFile(
                   this.sourceCodeModifier.getModifiedSourceCode());
             this.testFile = this.fileHandler.createTempTestModifiedFile();
       }
 
-      private cleanFiles () {
+      private cleanFiles (): void {
             Cleaner.deleteTestFile(this.testFile);
             Cleaner.deleteSourceFile(this.srcFile);
       }
