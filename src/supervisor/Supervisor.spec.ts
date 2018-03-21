@@ -39,8 +39,8 @@ describe("Supervisor", () => {
         sup.threadResults = [threadResultsFileOne];
         expect(sup.getIndividualFileResults()).to.eql([{
             fileName: "FileOne.ts",
-            totalSurvivingMutants: 1,
-            allGeneratedMutationsForFile: 1
+            mutantsSurvived: 1,
+            totalMutationsOnFile: 1
         }]);
     });
 
@@ -50,8 +50,8 @@ describe("Supervisor", () => {
         sup.threadResults = [threadResultsFileOne, threadResultsFileOne];
         expect(sup.getIndividualFileResults()).to.eql([{
             fileName: "FileOne.ts",
-            totalSurvivingMutants: 2,
-            allGeneratedMutationsForFile: 2
+            mutantsSurvived: 2,
+            totalMutationsOnFile: 2
         }]);
     });
 
@@ -61,12 +61,12 @@ describe("Supervisor", () => {
         sup.threadResults = [threadResultsFileOne, threadResultsFileTwo];
         expect(sup.getIndividualFileResults()).to.eql([{
             fileName: "FileOne.ts",
-            totalSurvivingMutants: 1,
-            allGeneratedMutationsForFile: 1
+            mutantsSurvived: 1,
+            totalMutationsOnFile: 1
         }, {
             fileName: "FileTwo.ts",
-            totalSurvivingMutants: 1,
-            allGeneratedMutationsForFile: 1
+            mutantsSurvived: 1,
+            totalMutationsOnFile: 1
         }]);
     });
 });

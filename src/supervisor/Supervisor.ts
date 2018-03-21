@@ -49,9 +49,9 @@ export class Supervisor {
             const indFileResults = this.threadResults.map((result) => {
                   return {
                         fileName: result.SRC_FILE,
-                        totalSurvivingMutants: this.threadResults.filter((resultFilter) =>
+                        mutantsSurvived: this.threadResults.filter((resultFilter) =>
                               resultFilter.SRC_FILE === result.SRC_FILE).length,
-                        allGeneratedMutationsForFile: this.inputNodes.filter((inputNodes) => {
+                        totalMutationsOnFile: this.inputNodes.filter((inputNodes) => {
                               return inputNodes.parentFilePath === result.SRC_FILE_PATH;
                         }).length
                   };
