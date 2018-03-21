@@ -5,8 +5,8 @@ export interface IMutationResult {
     SRC_FILE: string;
 
     testFilePath: string;
-    origionalCode: Array<{ lineText: string, lineNumber: number }> = [];
-    mutatedCode: Array<{ lineText: string, lineNumber: number }> = [];
+    origionalCode: Array<{ lineText: string, lineNumber: number }>;
+    mutatedCode: Array<{ lineText: string, lineNumber: number }>;
 
     mutationAttemptFailure: IMutationAttemptFailure;
 
