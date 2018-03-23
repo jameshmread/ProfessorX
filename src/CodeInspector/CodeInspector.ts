@@ -1,6 +1,5 @@
 import { Node, SourceFile, SyntaxKind } from "typescript";
 import { ValidMutationRules } from "./ValidMutationRules";
-import { Logger } from "../logging/Logger";
 
 export class CodeInspector {
     private static retrievedObjects: Array<Node> = [];

@@ -34,10 +34,7 @@ export class MutationResultManager {
         this.currentSourceCodeObject = sourceCodeModifier.getOriginalSourceObject();
     }
 
-    public setMutationResultData (
-        testFile: string,
-        currentNode: IMutatableNode
-    ) {
+    public setMutationResultData (testFile: string, currentNode: IMutatableNode) {
         this.setTestFile(testFile);
         try {
             const methodBounds = this.getParentMethodBoundsOfMutatedLine(currentNode.positions.pos);
