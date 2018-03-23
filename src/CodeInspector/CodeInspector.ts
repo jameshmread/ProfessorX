@@ -1,5 +1,6 @@
 import { Node, SourceFile, SyntaxKind } from "typescript";
 import { ValidMutationRules } from "./ValidMutationRules";
+import { Logger } from "../logging/Logger";
 
 export class CodeInspector {
     private static retrievedObjects: Array<Node> = [];
@@ -8,6 +9,7 @@ export class CodeInspector {
     public static isNodeMutatable (node: Node): boolean {
         const mutationRules = new ValidMutationRules();
         mutationRules.setNodeFamily(node);
+        if (mutationRules.nodeFamily === void 0) { return false; }
         return mutationRules.traverseRuleTree(ValidMutationRules.RULE_TREE, 0);
     }
 
