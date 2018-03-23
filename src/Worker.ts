@@ -8,7 +8,16 @@ process.on("exit", () => {
       process.exit(0);
 });
 
+process.on("SIGINT", () => {
+      Logger.fatal("User Pressed Ctrl + C: SIGINT Caught by worker. Sending supervisor completed mutation results");
+      Logger.log("Sending files to supervisor");
+      Logger.fatal("User ended program");
+      Worker.sendResults();
+      process.exit(0);
+});
+
 import { MultipleNodeMutator } from "./multipleNodeMutator/MultipleNodeMutator";
+import { Logger } from "./logging/Logger";
 
 export class Worker {
       public static workerResults = [];
@@ -19,10 +28,14 @@ export class Worker {
             this.multiNodeMutator = new MultipleNodeMutator();
       }
 
-      public async execute () {
-            await this.mutateAllNodes();
+      public static sendResults () {
             Worker.workerResults = [].concat.apply([], Worker.workerResults);
             process.send(Worker.workerResults);
+      }
+
+      public async execute () {
+            await this.mutateAllNodes();
+            Worker.sendResults();
       }
 
       private async mutateAllNodes () {

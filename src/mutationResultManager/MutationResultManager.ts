@@ -7,10 +7,12 @@ import { MutationResult } from "../../DTOs/MutationResult";
 import { SourceCodeModifier } from "../sourceCodeModifier/SourceCodeModifier";
 import { CodeInspector } from "../CodeInspector/CodeInspector";
 import { Logger } from "../logging/Logger";
+import { MAttemptFail } from "../../DTOs/MAttemptFail";
 
 export class MutationResultManager {
 
     public static mutationResults = new Array<MutationResult>();
+
     private currentMutationResult: MutationResult;
     private sourceCodeModifier: SourceCodeModifier;
     private currentSourceCodeObject: ts.SourceFile;
@@ -32,17 +34,22 @@ export class MutationResultManager {
         this.currentSourceCodeObject = sourceCodeModifier.getOriginalSourceObject();
     }
 
-    public setMutationResultData (
-        testFile: string,
-        currentNode: IMutatableNode
-    ) {
+    public setMutationResultData (testFile: string, currentNode: IMutatableNode) {
         this.setTestFile(testFile);
-        const methodBounds = this.getParentMethodBoundsOfMutatedLine(currentNode.positions.pos);
-
-        this.setSourceCodeLines(
-            {origional: this.sourceCodeModifier.getOriginalSourceCode(),
-                mutated: this.sourceCodeModifier.getModifiedSourceCode()},
-                methodBounds);
+        try {
+            const methodBounds = this.getParentMethodBoundsOfMutatedLine(currentNode.positions.pos);
+            this.setSourceCodeLines(
+                {origional: this.sourceCodeModifier.getOriginalSourceCode(),
+                    mutated: this.sourceCodeModifier.getModifiedSourceCode()},
+                    methodBounds);
+        } catch (err) {
+            this.currentMutationResult.mutationAttemptFailure = new MAttemptFail(
+                `The current nodes 'Start' and 'End' positions were undefined.
+                Or the method bounds for these positions could not be determined`,
+                currentNode.plainText + "-->",
+                currentNode
+            );
+        }
     }
 
     public setTestFile (filename: string): void {
@@ -52,14 +59,10 @@ export class MutationResultManager {
     public setSourceCodeLines (
         code: {origional: string, mutated: string},
         bounds: {pos: number, end: number}): void {
-        try {
             const methodStartLine = ts.getLineAndCharacterOfPosition(this.currentSourceCodeObject, bounds.pos).line;
             const methodEndLine = ts.getLineAndCharacterOfPosition(this.currentSourceCodeObject, bounds.end).line;
             this.setOrigionalCode(code.origional, {start: methodStartLine, end: methodEndLine});
             this.setMutatedCode(code.mutated, {start: methodStartLine, end: methodEndLine});
-        } catch (error) {
-            Logger.fatal("Mutation result Manager could not set source code lines", error);
-        }
     }
 
     public getParentMethodBoundsOfMutatedLine (characterOfMutation: number) {

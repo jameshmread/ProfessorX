@@ -8,6 +8,7 @@ export class CodeInspector {
     public static isNodeMutatable (node: Node): boolean {
         const mutationRules = new ValidMutationRules();
         mutationRules.setNodeFamily(node);
+        if (mutationRules.nodeFamily === void 0) { return false; }
         return mutationRules.traverseRuleTree(ValidMutationRules.RULE_TREE, 0);
     }
 

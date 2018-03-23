@@ -28,6 +28,7 @@ export class Supervisor {
       public workers: Array<ChildProcess> = new Array<ChildProcess>();
       public splitNodes: Array<Array<IMutatableNode>>;
       public threadResults: Array<IMutationResult> = [];
+      public individualFileResults = [];
 
       constructor (private inputNodes: Array<IMutatableNode>) {
             this.logicalCores = os.cpus().length;
@@ -92,12 +93,13 @@ export class Supervisor {
             );
             Logger.info("Mutations Complete in: ", timeTaken);
             Logger.info("Number of mutations produced: ", this.threadResults.length);
-
+            console.log("Creating End Result");
+            this.individualFileResults = this.getIndividualFileResults();
             const endResult = new EndResult(
                   ConfigManager.testRunner,
                   ConfigManager.runnerConfig,
                   timeTaken,
-                  this.getIndividualFileResults(),
+                  this.individualFileResults,
                   this.getOverallMutationScore(),
                   this.threadResults
             );
@@ -105,7 +107,9 @@ export class Supervisor {
             console.log("number of input nodes", this.inputNodes.length);
             console.log("");
             console.log("end result", endResult.fileList);
+            console.log("Writing results");
             OutputToJSON.writeResults(endResult);
+            console.log("Results written");
             Cleaner.cleanRemainingFiles();
       }
 
