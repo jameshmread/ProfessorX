@@ -21,6 +21,9 @@ export class ValidMutationRules {
             },
             [SyntaxKind.ParenthesizedExpression]: {
                   [SyntaxKind.PropertyAccessExpression]: false
+            },
+            [SyntaxKind.NumericLiteral]: {
+                  [SyntaxKind.VoidExpression]: false
             }
       };
       public nodeFamily: Array<SyntaxKind>;
@@ -39,18 +42,18 @@ export class ValidMutationRules {
       }
 
       public setNodeFamily (node: Node) {
-            if (node.getChildAt(2) === null) {
-                  this.nodeFamily = [
-                        node.kind,
-                        node.parent.kind,
-                        node.parent.getChildAt(0).kind
-                  ];
-            } else {
+            if (node.parent.getChildCount() === 3) {
                   this.nodeFamily = [
                         node.kind,
                         node.parent.kind,
                         node.parent.getChildAt(0).kind,
                         node.parent.getChildAt(2).kind
+                  ];
+            } else {
+                  this.nodeFamily = [
+                        node.kind,
+                        node.parent.kind,
+                        node.parent.getChildAt(0).kind
                   ];
             }
       }
