@@ -28,4 +28,8 @@ export class MathFunctions {
         h = h % 24;
         return { d, h, m, s, ms };
     }
+
+    public static calculatePercentage (fraction: number, total: number): number {
+        return Number((fraction / total * 100).toFixed(2));
+    }
 }
