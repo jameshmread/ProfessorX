@@ -81,7 +81,11 @@ export class ConfigManager {
     }
 
     private static readfileDirectory (file: string): Array<string> {
-        return fs.readdirSync(file);
+        if (fs.statSync(file).isDirectory()) {
+            return fs.readdirSync(file);
+        } else {
+            return [];
+        }
     }
 
     private static isTypescriptFile (fileName: string): boolean {
