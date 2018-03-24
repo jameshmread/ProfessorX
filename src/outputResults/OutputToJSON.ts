@@ -11,7 +11,7 @@ export class OutputToJSON {
                 runner: collatedResults.runner,
                 config: collatedResults.runnerConf,
                 duration: collatedResults.duration,
-                fileList: collatedResults.fileList,
+                scoresPerFile: collatedResults.mutationScoresPerFile,
                 overallScores: collatedResults.overallScores
             };
             const results = collatedResults.results;
