@@ -29,7 +29,7 @@ export class MultipleNodeMutator {
       private errorString: string;
 
       constructor () {
-            const configManager = new ConfigManager(Config.CONFIG);
+            const configManager = new ConfigManager(Config.NEST);
             // CANNOT import from ProffessorX main class as this recursivley restarts the program
             // will need to wait till commandline instansiation is implemented
             this.mutationResultManager = new MutationResultManager();
@@ -70,10 +70,12 @@ export class MultipleNodeMutator {
                         {
                               if (resolve === "survived" || this.errorString.length > 0) {
                                     this.commitSurvivingMutant();
-                                    this.mutationResultManager.setCurrentMutationResult(void 0);
-                              } else {
+                              } else if (resolve === "killed" || this.errorString.length > 0) {
                                     this.commitKilledMutant();
+                              } else {
+                                    this.commitErroredMutant("Mocha Errored.");
                               }
+                              this.mutationResultManager.setCurrentMutationResult(void 0);
                         });
                   this.cleanFiles();
             }
@@ -107,8 +109,13 @@ export class MultipleNodeMutator {
       }
 
       private commitKilledMutant (): void {
-            this.mutationResultManager.getCurrentMutationResult().mutatedCode = null;
-            this.mutationResultManager.getCurrentMutationResult().origionalCode = null;
+            this.mutationResultManager.addMutationResultToList();
+      }
+
+      private commitErroredMutant (errorReason: string) : void {
+            this.mutationResultManager.setMutationResultData(this.testFile, this.currentNode);
+            this.mutationResultManager.getCurrentMutationResult().mutationAttemptFailure =
+            new MAttemptFail("Mutant Errored Due to: " + errorReason, "Unknown", this.currentNode);
             this.mutationResultManager.addMutationResultToList();
       }
 
