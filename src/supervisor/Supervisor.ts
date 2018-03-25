@@ -72,6 +72,23 @@ export class Supervisor {
             return filesMutated;
       }
 
+      public getOverallMutationScore () {
+            const mutationsPerformed = this.individualFileResults.totalMutationsForEach
+                  .reduce((accumulator, current) => accumulator += current);
+            console.log("mutationsPerformed", mutationsPerformed);
+            const survivingMutants = this.individualFileResults.mutantsSurvivedForEach
+            .reduce((accumulator, current) => accumulator += current);
+            console.log("surviving mutants", survivingMutants);
+            const numberOfKilledOrErrored = mutationsPerformed - survivingMutants;
+            console.log("killed OR errored", numberOfKilledOrErrored);
+            return {
+                  totalKilledMutants: numberOfKilledOrErrored,
+                  totalSurvivingMutants: survivingMutants,
+                  mutationScore: MathFunctions.calculatePercentage(
+                        numberOfKilledOrErrored, mutationsPerformed)
+            };
+      }
+
       private createWorkerMessagers (individualWorker: ChildProcess) {
             individualWorker.on("error", (err) => {
                   Logger.fatal("Worker Error: ", err);
@@ -114,27 +131,12 @@ export class Supervisor {
                   this.getOverallMutationScore(),
                   this.threadResults
             );
-            Logger.dumpLogToConsole();
-            console.log("number of input nodes", this.inputNodes.length);
+            // Logger.dumpLogToConsole();
             console.log("");
-            console.log("end result", endResult.mutationScoresPerFile);
+            console.log("end result", endResult.overallScores);
             console.log("Writing results");
             OutputToJSON.writeResults(endResult);
             console.log("Results written");
             Cleaner.cleanRemainingFiles();
-      }
-
-      private getOverallMutationScore () {
-            const mutationsPerformed = this.individualFileResults.totalMutationsForEach
-                  .reduce((accumulator, current) => accumulator += current);
-            const survivingMutants = this.individualFileResults.mutantsSurvivedForEach
-                  .reduce((accumulator, current) => accumulator += current);
-            const numberOfKilledOrErrored = mutationsPerformed - survivingMutants;
-            return {
-                  totalKilledMutants: numberOfKilledOrErrored,
-                  totalSurvivingMutants: survivingMutants,
-                  mutationScore: MathFunctions.calculatePercentage(
-                        numberOfKilledOrErrored, mutationsPerformed)
-            };
       }
 }
