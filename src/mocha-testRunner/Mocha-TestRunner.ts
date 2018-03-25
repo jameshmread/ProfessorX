@@ -16,15 +16,15 @@ export class MochaTestRunner {
         this.mocha.addFile(testFile);
         let runner = null;
         return new Promise((resolve, reject) => {
-        try{
-            runner = this.mocha.run(() => {
-                if (runner.stats.failures < 1) {
-                    resolve("survived");
-                } else { resolve("killed"); }});
-        } catch (error) {
-            Logger.fatal("Mocha Runner Failed. Status:", runner);
-            reject();
-        }
+            try {
+                runner = this.mocha.run(() => {
+                    if (runner.stats.failures < 1) {
+                        resolve("survived");
+                    } else { resolve("killed"); }});
+            } catch (error) {
+                Logger.fatal("Mocha Runner Failed. Status:", error);
+                resolve("error");
+            }
         });
     }
 }

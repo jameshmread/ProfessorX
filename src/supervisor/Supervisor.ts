@@ -13,6 +13,7 @@ import { OutputToJSON } from "../outputResults/OutputToJSON";
 import { Logger } from "../logging/Logger";
 import { IMutationResult } from "../../interfaces/IMutationResult";
 import { basename } from "path";
+import { IMutationScoresPerFile } from "../../interfaces/IMutationScoresPerFile";
 
 process.on("SIGINT", () => {
       Logger.fatal("User Pressed Ctrl + C: SIGINT Caught. Program ending.");
@@ -28,7 +29,7 @@ export class Supervisor {
       public workers: Array<ChildProcess> = new Array<ChildProcess>();
       public splitNodes: Array<Array<IMutatableNode>>;
       public threadResults: Array<IMutationResult> = [];
-      public individualFileResults = [];
+      public individualFileResults: IMutationScoresPerFile;
 
       constructor (private inputNodes: Array<IMutatableNode>) {
             this.logicalCores = os.cpus().length;
@@ -47,18 +48,45 @@ export class Supervisor {
       }
 
       public getIndividualFileResults () {
-            const indFileResults = this.threadResults.map((result) => {
-                  return {
-                        fileName: result.SRC_FILE,
-                        mutantsSurvived: this.threadResults.filter((resultFilter) =>
-                              resultFilter.SRC_FILE === result.SRC_FILE && resultFilter.mutatedCode !== null).length,
-                        totalMutationsOnFile: this.threadResults.filter((allResults) => {
-                              return allResults.SRC_FILE === result.SRC_FILE;
-                        }).length
-                  };
+            const filesMutated: IMutationScoresPerFile = {
+                  files: ConfigManager.filesToMutate,
+                  mutantsSurvivedForEach: [],
+                  totalMutationsForEach: []
+            };
+            filesMutated.files.forEach((file) => {
+                  filesMutated.mutantsSurvivedForEach.push(0);
+                  filesMutated.totalMutationsForEach.push(0);
             });
-            return indFileResults.filter((item, index, array) =>
-            index === array.findIndex((el) => el.fileName === item.fileName));
+
+            this.threadResults.forEach((item, index) => {
+                  console.log("Completing Summary: " +
+                  MathFunctions.calculatePercentage(index, this.threadResults.length) + " %");
+                  const indexOfSRCFile = ConfigManager.filesToMutate.indexOf(item.SRC_FILE);
+                  if (indexOfSRCFile >= 0) {
+                        filesMutated.totalMutationsForEach[indexOfSRCFile] ++;
+                  }
+                  if (item.mutatedCode !== null) {
+                        filesMutated.mutantsSurvivedForEach[indexOfSRCFile] ++;
+                  }
+            });
+            return filesMutated;
+      }
+
+      public getOverallMutationScore () {
+            const mutationsPerformed = this.individualFileResults.totalMutationsForEach
+                  .reduce((accumulator, current) => accumulator += current);
+            console.log("mutationsPerformed", mutationsPerformed);
+            const survivingMutants = this.individualFileResults.mutantsSurvivedForEach
+            .reduce((accumulator, current) => accumulator += current);
+            console.log("surviving mutants", survivingMutants);
+            const numberOfKilledOrErrored = mutationsPerformed - survivingMutants;
+            console.log("killed OR errored", numberOfKilledOrErrored);
+            return {
+                  totalKilledMutants: numberOfKilledOrErrored,
+                  totalSurvivingMutants: survivingMutants,
+                  mutationScore: MathFunctions.calculatePercentage(
+                        numberOfKilledOrErrored, mutationsPerformed)
+            };
       }
 
       private createWorkerMessagers (individualWorker: ChildProcess) {
@@ -103,30 +131,12 @@ export class Supervisor {
                   this.getOverallMutationScore(),
                   this.threadResults
             );
-            Logger.dumpLogToConsole();
-            console.log("number of input nodes", this.inputNodes.length);
+            // Logger.dumpLogToConsole();
             console.log("");
-            console.log("end result", endResult.fileList);
+            console.log("end result", endResult.overallScores);
             console.log("Writing results");
             OutputToJSON.writeResults(endResult);
             console.log("Results written");
             Cleaner.cleanRemainingFiles();
-      }
-
-      private getOverallMutationScore () {
-            const mutationsPerformed = this.threadResults.length;
-            const survivingMutants = this.getIndividualFileResults()
-                  .map((item) => item.mutantsSurvived).reduce((accumulator, current) => accumulator += current);
-            const numberOfKilledOrErrored = mutationsPerformed - survivingMutants;
-            return {
-                  totalKilledMutants: numberOfKilledOrErrored,
-                  totalSurvivingMutants: survivingMutants,
-                  mutationScore: this.calculateMutationScore(
-                        numberOfKilledOrErrored, mutationsPerformed)
-            };
-      }
-
-      private calculateMutationScore (killed: number, total: number): number {
-            return Number((killed / total * 100).toFixed(2));
       }
 }
