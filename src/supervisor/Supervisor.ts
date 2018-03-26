@@ -12,8 +12,8 @@ import { MathFunctions } from "../maths/MathFunctions";
 import { OutputToJSON } from "../outputResults/OutputToJSON";
 import { Logger } from "../logging/Logger";
 import { IMutationResult } from "../../interfaces/IMutationResult";
-import { basename } from "path";
 import { IMutationScoresPerFile } from "../../interfaces/IMutationScoresPerFile";
+import { setTimeout } from "timers";
 
 process.on("SIGINT", () => {
       Logger.fatal("User Pressed Ctrl + C: SIGINT Caught. Program ending.");
@@ -30,6 +30,7 @@ export class Supervisor {
       public splitNodes: Array<Array<IMutatableNode>>;
       public threadResults: Array<IMutationResult> = [];
       public individualFileResults: IMutationScoresPerFile;
+      public progressBar;
 
       constructor (private inputNodes: Array<IMutatableNode>) {
             this.logicalCores = os.cpus().length;
@@ -48,6 +49,10 @@ export class Supervisor {
       }
 
       public getIndividualFileResults () {
+            // const bar = this.createProgressBar("Completing Summary [:bar] :percent :etas");
+            // "Generating and Executing Mutants [:bar] :percent :etas"
+            this.createProgressBar("Generating Summary:              |:bar| :percent | Time Elapsed :elapsed");
+
             const filesMutated: IMutationScoresPerFile = {
                   files: ConfigManager.filesToMutate,
                   mutantsSurvivedForEach: [],
@@ -59,8 +64,6 @@ export class Supervisor {
             });
 
             this.threadResults.forEach((item, index) => {
-                  console.log("Completing Summary: " +
-                  MathFunctions.calculatePercentage(index, this.threadResults.length) + " %");
                   const indexOfSRCFile = ConfigManager.filesToMutate.indexOf(item.SRC_FILE);
                   if (indexOfSRCFile >= 0) {
                         filesMutated.totalMutationsForEach[indexOfSRCFile] ++;
@@ -68,6 +71,7 @@ export class Supervisor {
                   if (item.mutatedCode !== null) {
                         filesMutated.mutantsSurvivedForEach[indexOfSRCFile] ++;
                   }
+                  this.progressBar.tick(1);
             });
             return filesMutated;
       }
@@ -75,10 +79,10 @@ export class Supervisor {
       public getOverallMutationScore () {
             const mutationsPerformed = this.individualFileResults.totalMutationsForEach
                   .reduce((accumulator, current) => accumulator += current);
-            console.log("mutationsPerformed", mutationsPerformed);
+            console.log("Mutations Performed", mutationsPerformed);
             const survivingMutants = this.individualFileResults.mutantsSurvivedForEach
             .reduce((accumulator, current) => accumulator += current);
-            console.log("surviving mutants", survivingMutants);
+            console.log("Surviving mutants", survivingMutants);
             const numberOfKilledOrErrored = mutationsPerformed - survivingMutants;
             console.log("killed OR errored", numberOfKilledOrErrored);
             return {
@@ -96,6 +100,11 @@ export class Supervisor {
             individualWorker.on("exit", (exit) => {
                   Logger.info("Worker Exit: ", exit);
             });
+            // individualWorker.on("tick", (exit) => {
+            //       this.mutationProgressBar.tick(
+            //             MathFunctions.calculatePercentage(
+            //                   this.numberOfMutantsExecuted++, this.inputNodes.length) / 100);
+            // });
             individualWorker.on("message", (data) => {
                   this.collateResults(data);
                   Logger.info("Worker Complete", individualWorker.pid);
@@ -131,12 +140,26 @@ export class Supervisor {
                   this.getOverallMutationScore(),
                   this.threadResults
             );
-            // Logger.dumpLogToConsole();
-            console.log("");
             console.log("end result", endResult.overallScores);
             console.log("Writing results");
             OutputToJSON.writeResults(endResult);
             console.log("Results written");
             Cleaner.cleanRemainingFiles();
+      }
+
+
+      private createProgressBar (barFormat: string) {
+            const green = "\u001b[42m \u001b[0m";
+            const red = "\u001b[41m \u001b[0m";
+            const ProgressBar = require("node-progress-3");
+            // only works using require syntax
+            this.progressBar = new ProgressBar({
+                  format: barFormat,
+                  complete: green,
+                  incomplete: red,
+                  total: this.threadResults.length,
+                  width: 60
+            });
+            this.progressBar.onComplete = () => {console.log(""); };
       }
 }
