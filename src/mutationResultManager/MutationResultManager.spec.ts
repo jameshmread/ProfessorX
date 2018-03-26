@@ -86,4 +86,19 @@ describe("Mutation Result Manager", () => {
         const methodNames = mResultManager.getParentMethodBoundsOfMutatedLine(120);
         expect(methodNames).to.eql({pos: 110, end: 198});
     });
+
+    it("should not return undefined when the mutation is on the same line as the function name", () => {
+        // in this function the mutated character is 18 which is the public modifier
+        const singleFunction = `export class hey {
+        public addNumbers (a: number, b: number) {
+            const x = "mutation";
+        }
+        }`;
+        mResultManager.setCurrentSourceCodeModifierAndSourceObj(
+            new SourceCodeModifier(
+                new SourceObject(new SourceObjCreator(singleFunction).sourceFile))
+        );
+        const methodNames = mResultManager.getParentMethodBoundsOfMutatedLine(18);
+        expect(methodNames).to.eql({pos: 13, end: 28});
+    });
 });

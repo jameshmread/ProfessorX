@@ -46,7 +46,7 @@ export class MutationResultManager {
             this.currentMutationResult.mutationAttemptFailure = new MAttemptFail(
                 `The current nodes 'Start' and 'End' positions were undefined.
                 Or the method bounds for these positions could not be determined`,
-                currentNode.plainText + "-->",
+                currentNode.plainText,
                 currentNode
             );
         }
@@ -66,8 +66,13 @@ export class MutationResultManager {
     }
 
     public getParentMethodBoundsOfMutatedLine (characterOfMutation: number) {
-        return this.getAllMethodNames().filter((methods) =>
+        const methodBounds = this.getAllMethodNames().filter((methods) =>
         methods.pos <= characterOfMutation && methods.end >= characterOfMutation)[0];
+        if (methodBounds === void 0) {
+            return {pos: characterOfMutation - 5, end: characterOfMutation + 10};
+        } else {
+            return methodBounds;
+        }
     }
 
     public getAllMethodNames () {
