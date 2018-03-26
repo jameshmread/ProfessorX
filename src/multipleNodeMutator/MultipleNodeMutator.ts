@@ -29,7 +29,7 @@ export class MultipleNodeMutator {
       private errorString: string;
 
       constructor () {
-            const configManager = new ConfigManager(Config.NEST);
+            const configManager = new ConfigManager(Config.SELF);
             // CANNOT import from ProffessorX main class as this recursivley restarts the program
             // will need to wait till commandline instansiation is implemented
             this.mutationResultManager = new MutationResultManager();
@@ -43,6 +43,7 @@ export class MultipleNodeMutator {
             const mutationOptions = MutationFactory.getAllMutations(this.currentNode);
             for (let i = 0; i < mutationOptions.length; i++) {
                   await this.doSingleMutation(mutationOptions[i]);
+                  Worker.tick();
             }
             Worker.workerResults.push(MutationResultManager.mutationResults);
       }
@@ -66,17 +67,16 @@ export class MultipleNodeMutator {
 
                   this.mochaRunner = new MochaTestRunner(ConfigManager.runnerConfig);
                   await this.mochaRunner.runTests(this.mutationResultManager, this.testFile)
-                  .then((resolve) =>
-                        {
-                              if (resolve === "survived" || this.errorString.length > 0) {
-                                    this.commitSurvivingMutant();
-                              } else if (resolve === "killed" || this.errorString.length > 0) {
-                                    this.commitKilledMutant();
-                              } else {
-                                    this.commitErroredMutant("Mocha Errored.");
-                              }
-                              this.mutationResultManager.setCurrentMutationResult(void 0);
-                        });
+                  .then((resolve) => {
+                        if (resolve === "survived" || this.errorString.length > 0) {
+                              this.commitSurvivingMutant();
+                        } else if (resolve === "killed" || this.errorString.length > 0) {
+                              this.commitKilledMutant();
+                        } else {
+                              this.commitErroredMutant("Mocha Errored.");
+                        }
+                        this.mutationResultManager.setCurrentMutationResult(void 0);
+                  });
                   this.cleanFiles();
             }
       }
@@ -117,7 +117,7 @@ export class MultipleNodeMutator {
       private commitErroredMutant (errorReason: string) : void {
             this.mutationResultManager.setMutationResultData(this.testFile, this.currentNode);
             this.mutationResultManager.getCurrentMutationResult().mutationAttemptFailure =
-            new MAttemptFail("Mutant Errored Due to: " + errorReason, "Unknown", this.currentNode);
+            new MAttemptFail("Mutant Errored Due to: " + errorReason, this.currentNode.plainText, this.currentNode);
             this.mutationResultManager.addMutationResultToList();
       }
 

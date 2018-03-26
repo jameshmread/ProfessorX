@@ -33,10 +33,15 @@ export class Worker {
             process.send(Worker.workerResults);
       }
 
+      public static tick () {
+            process.send("tick");
+      }
+
       public async execute () {
             await this.mutateAllNodes();
             Worker.sendResults();
       }
+
 
       private async mutateAllNodes () {
             for (const currentNode of this.nodesToMutate) {

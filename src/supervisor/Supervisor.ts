@@ -30,9 +30,13 @@ export class Supervisor {
       public splitNodes: Array<Array<IMutatableNode>>;
       public threadResults: Array<IMutationResult> = [];
       public individualFileResults: IMutationScoresPerFile;
-      public progressBar;
+      public summaryProgressBar;
+      public mutationProgressBar;
 
       constructor (private inputNodes: Array<IMutatableNode>) {
+            this.mutationProgressBar = this.createProgressBar(
+                  "Generating and Executing Mutants [:bar] :percent | Time elapsed :elapsed",
+                  this.inputNodes.length);
             this.logicalCores = os.cpus().length;
             this.startTimestamp = new Date().getTime();
             Logger.log("Splitting nodes among workers");
@@ -41,7 +45,7 @@ export class Supervisor {
 
       public spawnWorkers () {
             for (let i = 0; i < this.logicalCores; i++) {
-                  this.workers.push(worker.fork("./src/Worker.ts", [], {}));
+                  this.workers.push(worker.fork("./src/Worker.ts", [], {silent: true}));
                   Logger.info("Creating Worker: ", i);
                   this.createWorkerMessagers(this.workers[i]);
                   this.workers[i].send(JSON.stringify(this.splitNodes[i]));
@@ -49,9 +53,9 @@ export class Supervisor {
       }
 
       public getIndividualFileResults () {
-            // const bar = this.createProgressBar("Completing Summary [:bar] :percent :etas");
-            // "Generating and Executing Mutants [:bar] :percent :etas"
-            this.createProgressBar("Generating Summary:              |:bar| :percent | Time Elapsed :elapsed");
+            this.summaryProgressBar =
+            this.createProgressBar("Generating Summary:              |:bar| :percent | Time Elapsed :elapsed",
+            this.threadResults.length);
 
             const filesMutated: IMutationScoresPerFile = {
                   files: ConfigManager.filesToMutate,
@@ -71,7 +75,7 @@ export class Supervisor {
                   if (item.mutatedCode !== null) {
                         filesMutated.mutantsSurvivedForEach[indexOfSRCFile] ++;
                   }
-                  this.progressBar.tick(1);
+                  this.summaryProgressBar.tick(1);
             });
             return filesMutated;
       }
@@ -100,16 +104,15 @@ export class Supervisor {
             individualWorker.on("exit", (exit) => {
                   Logger.info("Worker Exit: ", exit);
             });
-            // individualWorker.on("tick", (exit) => {
-            //       this.mutationProgressBar.tick(
-            //             MathFunctions.calculatePercentage(
-            //                   this.numberOfMutantsExecuted++, this.inputNodes.length) / 100);
-            // });
             individualWorker.on("message", (data) => {
-                  this.collateResults(data);
-                  Logger.info("Worker Complete", individualWorker.pid);
-                  individualWorker.kill();
-                  Logger.info("Worker Killed", individualWorker.pid);
+                  if (data === "tick") {
+                        this.mutationProgressBar.tick(1);
+                  } else {
+                        this.collateResults(data);
+                        Logger.info("Worker Complete", individualWorker.pid);
+                        individualWorker.kill();
+                        Logger.info("Worker Killed", individualWorker.pid);
+                  }
             });
       }
 
@@ -148,18 +151,19 @@ export class Supervisor {
       }
 
 
-      private createProgressBar (barFormat: string) {
+      private createProgressBar (barFormat: string, length: number) {
             const green = "\u001b[42m \u001b[0m";
             const red = "\u001b[41m \u001b[0m";
             const ProgressBar = require("node-progress-3");
             // only works using require syntax
-            this.progressBar = new ProgressBar({
+            const bar = new ProgressBar({
                   format: barFormat,
                   complete: green,
                   incomplete: red,
-                  total: this.threadResults.length,
+                  total: length,
                   width: 60
             });
-            this.progressBar.onComplete = () => {console.log(""); };
+            bar.onComplete = () => {console.log(""); };
+            return bar;
       }
 }
