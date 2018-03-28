@@ -16,6 +16,7 @@
     "chai": "^4.1.2",
     "codelyzer": "^4.2.1",
     "mocha": "^4.1.0",
+    "ts-mockito": "^2.3.0",
     "ts-node": "4.1.0",
     "tslint": "^5.9.1",
     "typings": "^2.1.1"
