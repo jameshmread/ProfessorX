@@ -12,8 +12,8 @@ import { MathFunctions } from "../maths/MathFunctions";
 import { OutputToJSON } from "../outputResults/OutputToJSON";
 import { Logger } from "../logging/Logger";
 import { IMutationResult } from "../../interfaces/IMutationResult";
-import { basename } from "path";
 import { IMutationScoresPerFile } from "../../interfaces/IMutationScoresPerFile";
+import { ProgressDisplay } from "../progressDisplay/ProgressDisplay";
 
 process.on("SIGINT", () => {
       Logger.fatal("User Pressed Ctrl + C: SIGINT Caught. Program ending.");
@@ -30,8 +30,13 @@ export class Supervisor {
       public splitNodes: Array<Array<IMutatableNode>>;
       public threadResults: Array<IMutationResult> = [];
       public individualFileResults: IMutationScoresPerFile;
+      public progressDisplay: ProgressDisplay;
 
       constructor (private inputNodes: Array<IMutatableNode>) {
+            this.progressDisplay = new ProgressDisplay();
+            this.progressDisplay.mutationProgressBar = this.progressDisplay.createProgressBar(
+                  "Generating and Executing Mutants [:bar] :percent | Time elapsed :elapsed",
+                  this.inputNodes.length);
             this.logicalCores = os.cpus().length;
             this.startTimestamp = new Date().getTime();
             Logger.log("Splitting nodes among workers");
@@ -40,7 +45,7 @@ export class Supervisor {
 
       public spawnWorkers () {
             for (let i = 0; i < this.logicalCores; i++) {
-                  this.workers.push(worker.fork("./src/Worker.ts", [], {}));
+                  this.workers.push(worker.fork("./src/Worker.ts", [], {silent: true}));
                   Logger.info("Creating Worker: ", i);
                   this.createWorkerMessagers(this.workers[i]);
                   this.workers[i].send(JSON.stringify(this.splitNodes[i]));
@@ -48,6 +53,10 @@ export class Supervisor {
       }
 
       public getIndividualFileResults () {
+            this.progressDisplay.summaryProgressBar = this.progressDisplay.createProgressBar(
+                  "Generating Summary:              |:bar| :percent | Time Elapsed :elapsed",
+            this.threadResults.length);
+
             const filesMutated: IMutationScoresPerFile = {
                   files: ConfigManager.filesToMutate,
                   mutantsSurvivedForEach: [],
@@ -59,8 +68,6 @@ export class Supervisor {
             });
 
             this.threadResults.forEach((item, index) => {
-                  console.log("Completing Summary: " +
-                  MathFunctions.calculatePercentage(index, this.threadResults.length) + " %");
                   const indexOfSRCFile = ConfigManager.filesToMutate.indexOf(item.SRC_FILE);
                   if (indexOfSRCFile >= 0) {
                         filesMutated.totalMutationsForEach[indexOfSRCFile] ++;
@@ -68,6 +75,7 @@ export class Supervisor {
                   if (item.mutatedCode !== null) {
                         filesMutated.mutantsSurvivedForEach[indexOfSRCFile] ++;
                   }
+                  this.progressDisplay.tickBar(this.progressDisplay.summaryProgressBar);
             });
             return filesMutated;
       }
@@ -75,10 +83,10 @@ export class Supervisor {
       public getOverallMutationScore () {
             const mutationsPerformed = this.individualFileResults.totalMutationsForEach
                   .reduce((accumulator, current) => accumulator += current);
-            console.log("mutationsPerformed", mutationsPerformed);
+            console.log("Mutations Performed", mutationsPerformed);
             const survivingMutants = this.individualFileResults.mutantsSurvivedForEach
             .reduce((accumulator, current) => accumulator += current);
-            console.log("surviving mutants", survivingMutants);
+            console.log("Surviving mutants", survivingMutants);
             const numberOfKilledOrErrored = mutationsPerformed - survivingMutants;
             console.log("killed OR errored", numberOfKilledOrErrored);
             return {
@@ -97,10 +105,14 @@ export class Supervisor {
                   Logger.info("Worker Exit: ", exit);
             });
             individualWorker.on("message", (data) => {
-                  this.collateResults(data);
-                  Logger.info("Worker Complete", individualWorker.pid);
-                  individualWorker.kill();
-                  Logger.info("Worker Killed", individualWorker.pid);
+                  if (data === "tick") {
+                        this.progressDisplay.tickBar(this.progressDisplay.mutationProgressBar);
+                  } else {
+                        this.collateResults(data);
+                        Logger.info("Worker Complete", individualWorker.pid);
+                        individualWorker.kill();
+                        Logger.info("Worker Killed", individualWorker.pid);
+                  }
             });
       }
 
@@ -131,8 +143,6 @@ export class Supervisor {
                   this.getOverallMutationScore(),
                   this.threadResults
             );
-            // Logger.dumpLogToConsole();
-            console.log("");
             console.log("end result", endResult.overallScores);
             console.log("Writing results");
             OutputToJSON.writeResults(endResult);
