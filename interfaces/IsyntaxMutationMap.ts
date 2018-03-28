@@ -1,3 +1,5 @@
+import { IMutationArrayAndClass } from "./IMutationArrayandClass";
+
 export interface IsyntaxMutationMap {
-    [syntaxKind: number]: Array<string>;
+    [syntaxKind: number]: IMutationArrayAndClass;
 }

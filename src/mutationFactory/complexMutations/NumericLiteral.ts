@@ -1,4 +1,6 @@
 import { ComplexMutations } from "./ComplexMutations";
+import { MutationClass } from "../../../enums/MutationClass";
+import { IMutationArrayAndClass } from "../../../interfaces/IMutationArrayandClass";
 
 export class NumericLiteral extends ComplexMutations {
     private number: number;
@@ -7,14 +9,15 @@ export class NumericLiteral extends ComplexMutations {
         this.number = Number(plainText);
     }
 
-    public getComplexMutation (): Array<string> {
+    public getComplexMutation (): IMutationArrayAndClass {
         if (!this.isNodeValidForMutation(this.plainText)) {
-            return [];
+            return {mutations: [], mutationClass: MutationClass.NumericLiteral_ConstantChange};
         }
-        return this.removeDuplicateMutations([
+        const arrayOfMutations = this.removeDuplicateMutations([
             this.addOne(), this.minusOne(), this.multiplyByNegative(),
             this.setToValue(0), this.setToValue(1), this.setToValue(-1)
         ]);
+        return { mutations: arrayOfMutations, mutationClass: MutationClass.NumericLiteral_ConstantChange};
     }
 
     public isNodeValidForMutation (nodeText: string) {

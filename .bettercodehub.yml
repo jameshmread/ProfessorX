@@ -3,5 +3,6 @@ exclude:
   - /testProject/*
   - /testUtilities/*
   - /src/FileHandler/FileHandler.ts
+  - /src/mutationFactory/MutationFactory.ts
 languages: 
   - typescript

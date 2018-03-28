@@ -12,4 +12,5 @@ export interface IMutationResult {
 
     targetNode: string;
     nodeModification: string;
+    mutationType: string;
 }
