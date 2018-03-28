@@ -1,13 +1,9 @@
 export class ProgressDisplay {
 
-    public static mutationProgressBar;
-    public static summaryProgressBar;
+    public mutationProgressBar;
+    public summaryProgressBar;
 
-    constructor () {
-        // ProgressDisplay.createProgressBar();
-    }
-
-    public static createProgressBar (barFormat: string, length: number) {
+    public createProgressBar (barFormat: string, length: number) {
         const green = "\u001b[42m \u001b[0m";
         const red = "\u001b[41m \u001b[0m";
         const ProgressBar = require("node-progress-3");
@@ -23,7 +19,7 @@ export class ProgressDisplay {
         return bar;
     }
 
-    public static tickBar (bar) {
+    public tickBar (bar) {
         bar.tick(1);
     }
 }

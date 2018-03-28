@@ -30,9 +30,11 @@ export class Supervisor {
       public splitNodes: Array<Array<IMutatableNode>>;
       public threadResults: Array<IMutationResult> = [];
       public individualFileResults: IMutationScoresPerFile;
+      public progressDisplay: ProgressDisplay;
 
       constructor (private inputNodes: Array<IMutatableNode>) {
-            ProgressDisplay.mutationProgressBar = ProgressDisplay.createProgressBar(
+            this.progressDisplay = new ProgressDisplay();
+            this.progressDisplay.mutationProgressBar = this.progressDisplay.createProgressBar(
                   "Generating and Executing Mutants [:bar] :percent | Time elapsed :elapsed",
                   this.inputNodes.length);
             this.logicalCores = os.cpus().length;
@@ -51,7 +53,7 @@ export class Supervisor {
       }
 
       public getIndividualFileResults () {
-            ProgressDisplay.summaryProgressBar = ProgressDisplay.createProgressBar(
+            this.progressDisplay.summaryProgressBar = this.progressDisplay.createProgressBar(
                   "Generating Summary:              |:bar| :percent | Time Elapsed :elapsed",
             this.threadResults.length);
 
@@ -73,7 +75,7 @@ export class Supervisor {
                   if (item.mutatedCode !== null) {
                         filesMutated.mutantsSurvivedForEach[indexOfSRCFile] ++;
                   }
-                  ProgressDisplay.tickBar(ProgressDisplay.summaryProgressBar);
+                  this.progressDisplay.tickBar(this.progressDisplay.summaryProgressBar);
             });
             return filesMutated;
       }
@@ -104,7 +106,7 @@ export class Supervisor {
             });
             individualWorker.on("message", (data) => {
                   if (data === "tick") {
-                        ProgressDisplay.tickBar(ProgressDisplay.mutationProgressBar);
+                        this.progressDisplay.tickBar(this.progressDisplay.mutationProgressBar);
                   } else {
                         this.collateResults(data);
                         Logger.info("Worker Complete", individualWorker.pid);
