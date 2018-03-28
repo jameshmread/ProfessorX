@@ -77,6 +77,14 @@ export class MutationFactory {
         return this.syntaxMutationMap[syntaxKind];
     }
 
+    public static getTotalNumberOfMutations (nodes: Array<IMutatableNode>): number {
+        const allMutations = new Array<Array<IMutationArrayAndClass>>();
+        nodes.forEach((node) => {
+            allMutations.push(this.getAllMutations(node));
+        });
+        return [].concat(...allMutations).length;
+    }
+
     private static getComplexMutations (node: IMutatableNode): Array<IMutationArrayAndClass> {
         const numbLitteral = new NumericLiteral(node.plainText);
         const parentheses = new ParenthesesModifier(node.plainText);
