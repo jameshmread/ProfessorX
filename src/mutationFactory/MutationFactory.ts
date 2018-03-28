@@ -19,17 +19,23 @@ export class MutationFactory {
         [SyntaxKind.GreaterThanToken]: ["<", "<=", ">=", "!==", "-", "+", "*", "/"],
         [SyntaxKind.PlusToken]: ["-", "/", "*"],
         [SyntaxKind.MinusToken]: ["+", "/", "*"],
-        [SyntaxKind.AsteriskToken]: ["/ ", "<", "<=", ">=", "!==", "-", "+", ">"],
+        [SyntaxKind.AsteriskToken]: ["/", "<", "<=", ">=", "!==", "-", "+", ">"],
         [SyntaxKind.PercentToken]: ["<", "<=", ">=", "!==", "-", "+", ">", "*", "/"],
         [SyntaxKind.PlusPlusToken]: ["--"],
         [SyntaxKind.MinusMinusToken]: ["++"],
         [SyntaxKind.BarBarToken]: ["&&"],
         [SyntaxKind.TrueKeyword]: ["false"],
         [SyntaxKind.FalseKeyword]: ["true"],
-        [SyntaxKind.Block]: ["{}"],
+        [SyntaxKind.Block]: [
+            `{
+
+            }`, `{
+                return null;
+            }`
+        ],
         [SyntaxKind.PrivateKeyword]: ["protected"],
         [SyntaxKind.ProtectedKeyword]: ["private"],
-        [SyntaxKind.ReturnStatement]: ["return null"]
+        [SyntaxKind.ReturnStatement]: ["return null;"]
     };
 
     public static getSingleMutation (syntaxKind: SyntaxKind): string {
