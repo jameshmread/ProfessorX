@@ -23,7 +23,7 @@ export class MochaTestRunner {
                     } else { resolve("killed"); }});
             } catch (error) {
                 Logger.fatal("Mocha Runner Failed. Status:", {
-                    runnerError: error, resultManager: mResultManager, currentTestFile: testFile);
+                    runnerError: error, resultManager: mResultManager, currentTestFile: testFile});
                 resolve("error");
             }
         });
