@@ -22,7 +22,8 @@ export class MochaTestRunner {
                         resolve("survived");
                     } else { resolve("killed"); }});
             } catch (error) {
-                Logger.fatal("Mocha Runner Failed. Status:", error);
+                Logger.fatal("Mocha Runner Failed. Status:", {
+                    runnerError: error, resultManager: mResultManager, currentTestFile: testFile);
                 resolve("error");
             }
         });
