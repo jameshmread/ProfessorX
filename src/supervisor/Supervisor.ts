@@ -14,6 +14,7 @@ import { Logger } from "../logging/Logger";
 import { IMutationResult } from "../../interfaces/IMutationResult";
 import { IMutationScoresPerFile } from "../../interfaces/IMutationScoresPerFile";
 import { ProgressDisplay } from "../progressDisplay/ProgressDisplay";
+import { MutationFactory } from "../mutationFactory/MutationFactory";
 
 process.on("SIGINT", () => {
       Logger.fatal("User Pressed Ctrl + C: SIGINT Caught. Program ending.");
@@ -36,7 +37,7 @@ export class Supervisor {
             this.progressDisplay = new ProgressDisplay();
             this.progressDisplay.mutationProgressBar = this.progressDisplay.createProgressBar(
                   "Generating and Executing Mutants [:bar] :percent | Time elapsed :elapsed",
-                  this.inputNodes.length);
+                  MutationFactory.getTotalNumberOfMutations(this.inputNodes));
             this.logicalCores = os.cpus().length;
             this.startTimestamp = new Date().getTime();
             Logger.log("Splitting nodes among workers");

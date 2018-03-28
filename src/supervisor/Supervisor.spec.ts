@@ -11,8 +11,8 @@ import { ProgressDisplay } from "../progressDisplay/ProgressDisplay";
 
 describe("Supervisor", () => {
     let sup: Supervisor;
-    const threadResultsFileOne = {
-        SRC_FILE: "FileOne.ts", mutatedCode: [],
+    const threadResultsFileOne: IMutationResult = {
+        SRC_FILE: "FileOne.ts", mutatedCode: [], mutationType: "",
         mutationAttemptFailure: {
             reasonForFailure: "",
             attemptedMutation: "",
@@ -21,8 +21,8 @@ describe("Supervisor", () => {
         origionalCode: [], testFilePath: CreateMutatableNodes.testPath,
         targetNode: "", SRC_FILE_PATH: "/src/FileOne.ts"
     };
-    const threadResultsFileTwo = {
-        SRC_FILE: "FileTwo.ts", mutatedCode: [],
+    const threadResultsFileTwo: IMutationResult = {
+        SRC_FILE: "FileTwo.ts", mutatedCode: [],  mutationType: "",
         mutationAttemptFailure: {
             reasonForFailure: "",
             attemptedMutation: "",
@@ -31,8 +31,8 @@ describe("Supervisor", () => {
         origionalCode: [], testFilePath: CreateMutatableNodes.testPath,
         targetNode: "", SRC_FILE_PATH: "/src/FileTwo.ts"
     };
-    const threadResultsFileThree = {
-        SRC_FILE: "FileThree.ts", mutatedCode: null,
+    const threadResultsFileThree: IMutationResult = {
+        SRC_FILE: "FileThree.ts", mutatedCode: null,  mutationType: "",
         mutationAttemptFailure: {
             reasonForFailure: "",
             attemptedMutation: "",
