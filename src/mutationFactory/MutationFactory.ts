@@ -4,6 +4,7 @@ import { MutationClass } from "../../enums/MutationClass";
 import { NumericLiteral } from "./complexMutations/NumericLiteral";
 import { IMutatableNode } from "../../interfaces/IMutatableNode";
 import { ParenthesesModifier } from "./complexMutations/ParenthesesModifier";
+import { IMutationArrayAndClass } from "../../interfaces/IMutationArrayandClass";
 
 export class MutationFactory {
 
@@ -16,47 +17,71 @@ export class MutationFactory {
     ];
 
     public static readonly syntaxMutationMap: IsyntaxMutationMap = {
-        [SyntaxKind.GreaterThanToken]: ["<", "<=", ">=", "!==", "-", "+", "*", "/"],
-        [SyntaxKind.PlusToken]: ["-", "/", "*"],
-        [SyntaxKind.MinusToken]: ["+", "/", "*"],
-        [SyntaxKind.AsteriskToken]: ["/", "<", "<=", ">=", "!==", "-", "+", ">"],
-        [SyntaxKind.PercentToken]: ["<", "<=", ">=", "!==", "-", "+", ">", "*", "/"],
-        [SyntaxKind.PlusPlusToken]: ["--"],
-        [SyntaxKind.MinusMinusToken]: ["++"],
-        [SyntaxKind.BarBarToken]: ["&&"],
-        [SyntaxKind.TrueKeyword]: ["false"],
-        [SyntaxKind.FalseKeyword]: ["true"],
-        [SyntaxKind.Block]: [
+        [SyntaxKind.GreaterThanToken]: { mutations: ["<", "<=", ">=", "!==", "-", "+", "*", "/"],
+            mutationClass: MutationClass.Binary_Substitution
+        },
+        [SyntaxKind.PlusToken]: { mutations: ["-", "/", "*"],
+            mutationClass: MutationClass.Binary_Substitution
+        },
+        [SyntaxKind.MinusToken]: { mutations: ["+", "/", "*"],
+            mutationClass: MutationClass.Binary_Substitution
+        },
+        [SyntaxKind.AsteriskToken]: { mutations: ["/", "<", "<=", ">=", "!==", "-", "+", ">"],
+            mutationClass: MutationClass.Binary_Substitution
+        },
+        [SyntaxKind.PercentToken]: { mutations: ["<", "<=", ">=", "!==", "-", "+", ">", "*", "/"],
+            mutationClass: MutationClass.Binary_Substitution
+        },
+        [SyntaxKind.PlusPlusToken]: { mutations: ["--"],
+            mutationClass: MutationClass.Binary_Substitution
+        },
+        [SyntaxKind.MinusMinusToken]: { mutations: ["++"],
+            mutationClass: MutationClass.Binary_Substitution
+        },
+        [SyntaxKind.BarBarToken]: { mutations: ["&&"],
+            mutationClass: MutationClass.Binary_Substitution
+        },
+        [SyntaxKind.TrueKeyword]: { mutations: ["false"],
+            mutationClass: MutationClass.Binary_Substitution
+        },
+        [SyntaxKind.FalseKeyword]: { mutations: ["true"],
+            mutationClass: MutationClass.Binary_Substitution
+        },
+        [SyntaxKind.Block]: { mutations: [
             `{
 
             }`, `{
                 return null;
-            }`
-        ],
-        [SyntaxKind.PrivateKeyword]: ["protected"],
-        [SyntaxKind.ProtectedKeyword]: ["private"],
-        [SyntaxKind.ReturnStatement]: ["return null;"]
+            }`],
+            mutationClass: MutationClass.Block_Null
+        },
+        [SyntaxKind.PrivateKeyword]: { mutations: ["protected"],
+            mutationClass: MutationClass.Binary_Substitution
+        },
+        [SyntaxKind.ProtectedKeyword]: { mutations: ["private"],
+            mutationClass: MutationClass.Binary_Substitution
+        },
+        [SyntaxKind.ReturnStatement]: { mutations: ["return null;"],
+            mutationClass: MutationClass.Binary_Substitution
+        }
     };
 
-    public static getSingleMutation (syntaxKind: SyntaxKind): string {
-        return this.syntaxMutationMap[syntaxKind][0];
+    public static getAllMutations (node: IMutatableNode): Array<IMutationArrayAndClass> {
+        return [].concat(...[this.getMultipleMutations(node.syntaxType), this.getComplexMutations(node)]);
     }
 
-    public static getAllMutations (node: IMutatableNode): Array<string> {
-        return this.getMultipleMutations(node.syntaxType).concat(this.getComplexMutations(node));
-    }
-
-    public static getMultipleMutations (syntaxKind: SyntaxKind): Array<string> {
+    public static getMultipleMutations (syntaxKind: SyntaxKind): IMutationArrayAndClass {
         if (this.syntaxMutationMap[syntaxKind] === void 0) {
-            return [];
+            return {mutations: [], mutationClass: "No Simple Mutations Found for this Syntax Kind"};
         }
         return this.syntaxMutationMap[syntaxKind];
     }
 
-    private static getComplexMutations (node: IMutatableNode): Array<string> {
+    private static getComplexMutations (node: IMutatableNode): Array<IMutationArrayAndClass> {
         const numbLitteral = new NumericLiteral(node.plainText);
         const parentheses = new ParenthesesModifier(node.plainText);
-        return numbLitteral.getComplexMutation()
-        .concat(parentheses.getComplexMutation());
+        return [
+            numbLitteral.getComplexMutation(),
+            parentheses.getComplexMutation()];
     }
 }
