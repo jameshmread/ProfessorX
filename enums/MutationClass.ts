@@ -1,6 +1,7 @@
 export enum MutationClass {
     NumericLiteral_ConstantChange = "Modification of Numeric Literal",
-    EmptyBlock = "Remove all content from a block of code",
+    Block_Empty = "Remove all content from a block of code",
+    Block_Null = "Remove all content from a block of code and replace with null",
     Binary_Substitution = "Replacing one Binary Operator with another",
     Boolean_Substitution = "Inverting a Boolean",
     MethodVisibility_Modifier = "Changing the scope / visibility of a method",
