@@ -13,6 +13,7 @@ import { OutputToJSON } from "../outputResults/OutputToJSON";
 import { Logger } from "../logging/Logger";
 import { IMutationResult } from "../../interfaces/IMutationResult";
 import { IMutationScoresPerFile } from "../../interfaces/IMutationScoresPerFile";
+import { ProgressDisplay } from "../progressDisplay/ProgressDisplay";
 
 process.on("SIGINT", () => {
       Logger.fatal("User Pressed Ctrl + C: SIGINT Caught. Program ending.");
@@ -29,11 +30,9 @@ export class Supervisor {
       public splitNodes: Array<Array<IMutatableNode>>;
       public threadResults: Array<IMutationResult> = [];
       public individualFileResults: IMutationScoresPerFile;
-      public summaryProgressBar;
-      public mutationProgressBar;
 
       constructor (private inputNodes: Array<IMutatableNode>) {
-            this.mutationProgressBar = this.createProgressBar(
+            ProgressDisplay.mutationProgressBar = ProgressDisplay.createProgressBar(
                   "Generating and Executing Mutants [:bar] :percent | Time elapsed :elapsed",
                   this.inputNodes.length);
             this.logicalCores = os.cpus().length;
@@ -52,8 +51,8 @@ export class Supervisor {
       }
 
       public getIndividualFileResults () {
-            this.summaryProgressBar =
-            this.createProgressBar("Generating Summary:              |:bar| :percent | Time Elapsed :elapsed",
+            ProgressDisplay.summaryProgressBar = ProgressDisplay.createProgressBar(
+                  "Generating Summary:              |:bar| :percent | Time Elapsed :elapsed",
             this.threadResults.length);
 
             const filesMutated: IMutationScoresPerFile = {
@@ -74,7 +73,7 @@ export class Supervisor {
                   if (item.mutatedCode !== null) {
                         filesMutated.mutantsSurvivedForEach[indexOfSRCFile] ++;
                   }
-                  this.summaryProgressBar.tick(1);
+                  ProgressDisplay.tickBar(ProgressDisplay.summaryProgressBar);
             });
             return filesMutated;
       }
@@ -105,7 +104,7 @@ export class Supervisor {
             });
             individualWorker.on("message", (data) => {
                   if (data === "tick") {
-                        this.mutationProgressBar.tick(1);
+                        ProgressDisplay.tickBar(ProgressDisplay.mutationProgressBar);
                   } else {
                         this.collateResults(data);
                         Logger.info("Worker Complete", individualWorker.pid);
@@ -147,22 +146,5 @@ export class Supervisor {
             OutputToJSON.writeResults(endResult);
             console.log("Results written");
             Cleaner.cleanRemainingFiles();
-      }
-
-
-      private createProgressBar (barFormat: string, length: number) {
-            const green = "\u001b[42m \u001b[0m";
-            const red = "\u001b[41m \u001b[0m";
-            const ProgressBar = require("node-progress-3");
-            // only works using require syntax
-            const bar = new ProgressBar({
-                  format: barFormat,
-                  complete: green,
-                  incomplete: red,
-                  total: length,
-                  width: 60
-            });
-            bar.onComplete = () => {console.log(""); };
-            return bar;
       }
 }
