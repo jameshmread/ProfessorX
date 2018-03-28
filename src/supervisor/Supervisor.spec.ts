@@ -1,10 +1,13 @@
 import { expect } from "chai";
+import { mock, when, anyString, anyNumber, verify, instance } from "ts-mockito";
+
 import { Supervisor } from "./Supervisor";
 import { MutatableNode } from "../../DTOs/MutatableNode";
 import { CreateMutatableNodes } from "../../testUtilities/CreateMutatableNodes";
 import { IMutationResult } from "../../interfaces/IMutationResult";
 import { IMutationScoresPerFile } from "../../interfaces/IMutationScoresPerFile";
 import { ConfigManager } from "../configManager/ConfigManager";
+import { ProgressDisplay } from "../progressDisplay/ProgressDisplay";
 
 describe("Supervisor", () => {
     let sup: Supervisor;
@@ -48,6 +51,7 @@ describe("Supervisor", () => {
     beforeEach(() => {
         sup = new Supervisor([fileOneMutatableNode]);
         ConfigManager.filesToMutate = [];
+        mockOutProgressDisplay(sup);
     });
 
     it("should return one file with a count of surviving + all mutations", () => {
@@ -64,6 +68,7 @@ describe("Supervisor", () => {
         ConfigManager.filesToMutate = ["FileOne.ts"];
         sup = new Supervisor(
             [fileOneMutatableNode, fileOneMutatableNode]);
+        mockOutProgressDisplay(sup);
         sup.threadResults = [threadResultsFileOne, threadResultsFileOne];
         expect(sup.getIndividualFileResults()).to.eql({
             files: ["FileOne.ts"],
@@ -76,6 +81,7 @@ describe("Supervisor", () => {
     all mutations when given 2 different results`, () => {
         ConfigManager.filesToMutate = ["FileOne.ts", "FileTwo.ts"];
         sup = new Supervisor([fileOneMutatableNode, fileTwoMutatableNode]);
+        mockOutProgressDisplay(sup);
         sup.threadResults = [threadResultsFileOne, threadResultsFileTwo];
         expect(sup.getIndividualFileResults()).to.eql({
             files: ["FileOne.ts", "FileTwo.ts"],
@@ -89,6 +95,7 @@ describe("Supervisor", () => {
         ConfigManager.filesToMutate = ["FileOne.ts", "FileTwo.ts", "FileThree.ts"];
         sup = new Supervisor([fileOneMutatableNode, fileTwoMutatableNode, fileThreeMutatableNode]);
         sup.threadResults = [threadResultsFileOne, threadResultsFileTwo, threadResultsFileOne, threadResultsFileThree];
+        mockOutProgressDisplay(sup);
         expect(sup.getIndividualFileResults()).to.eql({
             files: ["FileOne.ts", "FileTwo.ts", "FileThree.ts"],
             mutantsSurvivedForEach: [2, 1, 0],
@@ -176,3 +183,10 @@ describe("Supervisor", () => {
         });
     });
 });
+
+function mockOutProgressDisplay (sup: Supervisor) {
+    const progressDisplayMock = mock(ProgressDisplay);
+    const progressDisplayInstance = instance(progressDisplayMock);
+    sup.progressDisplay = progressDisplayInstance;
+    when(progressDisplayMock.createProgressBar(anyString(), anyNumber())).thenReturn(void 0);
+}
