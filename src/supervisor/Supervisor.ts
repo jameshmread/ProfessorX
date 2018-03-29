@@ -36,7 +36,7 @@ export class Supervisor {
       constructor (private inputNodes: Array<IMutatableNode>) {
             this.progressDisplay = new ProgressDisplay();
             this.progressDisplay.mutationProgressBar = this.progressDisplay.createProgressBar(
-                  "Generating and Executing Mutants [:bar] :percent | Time elapsed :elapsed",
+                  "Generating and Executing Mutants |:bar| :percent | Time elapsed :elapsed",
                   MutationFactory.getTotalNumberOfMutations(this.inputNodes));
             this.logicalCores = os.cpus().length;
             this.startTimestamp = new Date().getTime();
