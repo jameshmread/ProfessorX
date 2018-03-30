@@ -47,7 +47,9 @@ export class MultipleNodeMutator {
                   Worker.tick();
             }
             Worker.workerResults.push(MutationResultManager.mutationResults);
+            MutationResultManager.mutationResults = [];
       }
+
       private async doSingleMutation (mutationOptions: IMutationArrayAndClass) {
             for (let i = 0; i < mutationOptions.mutations.length; i++) {
                   this.mutationResultManager.setCurrentMutationResult(
