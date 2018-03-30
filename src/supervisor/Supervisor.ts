@@ -34,14 +34,14 @@ export class Supervisor {
       public progressDisplay: ProgressDisplay;
 
       constructor (private inputNodes: Array<IMutatableNode>) {
-            this.progressDisplay = new ProgressDisplay();
-            this.progressDisplay.mutationProgressBar = this.progressDisplay.createProgressBar(
-                  "Generating and Executing Mutants |:bar| :percent | Time elapsed :elapsed",
-                  MutationFactory.getTotalNumberOfMutations(this.inputNodes));
+            this.createMutationProgressBar();
             this.logicalCores = os.cpus().length;
             this.startTimestamp = new Date().getTime();
             Logger.log("Splitting nodes among workers");
             this.splitNodes = MathFunctions.divideItemsAmongArrays(inputNodes, this.logicalCores);
+            if (this.splitNodes.length < this.logicalCores) {
+                  this.logicalCores = this.splitNodes.length;
+            }
       }
 
       public spawnWorkers () {
@@ -149,5 +149,12 @@ export class Supervisor {
             OutputToJSON.writeResults(endResult);
             console.log("Results written");
             Cleaner.cleanRemainingFiles();
+      }
+
+      private createMutationProgressBar () {
+            this.progressDisplay = new ProgressDisplay();
+            this.progressDisplay.mutationProgressBar = this.progressDisplay.createProgressBar(
+                  "Generating and Executing Mutants |:bar| :percent | Time elapsed :elapsed",
+                  MutationFactory.getTotalNumberOfMutations(this.inputNodes));
       }
 }
