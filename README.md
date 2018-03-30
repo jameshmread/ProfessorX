@@ -19,10 +19,14 @@ A Typescript Mutation Testing program designed to give an indication to the qual
 <h3> Using the Professor X Configuration File </h3>
 
 - **filePath** `string`
-  - The relative path from the **configuration file** location to the target project directory root.
+  - The relative file path from this config file to the root of the **source** file directory.
+- **testFilePath** `string`
+  - The relative file path from this config file to the root of the **test** file directory.
+- **testFileExtension** `string`
+  - The file extension which is on all tests in the project. (e.g. a test file called `HelloWorld.spec.ts` would give the **testFileExtension** of `.spec`
 - **mutateAllFiles** `boolean`
-  - True: All files found in the **filePath** root directory will be included. `filesToSkip` will remove selected files.
-  - False: Uses the `filesToMutate` section. Ignores `filesToSkip`.
+  - `True`: All files found in the **filePath** root directory will be included. All directories and files from this root will also be recursively included. `filesToSkip` will remove selected files from the list.
+  - `False`: Uses the `filesToMutate` section. Ignores `filesToSkip`.
 - **filesToMutate** `Array<string>`
   - A list of files in the `filePath` directory to be targeted by the mutation tester.
 - **filesToSkip** `Array<string>`
@@ -42,15 +46,13 @@ A Typescript Mutation Testing program designed to give an indication to the qual
 
 ```Typescript
 export class Config {
-    public static readonly CONFIG = {
+        public static readonly CONFIG = {
         filePath: "./testProject/src/",
+        testFilePath: "./testProject/src/",
+        testFileExtension: ".spec",
         mutateAllFiles: false,
-        filesToMutate: [
-            "HelloWorld.ts",
-            "FileTwo.ts",
-            "SkipMe.ts"
-        ],
-        filesToSkip: ["SkipMe.ts"],
+        filesToMutate: ["HelloWorld.ts"],
+        filesToSkip: ["FileTwo.ts"],
         testRunner: "mocha",
         runnerConfig: {
             reporter: "dot"
