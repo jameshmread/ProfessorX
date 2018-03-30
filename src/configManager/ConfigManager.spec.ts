@@ -37,8 +37,8 @@ describe("Config manager", () => {
     it("should return the filesToMutate when mutate files is true, ignoring filesToSkip", () => {
         config.getFilesToMutate();
         const actual = ConfigManager.filesToMutate;
-        const expected = [resolve(ConfigManager.filePath, "FileTwo.ts"),
-        resolve(ConfigManager.filePath, "HelloWorld.ts")];
+        const expected = [resolve(ConfigManager.filePath, "HelloWorld.ts"),
+        resolve(ConfigManager.filePath, "FileTwo.ts")];
         expect(actual).to.eql(expected);
     });
 
