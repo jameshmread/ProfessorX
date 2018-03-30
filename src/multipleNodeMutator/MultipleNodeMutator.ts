@@ -44,10 +44,12 @@ export class MultipleNodeMutator {
             const mutationOptions = MutationFactory.getAllMutations(this.currentNode);
             for (let i = 0; i < mutationOptions.length; i++) {
                   await this.doSingleMutation(mutationOptions[i]);
-                  Worker.tick(); // This may need to move somewhere
+                  Worker.tick();
             }
             Worker.workerResults.push(MutationResultManager.mutationResults);
+            MutationResultManager.mutationResults = [];
       }
+
       private async doSingleMutation (mutationOptions: IMutationArrayAndClass) {
             for (let i = 0; i < mutationOptions.mutations.length; i++) {
                   this.mutationResultManager.setCurrentMutationResult(
@@ -63,7 +65,10 @@ export class MultipleNodeMutator {
                               this.currentNode
                         );
                   } else {
-                        this.setSourceCodeInformation(mutationOptions.mutations[i]);
+                        if (!this.setSourceCodeInformation(mutationOptions.mutations[i])) {
+                              this.mutationResultManager.setCurrentMutationResult(void 0);
+                              return;
+                        }
                         this.createMutatedFiles();
 
                         this.mochaRunner = new MochaTestRunner(ConfigManager.runnerConfig);
@@ -123,9 +128,9 @@ export class MultipleNodeMutator {
             this.mutationResultManager.addMutationResultToList();
       }
 
-      private setSourceCodeInformation (mutation: string): void {
+      private setSourceCodeInformation (mutation: string): boolean {
             this.sourceCodeModifier.resetModified();
-            this.sourceCodeModifier.modifyCode(this.currentNode, mutation);
+            return this.sourceCodeModifier.modifyCode(this.currentNode, mutation);
       }
 
       private createMutatedFiles (): void {

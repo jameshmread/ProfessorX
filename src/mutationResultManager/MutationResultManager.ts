@@ -26,7 +26,9 @@ export class MutationResultManager {
     }
 
     public addMutationResultToList (): void {
-        MutationResultManager.mutationResults.push(this.currentMutationResult);
+        if (MutationResultManager.mutationResults.indexOf(this.currentMutationResult) < 0) {
+            MutationResultManager.mutationResults.push(this.currentMutationResult);
+        }
     }
 
     public setCurrentSourceCodeModifierAndSourceObj (sourceCodeModifier: SourceCodeModifier) {

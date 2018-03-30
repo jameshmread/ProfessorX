@@ -33,36 +33,34 @@ export class MutationFactory {
             mutationClass: MutationClass.Binary_Substitution
         },
         [SyntaxKind.PlusPlusToken]: { mutations: ["--"],
-            mutationClass: MutationClass.Binary_Substitution
+            mutationClass: MutationClass.Unary_Substitution
         },
         [SyntaxKind.MinusMinusToken]: { mutations: ["++"],
-            mutationClass: MutationClass.Binary_Substitution
+            mutationClass: MutationClass.Unary_Substitution
         },
         [SyntaxKind.BarBarToken]: { mutations: ["&&"],
-            mutationClass: MutationClass.Binary_Substitution
+            mutationClass: MutationClass.LogicalOperator_Substitution
         },
         [SyntaxKind.TrueKeyword]: { mutations: ["false"],
-            mutationClass: MutationClass.Binary_Substitution
+            mutationClass: MutationClass.Boolean_Substitution
         },
         [SyntaxKind.FalseKeyword]: { mutations: ["true"],
-            mutationClass: MutationClass.Binary_Substitution
+            mutationClass: MutationClass.Boolean_Substitution
         },
         [SyntaxKind.Block]: { mutations: [
             `{
 
-            }`, `{
-                return null;
             }`],
-            mutationClass: MutationClass.Block_Null
+            mutationClass: MutationClass.Block_Empty
         },
         [SyntaxKind.PrivateKeyword]: { mutations: ["protected"],
-            mutationClass: MutationClass.Binary_Substitution
+            mutationClass: MutationClass.MethodVisibility_Modifier
         },
         [SyntaxKind.ProtectedKeyword]: { mutations: ["private"],
-            mutationClass: MutationClass.Binary_Substitution
+            mutationClass: MutationClass.MethodVisibility_Modifier
         },
         [SyntaxKind.ReturnStatement]: { mutations: ["return null;"],
-            mutationClass: MutationClass.Binary_Substitution
+            mutationClass: MutationClass.Return_Null
         }
     };
 

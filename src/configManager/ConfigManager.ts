@@ -61,6 +61,7 @@ export class ConfigManager {
                     ConfigManager.filterFilesToMutateBySkipped())
         );
         }
+        this.orderSourceAndTestFiles();
     }
 
     public configValid () {
@@ -119,5 +120,18 @@ export class ConfigManager {
             }
         });
         return this.projectFilesRetrieved;
+    }
+
+    private orderSourceAndTestFiles () {
+        ConfigManager.filesToMutate = ConfigManager.filesToMutate.sort((a, b) => {
+            if (basename(a) >= basename(b)) {
+                return -1;
+            } else { return 1; }
+        });
+        ConfigManager.testFiles = ConfigManager.testFiles.sort((a, b) => {
+            if (basename(a) >= basename(b)) {
+                return -1;
+            } else { return 1; }
+        });
     }
 }

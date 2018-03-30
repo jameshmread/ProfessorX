@@ -18,13 +18,14 @@ process.on("SIGINT", () => {
 
 import { MultipleNodeMutator } from "./multipleNodeMutator/MultipleNodeMutator";
 import { Logger } from "./logging/Logger";
+import { IMutatableNode } from "../interfaces/IMutatableNode";
 
 export class Worker {
       public static workerResults = [];
 
       public multiNodeMutator: MultipleNodeMutator;
 
-      constructor (public nodesToMutate) {
+      constructor (public nodesToMutate: Array<IMutatableNode>) {
             this.multiNodeMutator = new MultipleNodeMutator();
       }
 

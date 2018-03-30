@@ -5,7 +5,6 @@ import { FileObject } from "../../DTOs/FileObject";
 import { Logger } from "../logging/Logger";
 import { FileExtensions } from "../../enums/FileExtensions";
 import { ConfigManager } from "../configManager/ConfigManager";
-import { resolve } from "path";
 
 export class FileHandler {
 

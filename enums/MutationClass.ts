@@ -4,6 +4,7 @@ export enum MutationClass {
     Block_Null = "Remove all content from a block of code and replace with null",
     Binary_Substitution = "Replacing one Binary Operator with another",
     Boolean_Substitution = "Inverting a Boolean",
+    LogicalOperator_Substitution = "Replacing one Logical operator with another",
     MethodVisibility_Modifier = "Changing the scope / visibility of a method",
     Unary_Substitution = "Replacing one Unary Operator with another",
     Parenthesis_Removal = "Removal of Parenthesis in a statement",

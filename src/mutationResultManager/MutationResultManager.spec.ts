@@ -6,10 +6,13 @@ import { MutationResult } from "../../DTOs/MutationResult";
 import { SourceCodeModifier } from "../sourceCodeModifier/SourceCodeModifier";
 import { SourceObjCreator } from "../../testUtilities/SourceObjCreator";
 import { SourceObject } from "../../DTOs/SourceObject";
+import { CreateMutatableNodes } from "../../testUtilities/CreateMutatableNodes";
+import { IMutatableNode } from "../../interfaces/IMutatableNode";
 
 describe("Mutation Result Manager", () => {
     let mutationResult: MutationResult;
     let mResultManager: MutationResultManager;
+    let mutatableNode: IMutatableNode;
     const origionalCode = `export class HelloWorld {
         public addNumbers (a: number, b: number) {
             return a + b;
@@ -30,7 +33,8 @@ describe("Mutation Result Manager", () => {
             new SourceCodeModifier(
                 new SourceObject(new SourceObjCreator(origionalCode).sourceFile))
             );
-        mutationResult = new MutationResult("./TestPath", "SourceFileName.ts");
+        mutatableNode = CreateMutatableNodes.createMutatableNodes(1)[0];
+        mutationResult = new MutationResult(mutatableNode, {mutations: [""], mutationClass: ""});
         mResultManager.setCurrentMutationResult(mutationResult);
         testResult = {passed: "0", failed: "2", totalRan: "0", duration: "20"};
     });
@@ -38,6 +42,14 @@ describe("Mutation Result Manager", () => {
     it("should get a list of one method when the code contains one", () => {
         const methodNames = mResultManager.getAllMethodNames();
         expect(methodNames.length).to.eql(1);
+    });
+
+    it("should not add a duplicate mutation to the list", () => {
+        const duplicateResult = new MutationResult (mutatableNode, {mutations: [""], mutationClass: ""});
+        MutationResultManager.mutationResults = [duplicateResult];
+        mResultManager.setCurrentMutationResult(duplicateResult);
+        mResultManager.addMutationResultToList();
+        expect(MutationResultManager.mutationResults.length).to.eql(1);
     });
 
     it("should get a list of two methods when the code contains two", () => {
