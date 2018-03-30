@@ -1,6 +1,9 @@
 import { Node, SourceFile, SyntaxKind } from "typescript";
 import { ValidMutationRules } from "./ValidMutationRules";
 
+// Code inspector find objects of syntax kind and find token objects of kind was inspired by:
+// https://www.gitbook.com/book/basarat/typescript/details
+// The functions were origionally written by Michael Michaledes
 export class CodeInspector {
     private static retrievedObjects: Array<Node> = [];
     constructor (private sourceObject: SourceFile) {}
