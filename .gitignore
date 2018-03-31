@@ -8,6 +8,7 @@ testProject/src/*.m.ts
 testProject-Stress
 src/CreateSource.ps1
 DEVCONFIG.ts
+mutationResults/
 
 # compiled output
 /dist
