@@ -38,7 +38,7 @@ export class OutputToJSON {
 
     private static getOutFilePath () {
         const rootName = ConfigManager.filePath.split("/")[1];
-        OutputToJSON.outputfilePath = "./" + rootName + "_" +
+        OutputToJSON.outputfilePath = "./mutationResults/" + rootName + "_" +
         new Date().getDay() + "_" + new Date().getMonth() + "_" + new Date().getFullYear() + "_" +
         new Date().getUTCHours() + "-" + new Date().getUTCMinutes() + "-" + new Date().getUTCSeconds() +
         ".json".toString();
