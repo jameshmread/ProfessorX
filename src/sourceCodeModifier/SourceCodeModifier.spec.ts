@@ -38,4 +38,20 @@ describe("Testing SourceCodeHandler", () => {
         expect(actual).to.equal(expected);
     });
 
+    it("should return true when given two different strings", () => {
+        expect(codeModifier.isModificationDifferentFromSource("Hello", "World")).to.equal(true);
+    });
+
+    it("should return false when given two different strings", () => {
+        expect(codeModifier.isModificationDifferentFromSource("Hello", "Hello")).to.equal(false);
+    });
+
+    it("should return false when given two strings which differ only in whitespace", () => {
+        expect(codeModifier.isModificationDifferentFromSource("Hello ", "Hello")).to.equal(false);
+    });
+
+    it("should return false when given two strings which differ only in whitespace inside a function", () => {
+        expect(codeModifier.isModificationDifferentFromSource("functionName(0)", "functionName( 0)")).to.equal(false);
+    });
+
 });
