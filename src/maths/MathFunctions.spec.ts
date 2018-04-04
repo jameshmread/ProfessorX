@@ -32,4 +32,20 @@ describe("Math functions", () => {
       it("should set runtime to 1,1,0,0,0 when given 90000000 (25 hours)", () => {
             expect(MathFunctions.calculateRunTime(90000000)).to.eql({ d: 1, h: 1, m: 0, s: 0, ms: 0 });
       });
+
+      it("should return 0 when given 0, 0 as input", () => {
+            expect(MathFunctions.calculatePercentage(0, 0)).to.eql(0);
+      });
+
+      it("should return 100 when given 1, 1 as input", () => {
+            expect(MathFunctions.calculatePercentage(1, 1)).to.eql(100);
+      });
+
+      it("should return 50 when given 1, 2 as input", () => {
+            expect(MathFunctions.calculatePercentage(1, 2)).to.eql(50);
+      });
+
+      it("should return 33.33 when given 1, 3 as input", () => {
+            expect(MathFunctions.calculatePercentage(1, 3)).to.eql(33.33);
+      });
 });
