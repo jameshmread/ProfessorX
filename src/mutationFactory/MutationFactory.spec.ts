@@ -27,7 +27,7 @@ describe("Testing MutationFactory", () => {
             },
             {
                 mutationClass: "Modification of Numeric Literal",
-                mutations: ["6", "-6", "0", "1", "-1"]
+                mutations: ["7", "5", "-6", "0", "1", "-1"]
             },
             {
                 mutationClass: "Removal of Parenthesis in a statement",
