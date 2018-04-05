@@ -9,6 +9,7 @@ import { MutationFactory } from "../mutationFactory/MutationFactory";
 import { ConfigManager } from "../configManager/ConfigManager";
 import { FileHandler } from "../FileHandler/FileHandler";
 import { Logger } from "../logging/Logger";
+import { exists, existsSync } from "fs";
 
 export class NodeHandler {
 
@@ -36,8 +37,6 @@ export class NodeHandler {
                     parentFilePath: ConfigManager.filesToMutate[fileNameIndex],
                     plainText: token.getText(),
                     associatedTestFilePath: ConfigManager.testFiles[fileNameIndex]
-                    // for now i can't see a problem doing this, however the test files may be in a different order
-                    // to the source files in some occasions.
                 });
             });
         });
@@ -50,8 +49,8 @@ export class NodeHandler {
             const so = new SourceObject(fh.getSourceObject());
             const ci = new CodeInspector(so.origionalSourceObject);
             NodeHandler.fileDescriptors.push({
-                    fileName: ConfigManager.filesToMutate[i],
-                    fileObject: fo, fileHandler: fh, sourceObject: so, codeInspector: ci
+                fileName: ConfigManager.filesToMutate[i],
+                fileObject: fo, fileHandler: fh, sourceObject: so, codeInspector: ci
             });
         }
         return NodeHandler.fileDescriptors;
