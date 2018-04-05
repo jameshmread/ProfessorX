@@ -34,7 +34,7 @@ export class OutputToJSON {
         });
 
         transformStream.end();
-        outputStream.on("finish", () => {Logger.log("Results Written to Disk"); console.log("Results written");});
+        outputStream.on("finish", () => {Logger.log("Results Written to Disk"); console.log("Results written"); });
     }
 
     private static getOutFilePath () {
