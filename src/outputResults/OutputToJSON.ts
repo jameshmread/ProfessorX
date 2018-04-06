@@ -10,6 +10,7 @@ export class OutputToJSON {
     public static outputfilePath: string;
 
     public static writeResults (collatedResults: EndResult) {
+        console.log("Writing results");
         this.getOutFilePath();
         const header = {
             runner: collatedResults.runner,
@@ -33,7 +34,7 @@ export class OutputToJSON {
         });
 
         transformStream.end();
-        outputStream.on("finish", () => {Logger.log("Results Written to Disk"); });
+        outputStream.on("finish", () => {Logger.log("Results Written to Disk"); console.log("Results written"); });
     }
 
     private static getOutFilePath () {

@@ -8,36 +8,28 @@ import { IMutationResult } from "../../interfaces/IMutationResult";
 import { IMutationScoresPerFile } from "../../interfaces/IMutationScoresPerFile";
 import { ConfigManager } from "../configManager/ConfigManager";
 import { ProgressDisplay } from "../progressDisplay/ProgressDisplay";
+import { OutputToJSON } from "../outputResults/OutputToJSON";
 
 describe("Supervisor", () => {
     let sup: Supervisor;
     const threadResultsFileOne: IMutationResult = {
         SRC_FILE: "FileOne.ts", mutatedCode: [], mutationType: "",
-        mutationAttemptFailure: {
-            reasonForFailure: "",
-            attemptedMutation: "",
-            nodeToBeMutated:
-            CreateMutatableNodes.createMutatableNodes(1)[0]}, nodeModification: "",
+        mutationAttemptFailure: { reasonForFailure: "", attemptedMutation: "",
+            nodeToBeMutated: CreateMutatableNodes.createMutatableNodes(1)[0]}, nodeModification: "",
         origionalCode: [], testFilePath: CreateMutatableNodes.testPath,
         targetNode: "", SRC_FILE_PATH: "/src/FileOne.ts"
     };
     const threadResultsFileTwo: IMutationResult = {
         SRC_FILE: "FileTwo.ts", mutatedCode: [],  mutationType: "",
-        mutationAttemptFailure: {
-            reasonForFailure: "",
-            attemptedMutation: "",
-            nodeToBeMutated:
-            CreateMutatableNodes.createMutatableNodes(1)[0]}, nodeModification: "",
+        mutationAttemptFailure: { reasonForFailure: "", attemptedMutation: "",
+            nodeToBeMutated: CreateMutatableNodes.createMutatableNodes(1)[0]}, nodeModification: "",
         origionalCode: [], testFilePath: CreateMutatableNodes.testPath,
         targetNode: "", SRC_FILE_PATH: "/src/FileTwo.ts"
     };
     const threadResultsFileThree: IMutationResult = {
         SRC_FILE: "FileThree.ts", mutatedCode: null,  mutationType: "",
-        mutationAttemptFailure: {
-            reasonForFailure: "",
-            attemptedMutation: "",
-            nodeToBeMutated:
-            CreateMutatableNodes.createMutatableNodes(1)[0]}, nodeModification: "",
+        mutationAttemptFailure: { reasonForFailure: "", attemptedMutation: "",
+            nodeToBeMutated: CreateMutatableNodes.createMutatableNodes(1)[0]}, nodeModification: "",
         origionalCode: [], testFilePath: CreateMutatableNodes.testPath,
         targetNode: "", SRC_FILE_PATH: "/src/FileThree.ts"
     };
@@ -113,9 +105,7 @@ describe("Supervisor", () => {
             totalMutationsForEach: [0]
         };
         expect(sup.getOverallMutationScore()).to.eql({
-            totalKilledMutants: 0,
-            totalSurvivingMutants: 0,
-            mutationScore: 0
+            totalKilledMutants: 0, totalSurvivingMutants: 0, mutationScore: 0
         });
     });
 
@@ -129,9 +119,7 @@ describe("Supervisor", () => {
             totalMutationsForEach: [1]
         };
         expect(sup.getOverallMutationScore()).to.eql({
-            totalKilledMutants: 1,
-            totalSurvivingMutants: 0,
-            mutationScore: 100
+            totalKilledMutants: 1, totalSurvivingMutants: 0, mutationScore: 100
         });
     });
 
@@ -145,9 +133,7 @@ describe("Supervisor", () => {
             totalMutationsForEach: [2]
         };
         expect(sup.getOverallMutationScore()).to.eql({
-            totalKilledMutants: 1,
-            totalSurvivingMutants: 1,
-            mutationScore: 50
+            totalKilledMutants: 1, totalSurvivingMutants: 1, mutationScore: 50
         });
     });
 
@@ -161,10 +147,18 @@ describe("Supervisor", () => {
             totalMutationsForEach: [10, 10]
         };
         expect(sup.getOverallMutationScore()).to.eql({
-            totalKilledMutants: 20,
-            totalSurvivingMutants: 0,
-            mutationScore: 100
+            totalKilledMutants: 20, totalSurvivingMutants: 0, mutationScore: 100
         });
+    });
+
+    it("should set the time taken to a valid time", () => {
+        ConfigManager.filesToMutate = ["FileOne.ts"];
+        sup = new Supervisor([fileOneMutatableNode, fileOneMutatableNode]);
+        sup.individualFileResults = { files: ["One.ts", "Two.ts", "Three.ts"],
+            mutantsSurvivedForEach: [1, 0, 2], totalMutationsForEach: [1, 2, 2]};
+        sup.startTimestamp = new Date().getTime();
+        sup.finishRun();
+        expect(sup.timeTaken.d).to.be.equal(0);
     });
 
     it("should return the overall mutation score of 40 when given 1, 0, 2 survived and 1, 2, 2 totalmutations", () => {

@@ -32,7 +32,7 @@ export class SourceCodeModifier {
             this.sourceObj.origionalSourceObject.text, this.sourceObj.modifiedSourceCode);
     }
 
-    private isModificationDifferentFromSource (origional: string, modified: string): boolean {
-        return !(origional === modified);
+    public isModificationDifferentFromSource (origional: string, modified: string): boolean {
+        return !(origional.trim() === modified.trim() || origional.split(" ").length !== modified.split(" ").length);
     }
 }

@@ -23,4 +23,9 @@ describe("Parentheses Modifier", () => {
     it("should return true when given nested brackets", () => {
         expect(pMod.isNodeValidForMutation("((3 + 2) + 4)")).to.equal(true);
     });
+
+    it("should return an array of one element with external brackets removed", () => {
+        pMod = new ParenthesesModifier("((3 + 2) + 4)");
+        expect(pMod.getComplexMutation().mutations).to.eql(["(3 + 2) + 4"]);
+    });
 });

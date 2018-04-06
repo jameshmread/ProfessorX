@@ -15,6 +15,7 @@ import { IMutationResult } from "../../interfaces/IMutationResult";
 import { IMutationScoresPerFile } from "../../interfaces/IMutationScoresPerFile";
 import { ProgressDisplay } from "../progressDisplay/ProgressDisplay";
 import { MutationFactory } from "../mutationFactory/MutationFactory";
+import { IDurationFormat } from "../../interfaces/IDurationFormat";
 
 process.on("SIGINT", () => {
       Logger.fatal("User Pressed Ctrl + C: SIGINT Caught. Program ending.");
@@ -33,6 +34,8 @@ export class Supervisor {
       public individualFileResults: IMutationScoresPerFile;
       public progressDisplay: ProgressDisplay;
 
+      public timeTaken: IDurationFormat;
+
       constructor (private inputNodes: Array<IMutatableNode>) {
             this.createMutationProgressBar();
             this.logicalCores = os.cpus().length;
@@ -46,7 +49,7 @@ export class Supervisor {
 
       public spawnWorkers () {
             for (let i = 0; i < this.logicalCores; i++) {
-                  this.workers.push(worker.fork("./src/Worker.ts", [], {silent: true}));
+                  this.workers.push(worker.fork("./src/Worker.ts", [], {silent: false}));
                   Logger.info("Creating Worker: ", i);
                   this.createWorkerMessagers(this.workers[i]);
                   this.workers[i].send(JSON.stringify(this.splitNodes[i]));
@@ -98,6 +101,23 @@ export class Supervisor {
             };
       }
 
+      public finishRun () {
+            this.timeTaken = this.getRunDuration();
+            Logger.info("Number of mutations produced: ", this.threadResults.length);
+            console.log("Creating End Result");
+            this.individualFileResults = this.getIndividualFileResults();
+            const endResult = new EndResult(
+                  ConfigManager.testRunner,
+                  ConfigManager.runnerConfig,
+                  this.timeTaken,
+                  this.individualFileResults,
+                  this.getOverallMutationScore(),
+                  this.threadResults
+            );
+            console.log("end result", endResult.overallScores);
+            return endResult;
+      }
+
       private createWorkerMessagers (individualWorker: ChildProcess) {
             individualWorker.on("error", (err) => {
                   Logger.fatal("Worker Error: ", err);
@@ -122,33 +142,11 @@ export class Supervisor {
             if (this.threadResults.length >= this.logicalCores) {
                   Logger.log("All workers complete");
                   this.threadResults = [].concat.apply([], this.threadResults);
-                  this.finishRun();
+                  const endResult = this.finishRun();
+                  OutputToJSON.writeResults(endResult);
+                  Cleaner.cleanRemainingFiles();
                   return;
             }
-      }
-
-      private finishRun () {
-            const endTimestamp = new Date().getTime();
-            const timeTaken = MathFunctions.calculateRunTime(
-                   new Date(endTimestamp - this.startTimestamp).getTime()
-            );
-            Logger.info("Mutations Complete in: ", timeTaken);
-            Logger.info("Number of mutations produced: ", this.threadResults.length);
-            console.log("Creating End Result");
-            this.individualFileResults = this.getIndividualFileResults();
-            const endResult = new EndResult(
-                  ConfigManager.testRunner,
-                  ConfigManager.runnerConfig,
-                  timeTaken,
-                  this.individualFileResults,
-                  this.getOverallMutationScore(),
-                  this.threadResults
-            );
-            console.log("end result", endResult.overallScores);
-            console.log("Writing results");
-            OutputToJSON.writeResults(endResult);
-            console.log("Results written");
-            Cleaner.cleanRemainingFiles();
       }
 
       private createMutationProgressBar () {
@@ -156,5 +154,14 @@ export class Supervisor {
             this.progressDisplay.mutationProgressBar = this.progressDisplay.createProgressBar(
                   "Generating and Executing Mutants |:bar| :percent | Time elapsed :elapsed",
                   MutationFactory.getTotalNumberOfMutations(this.inputNodes));
+      }
+
+      private getRunDuration (): IDurationFormat {
+            const endTimestamp = new Date().getTime();
+            const timeTaken = MathFunctions.calculateRunTime(
+                   new Date(endTimestamp - this.startTimestamp).getTime()
+            );
+            Logger.info("Mutations Complete in: ", timeTaken);
+            return timeTaken;
       }
 }

@@ -24,22 +24,24 @@ export class NumericLiteral extends ComplexMutations {
         return !isNaN(parseInt(nodeText, 10));
     }
 
-    private addOne (): string {
+    public addOne (): string {
         let boundChangedNumber = this.number;
-        return (boundChangedNumber ++).toString();
+        boundChangedNumber++;
+        return (boundChangedNumber).toString();
     }
 
-    private minusOne (): string {
+    public minusOne (): string {
         let boundChangedNumber = this.number;
-        return (boundChangedNumber--).toString();
+        boundChangedNumber--;
+        return (boundChangedNumber).toString();
     }
 
-    private multiplyByNegative (): string {
+    public multiplyByNegative (): string {
         const negativeNum = this.number;
         return (negativeNum * -1).toString();
     }
 
-    private setToValue (value: number): string {
+    public setToValue (value: number): string {
         let newNumber = this.number;
         return (newNumber = value).toString();
     }
