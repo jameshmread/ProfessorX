@@ -49,7 +49,9 @@ export class Supervisor {
 
       public spawnWorkers () {
             for (let i = 0; i < this.logicalCores; i++) {
-                  this.workers.push(worker.fork("./src/Worker.ts", [], {silent: false}));
+                  this.workers.push(worker.fork("./src/Worker.ts", [], {
+                        // ts claims this is invalid but it is correct
+                        stdio: ["ipc", "ignore", "ignore"] }));
                   Logger.info("Creating Worker: ", i);
                   this.createWorkerMessagers(this.workers[i]);
                   this.workers[i].send(JSON.stringify(this.splitNodes[i]));
