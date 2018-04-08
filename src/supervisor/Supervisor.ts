@@ -38,7 +38,7 @@ export class Supervisor {
 
       constructor (private inputNodes: Array<IMutatableNode>) {
             this.createMutationProgressBar();
-            this.logicalCores = os.cpus().length;
+            this.logicalCores = 10; // os.cpus().length;
             this.startTimestamp = new Date().getTime();
             Logger.log("Splitting nodes among workers");
             this.splitNodes = MathFunctions.divideItemsAmongArrays(inputNodes, this.logicalCores);
@@ -145,7 +145,7 @@ export class Supervisor {
                   Logger.log("All workers complete");
                   this.threadResults = [].concat.apply([], this.threadResults);
                   const endResult = this.finishRun();
-                  OutputToJSON.writeResults(endResult);
+                  // OutputToJSON.writeResults(endResult);
                   Cleaner.cleanRemainingFiles();
                   return;
             }

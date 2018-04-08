@@ -30,7 +30,7 @@ export class MultipleNodeMutator {
       private errorString: string;
 
       constructor () {
-            const configManager = new ConfigManager(Config.CONFIG);
+            const configManager = new ConfigManager(Config.SELF);
             // CANNOT import from ProffessorX main class as this recursivley restarts the program
             // will need to wait till commandline instansiation is implemented
             this.mutationResultManager = new MutationResultManager();

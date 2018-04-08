@@ -1,4 +1,4 @@
-import { Config } from "../profx.conf";
+import { Config } from "../DEVCONFIG";
 
 import { ConfigManager } from "./configManager/ConfigManager";
 import { Supervisor } from "./supervisor/supervisor";
@@ -30,9 +30,9 @@ export class ProfessorX {
     private setupEnvironment () {
         Logger.log("Setting Up Environment");
         const configManager = new ConfigManager(ProfessorX.configuration);
-        Logger.info("Read Configuration File", configManager);
+        Logger.info("Read Configuration File");
         configManager.getFilesToMutate();
     }
 }
-const algorithm = new ProfessorX(Config.CONFIG);
+const algorithm = new ProfessorX(Config.SELF);
 algorithm.main();
