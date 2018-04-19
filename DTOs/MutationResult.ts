@@ -9,7 +9,7 @@ export class MutationResult implements IMutationResult {
     public readonly SRC_FILE: string;
 
     public testFilePath: string;
-    public origionalCode: Array<{ lineText: string, lineNumber: number }> = [];
+    public originalCode: Array<{ lineText: string, lineNumber: number }> = [];
     public mutatedCode: Array<{ lineText: string, lineNumber: number }> = [];
 
     public mutationAttemptFailure: IMutationAttemptFailure;
