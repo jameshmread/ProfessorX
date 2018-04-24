@@ -13,7 +13,7 @@ describe("Mutation Result Manager", () => {
     let mutationResult: MutationResult;
     let mResultManager: MutationResultManager;
     let mutatableNode: IMutatableNode;
-    const origionalCode = `export class HelloWorld {
+    const originalCode = `export class HelloWorld {
         public addNumbers (a: number, b: number) {
             return a + b;
         }
@@ -31,7 +31,7 @@ describe("Mutation Result Manager", () => {
         mResultManager = new MutationResultManager();
         mResultManager.setCurrentSourceCodeModifierAndSourceObj(
             new SourceCodeModifier(
-                new SourceObject(new SourceObjCreator(origionalCode).sourceFile))
+                new SourceObject(new SourceObjCreator(originalCode).sourceFile))
             );
         mutatableNode = CreateMutatableNodes.createMutatableNodes(1)[0];
         mutationResult = new MutationResult(mutatableNode, {mutations: [""], mutationClass: ""});

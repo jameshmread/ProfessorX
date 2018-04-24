@@ -116,7 +116,7 @@ export class MultipleNodeMutator {
       }
 
       private commitKilledMutant (): void {
-            this.mutationResultManager.getCurrentMutationResult().origionalCode = null;
+            this.mutationResultManager.getCurrentMutationResult().originalCode = null;
             this.mutationResultManager.getCurrentMutationResult().mutatedCode = null;
             this.mutationResultManager.addMutationResultToList();
       }
