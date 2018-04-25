@@ -16,21 +16,21 @@ describe("Supervisor", () => {
         SRC_FILE: "FileOne.ts", mutatedCode: [], mutationType: "",
         mutationAttemptFailure: { reasonForFailure: "", attemptedMutation: "",
             nodeToBeMutated: CreateMutatableNodes.createMutatableNodes(1)[0]}, nodeModification: "",
-        origionalCode: [], testFilePath: CreateMutatableNodes.testPath,
+        originalCode: [], testFilePath: CreateMutatableNodes.testPath,
         targetNode: "", SRC_FILE_PATH: "/src/FileOne.ts"
     };
     const threadResultsFileTwo: IMutationResult = {
         SRC_FILE: "FileTwo.ts", mutatedCode: [],  mutationType: "",
         mutationAttemptFailure: { reasonForFailure: "", attemptedMutation: "",
             nodeToBeMutated: CreateMutatableNodes.createMutatableNodes(1)[0]}, nodeModification: "",
-        origionalCode: [], testFilePath: CreateMutatableNodes.testPath,
+        originalCode: [], testFilePath: CreateMutatableNodes.testPath,
         targetNode: "", SRC_FILE_PATH: "/src/FileTwo.ts"
     };
     const threadResultsFileThree: IMutationResult = {
         SRC_FILE: "FileThree.ts", mutatedCode: null,  mutationType: "",
         mutationAttemptFailure: { reasonForFailure: "", attemptedMutation: "",
             nodeToBeMutated: CreateMutatableNodes.createMutatableNodes(1)[0]}, nodeModification: "",
-        origionalCode: [], testFilePath: CreateMutatableNodes.testPath,
+        originalCode: [], testFilePath: CreateMutatableNodes.testPath,
         targetNode: "", SRC_FILE_PATH: "/src/FileThree.ts"
     };
     const fileOneMutatableNode = new MutatableNode(1, { pos: 1, end: 2 }, "FileOne.ts",

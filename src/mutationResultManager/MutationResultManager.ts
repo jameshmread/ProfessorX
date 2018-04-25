@@ -41,7 +41,7 @@ export class MutationResultManager {
         try {
             const methodBounds = this.getParentMethodBoundsOfMutatedLine(currentNode.positions.pos);
             this.setSourceCodeLines(
-                {origional: this.sourceCodeModifier.getOriginalSourceCode(),
+                {original: this.sourceCodeModifier.getOriginalSourceCode(),
                     mutated: this.sourceCodeModifier.getModifiedSourceCode()},
                     methodBounds);
         } catch (err) {
@@ -59,11 +59,11 @@ export class MutationResultManager {
     }
 
     public setSourceCodeLines (
-        code: {origional: string, mutated: string},
+        code: {original: string, mutated: string},
         bounds: {pos: number, end: number}): void {
             const methodStartLine = ts.getLineAndCharacterOfPosition(this.currentSourceCodeObject, bounds.pos).line;
             const methodEndLine = ts.getLineAndCharacterOfPosition(this.currentSourceCodeObject, bounds.end).line;
-            this.setOrigionalCode(code.origional, {start: methodStartLine, end: methodEndLine});
+            this.setOriginalCode(code.original, {start: methodStartLine, end: methodEndLine});
             this.setMutatedCode(code.mutated, {start: methodStartLine, end: methodEndLine});
     }
 
@@ -83,10 +83,10 @@ export class MutationResultManager {
         .map((obj) => obj = {pos: 2 + obj.pos, end: obj.end} );
     }
 
-    private setOrigionalCode (code: string, method: {start: number, end: number}) {
+    private setOriginalCode (code: string, method: {start: number, end: number}) {
         const splitCode = this.splitCodeByLine(code);
         for (let line = method.start; line < method.end + 1; line++) {
-            this.currentMutationResult.origionalCode.push({
+            this.currentMutationResult.originalCode.push({
                 lineText: splitCode[line],
                 lineNumber: ++ method.start
             });
