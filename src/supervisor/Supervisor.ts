@@ -16,6 +16,7 @@ import { IMutationScoresPerFile } from "../../interfaces/IMutationScoresPerFile"
 import { ProgressDisplay } from "../progressDisplay/ProgressDisplay";
 import { MutationFactory } from "../mutationFactory/MutationFactory";
 import { IDurationFormat } from "../../interfaces/IDurationFormat";
+import { OutputToConsole } from "../outputResults/OutputToConsole";
 
 process.on("SIGINT", () => {
       Logger.fatal("User Pressed Ctrl + C: SIGINT Caught. Program ending.");
@@ -89,12 +90,9 @@ export class Supervisor {
       public getOverallMutationScore () {
             const mutationsPerformed = this.individualFileResults.totalMutationsForEach
                   .reduce((accumulator, current) => accumulator += current);
-            console.log("Mutations Performed", mutationsPerformed);
             const survivingMutants = this.individualFileResults.mutantsSurvivedForEach
             .reduce((accumulator, current) => accumulator += current);
-            console.log("Surviving mutants", survivingMutants);
             const numberOfKilledOrErrored = mutationsPerformed - survivingMutants;
-            console.log("killed OR errored", numberOfKilledOrErrored);
             return {
                   totalKilledMutants: numberOfKilledOrErrored,
                   totalSurvivingMutants: survivingMutants,
@@ -116,7 +114,6 @@ export class Supervisor {
                   this.getOverallMutationScore(),
                   this.threadResults
             );
-            console.log("end result", endResult.overallScores);
             return endResult;
       }
 
