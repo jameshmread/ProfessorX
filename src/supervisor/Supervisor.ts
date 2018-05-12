@@ -15,7 +15,7 @@ import { IMutationScoresPerFile } from "../../interfaces/IMutationScoresPerFile"
 import { ProgressDisplay } from "../progressDisplay/ProgressDisplay";
 import { MutationFactory } from "../mutationFactory/MutationFactory";
 import { IDurationFormat } from "../../interfaces/IDurationFormat";
-import { OutputController } from "../outputResults/OutputController/OutputController";
+import { OutputController } from "../outputResults/outputController/OutputController";
 
 process.on("SIGINT", () => {
       Logger.fatal("User Pressed Ctrl + C: SIGINT Caught. Program ending.");
