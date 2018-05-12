@@ -9,13 +9,13 @@ import { MutationResultManager } from "../mutationResultManager/MutationResultMa
 import { ConfigManager } from "../configManager/ConfigManager";
 import { Cleaner } from "../cleanup/Cleaner";
 import { MathFunctions } from "../maths/MathFunctions";
-import { OutputToJSON } from "../outputResults/OutputToJSON";
 import { Logger } from "../logging/Logger";
 import { IMutationResult } from "../../interfaces/IMutationResult";
 import { IMutationScoresPerFile } from "../../interfaces/IMutationScoresPerFile";
 import { ProgressDisplay } from "../progressDisplay/ProgressDisplay";
 import { MutationFactory } from "../mutationFactory/MutationFactory";
 import { IDurationFormat } from "../../interfaces/IDurationFormat";
+import { OutputController } from "../outputResults/outputController/OutputController";
 
 process.on("SIGINT", () => {
       Logger.fatal("User Pressed Ctrl + C: SIGINT Caught. Program ending.");
@@ -89,12 +89,9 @@ export class Supervisor {
       public getOverallMutationScore () {
             const mutationsPerformed = this.individualFileResults.totalMutationsForEach
                   .reduce((accumulator, current) => accumulator += current);
-            console.log("Mutations Performed", mutationsPerformed);
             const survivingMutants = this.individualFileResults.mutantsSurvivedForEach
             .reduce((accumulator, current) => accumulator += current);
-            console.log("Surviving mutants", survivingMutants);
             const numberOfKilledOrErrored = mutationsPerformed - survivingMutants;
-            console.log("killed OR errored", numberOfKilledOrErrored);
             return {
                   totalKilledMutants: numberOfKilledOrErrored,
                   totalSurvivingMutants: survivingMutants,
@@ -116,7 +113,6 @@ export class Supervisor {
                   this.getOverallMutationScore(),
                   this.threadResults
             );
-            console.log("end result", endResult.overallScores);
             return endResult;
       }
 
@@ -145,7 +141,7 @@ export class Supervisor {
                   Logger.log("All workers complete");
                   this.threadResults = [].concat.apply([], this.threadResults);
                   const endResult = this.finishRun();
-                  OutputToJSON.writeResults(endResult);
+                  new OutputController(endResult).outputResults();
                   Cleaner.cleanRemainingFiles();
                   return;
             }

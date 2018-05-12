@@ -4,19 +4,12 @@ import * as Mocha from "mocha";
 import { ConfigManager } from "./ConfigManager";
 import { IConfigFile } from "../../interfaces/IConfigFile";
 import { resolve } from "path";
+import { StubConfigFile } from "../../testUtilities/StubConfigFile";
 
 describe("Config manager", () => {
     let config: ConfigManager;
-    const configFile: IConfigFile = {
-        filesToMutate: [],
-        mutateAllFiles: true,
-        filesToSkip: [],
-        runnerConfig: {}, filePath: "./testProject/src/",
-        testFileExtension: ".spec", testFilePath: "./testProject/src/",
-        testRunner: "mocha"
-    };
     beforeEach(() => {
-        config = new ConfigManager(configFile);
+        config = new ConfigManager(StubConfigFile.configFile);
         ConfigManager.filesToMutate = [];
         ConfigManager.testFiles = [];
     });
@@ -77,7 +70,8 @@ describe("Config manager", () => {
             filesToSkip: ["FileTwo.ts"],
             runnerConfig: {}, filePath: "./testProject/src/",
             testFileExtension: ".spec", testFilePath: "./testProject/src/",
-            testRunner: "mocha"
+            testRunner: "mocha",
+            outputFormat: ["console", "app"]
         };
         const cm = new ConfigManager(tempConfig);
         cm.getFilesToMutate();

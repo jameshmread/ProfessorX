@@ -10,13 +10,14 @@ export class ConfigManager {
     public static testFilePath: string;
     public static testFileExtension: string;
 
+    public static mutateAllFiles: boolean;
     public static filesToMutate: Array<string> = [];
+    public static filesToSkip: Array<string>;
     public static testFiles: Array<string> = [];
     public static testRunner: string;
     public static runnerConfig: Object;
+    public static outputFormat: Array<string> = [];
 
-    private static mutateAllFiles: boolean;
-    private static filesToSkip: Array<string>;
     private projectFilesRetrieved: Array<string>;
 
     constructor (private configurationFile: IConfigFile) {
@@ -31,6 +32,7 @@ export class ConfigManager {
         ConfigManager.testFileExtension = configurationFile.testFileExtension;
         ConfigManager.testRunner = configurationFile.testRunner;
         ConfigManager.runnerConfig = configurationFile.runnerConfig;
+        ConfigManager.outputFormat = configurationFile.outputFormat;
         this.configValid();
     }
 
