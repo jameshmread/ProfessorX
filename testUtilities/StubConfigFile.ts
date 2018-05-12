@@ -8,6 +8,7 @@ export class StubConfigFile {
         filesToSkip: [],
         runnerConfig: {}, filePath: "./testProject/src/",
         testFileExtension: ".spec", testFilePath: "./testProject/src/",
-        testRunner: "mocha"
+        testRunner: "mocha",
+        outputFormat: ["console", "app"]
     };
 }

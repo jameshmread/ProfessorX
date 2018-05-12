@@ -9,14 +9,13 @@ import { MutationResultManager } from "../mutationResultManager/MutationResultMa
 import { ConfigManager } from "../configManager/ConfigManager";
 import { Cleaner } from "../cleanup/Cleaner";
 import { MathFunctions } from "../maths/MathFunctions";
-import { OutputToJSON } from "../outputResults/OutputToJSON";
 import { Logger } from "../logging/Logger";
 import { IMutationResult } from "../../interfaces/IMutationResult";
 import { IMutationScoresPerFile } from "../../interfaces/IMutationScoresPerFile";
 import { ProgressDisplay } from "../progressDisplay/ProgressDisplay";
 import { MutationFactory } from "../mutationFactory/MutationFactory";
 import { IDurationFormat } from "../../interfaces/IDurationFormat";
-import { OutputToConsole } from "../outputResults/OutputToConsole";
+import { OutputController } from "../outputResults/OutputController/OutputController";
 
 process.on("SIGINT", () => {
       Logger.fatal("User Pressed Ctrl + C: SIGINT Caught. Program ending.");
@@ -142,7 +141,7 @@ export class Supervisor {
                   Logger.log("All workers complete");
                   this.threadResults = [].concat.apply([], this.threadResults);
                   const endResult = this.finishRun();
-                  OutputToJSON.writeResults(endResult);
+                  new OutputController(endResult).outputResults();
                   Cleaner.cleanRemainingFiles();
                   return;
             }
