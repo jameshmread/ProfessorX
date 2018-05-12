@@ -14,6 +14,9 @@
 <h4 align="center">
 A Typescript Mutation Testing program designed to give an indication to the quality of the tests in a project.
 </h4>
+<h4 align="center">
+This is the main development fork of Professor X
+</h4>
 <br>
 
 <h3> Using the Professor X Configuration File </h3>
@@ -40,6 +43,11 @@ A Typescript Mutation Testing program designed to give an indication to the qual
   - Mocha Runner Config Options can be found here https://github.com/mochajs/mocha/wiki/Using-mocha-programmatically
   - **WARNING** : Not all of these options have been tested and so may cause issues.
     
+- **outputFormat** `Array<string>`
+  - The type of output the algorithm should produce.
+  - Current options are:
+    - `console`: Produces a "Per File" output in the console after analysis.
+    - `app` : Produces a JSON file for the Professor X - App.
 <h3> Example Configuration File. </h3> 
 
 `profx.config.ts`
@@ -56,7 +64,8 @@ export class Config {
         testRunner: "mocha",
         runnerConfig: {
             reporter: "dot"
-        }
+        },
+        outputFormat: ["console", "app"]
     };
 }
 
