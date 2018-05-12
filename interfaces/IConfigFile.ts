@@ -7,4 +7,5 @@ export interface IConfigFile {
         filesToSkip: Array<string>;
         testRunner: string;
         runnerConfig: Object;
+        outputFormat: Array<string>;
 }

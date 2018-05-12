@@ -9,6 +9,7 @@ export class Config {
         testRunner: "mocha",
         runnerConfig: {
             reporter: "dot"
-        }
+        },
+        outputFormat: ["console", "app"]
     };
 }
